@@ -1,0 +1,164 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-period-panel {
+  position: relative;
+  margin-bottom: 14px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: #141824;
+  padding: 12px;
+}
+
+.traffic-period-panel.is-collapsed {
+  padding: 10px 12px;
+}
+
+.traffic-period-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.traffic-period-summary strong,
+.traffic-period-summary span {
+  display: inline-block;
+}
+
+.traffic-period-summary strong {
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.traffic-period-summary span {
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.traffic-period-toggle {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--traffic-text);
+  padding: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.traffic-period-toggle:hover {
+  color: #bfdbfe;
+}
+
+.traffic-period-toggle:focus-visible {
+  outline: 2px solid #bfdbfe;
+  outline-offset: 3px;
+}
+
+.traffic-period-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+
+.traffic-period-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 7px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.traffic-period-primary-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.traffic-period-comparison {
+  margin-bottom: 14px;
+}
+
+.traffic-period-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.traffic-period-comparison-item {
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  color: var(--traffic-text);
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.traffic-period-comparison-item:hover,
+.traffic-period-comparison-item.is-active {
+  border-color: var(--traffic-blue);
+}
+
+.traffic-period-comparison-item strong,
+.traffic-period-comparison-item span,
+.traffic-period-comparison-item small {
+  display: block;
+}
+
+.traffic-period-comparison-item strong {
+  font-size: 13px;
+}
+
+.traffic-period-comparison-item span,
+.traffic-period-comparison-item small {
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.traffic-period-comparison-item span {
+  margin-top: 6px;
+}
+
+.traffic-period-comparison-item small {
+  margin-top: 7px;
+}
+
+.traffic-period-comparison-meter {
+  position: relative;
+  height: 7px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #0e1320;
+}
+
+.traffic-period-comparison-meter i,
+.traffic-period-comparison-meter em {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  border-radius: inherit;
+}
+
+.traffic-period-comparison-meter i {
+  background: rgba(96, 165, 250, 0.42);
+}
+
+.traffic-period-comparison-meter em {
+  background: rgba(16, 185, 129, 0.72);
+}
+
+.traffic-app.is-day .traffic-period-comparison-meter {
+  background: #d7e0ec;
+}
+
+/* End traffic UI styles. */

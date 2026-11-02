@@ -1,0 +1,84 @@
+.route-error-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #10131c;
+  color: #f5f7fb;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.route-error-panel {
+  width: min(100%, 560px);
+  border: 1px solid #30384b;
+  border-radius: 8px;
+  background: #191d2a;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.26);
+}
+
+.route-error-eyebrow {
+  margin: 0 0 8px;
+  color: #9aa3b2;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.route-error-panel h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: 0;
+}
+
+.route-error-message {
+  margin: 12px 0 0;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.route-error-details {
+  margin-top: 16px;
+  border: 1px solid #30384b;
+  border-radius: 6px;
+  background: #10131c;
+  padding: 12px;
+  color: #fca5a5;
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.route-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.route-error-button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #30384b;
+  border-radius: 6px;
+  background: #222838;
+  color: #f5f7fb;
+  padding: 0 14px;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.route-error-button:hover {
+  border-color: #4f8cff;
+}
+
+.route-error-button.is-primary {
+  border-color: #4f8cff;
+  background: #4f8cff;
+}

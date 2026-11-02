@@ -1,0 +1,50 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-sidebar {
+  grid-column: 1;
+  min-height: 0;
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  padding: 12px;
+}
+
+.traffic-people {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.traffic-person {
+  border: 1px solid var(--traffic-border);
+  background: var(--traffic-panel);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: grab;
+}
+
+.traffic-person-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.traffic-person-skills,
+.traffic-sidebar-hint {
+  margin-top: 8px;
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.traffic-sidebar-hint {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.traffic-person-review-pulse {
+  margin-top: 8px;
+}
+
+/* End traffic UI styles. */

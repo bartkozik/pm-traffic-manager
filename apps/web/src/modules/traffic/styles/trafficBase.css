@@ -1,0 +1,1004 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+:root {
+  --traffic-bg: #10131c;
+  --traffic-panel: #191d2a;
+  --traffic-panel-strong: #222838;
+  --traffic-border: #30384b;
+  --traffic-text: #f5f7fb;
+  --traffic-muted: #9aa3b2;
+  --traffic-blue: #4f8cff;
+  --traffic-red: #ef4444;
+  --traffic-orange: #f59e0b;
+  --traffic-green: #10b981;
+  --traffic-margin: #60a5fa;
+  --traffic-scrollbar-track: transparent;
+  --traffic-scrollbar-thumb: rgba(96, 165, 250, 0.7);
+  --traffic-scrollbar-thumb-hover: rgba(147, 197, 253, 0.92);
+}
+
+html,
+body,
+#root {
+  min-width: 0;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--traffic-scrollbar-thumb) var(--traffic-scrollbar-track);
+}
+
+body {
+  overflow-x: hidden;
+}
+
+body[data-theme="light"] {
+  --traffic-scrollbar-track: transparent;
+  --traffic-scrollbar-thumb: rgba(37, 99, 235, 0.36);
+  --traffic-scrollbar-thumb-hover: rgba(29, 78, 216, 0.68);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--traffic-scrollbar-thumb) var(--traffic-scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--traffic-scrollbar-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  min-height: 36px;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--traffic-scrollbar-thumb);
+  background-clip: padding-box;
+  cursor: grab;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--traffic-scrollbar-thumb-hover);
+  background-clip: padding-box;
+  cursor: grab;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  cursor: grabbing;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+body[data-theme="light"] .traffic-tooltip-bubble,
+.traffic-app.is-day .traffic-tooltip-bubble,
+.diablo-app.is-day .traffic-tooltip-bubble {
+  border-color: rgba(148, 163, 184, 0.42);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+  color: #111827;
+}
+
+.traffic-app {
+  min-height: 100vh;
+  background: var(--traffic-bg);
+  color: var(--traffic-text);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.traffic-app,
+.traffic-app * {
+  box-sizing: border-box;
+}
+
+.traffic-app.is-day {
+  --traffic-bg: #e8eef6;
+  --traffic-panel: #f8fafc;
+  --traffic-panel-strong: #eef4fb;
+  --traffic-border: #c3cede;
+  --traffic-text: #111827;
+  --traffic-muted: #4b5f78;
+  --traffic-blue: #2563eb;
+  --traffic-red: #b91c1c;
+  --traffic-orange: #b45309;
+  --traffic-green: #047857;
+  --traffic-margin: #2563eb;
+  --traffic-scrollbar-track: transparent;
+  --traffic-scrollbar-thumb: rgba(37, 99, 235, 0.36);
+  --traffic-scrollbar-thumb-hover: rgba(29, 78, 216, 0.68);
+}
+
+.traffic-pill,
+.traffic-button {
+  min-height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--traffic-border);
+  background: var(--traffic-panel);
+  color: var(--traffic-text);
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.traffic-pill,
+.traffic-button {
+  cursor: pointer;
+}
+
+.traffic-button:disabled,
+.traffic-pill:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.traffic-pill.is-ok {
+  border-color: rgba(16, 185, 129, 0.55);
+}
+
+.traffic-pill.is-warning {
+  border-color: rgba(251, 191, 36, 0.65);
+  color: #fbbf24;
+}
+
+.traffic-pill:hover,
+.traffic-button:hover:not(:disabled),
+.traffic-pill.is-active {
+  border-color: var(--traffic-blue);
+}
+
+.traffic-pill.is-active {
+  background: var(--traffic-blue);
+  color: #ffffff;
+}
+
+.traffic-connection-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 24px 0;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 8px;
+  background: rgba(251, 191, 36, 0.08);
+  padding: 12px;
+}
+
+.traffic-connection-panel strong,
+.traffic-connection-panel span {
+  display: block;
+}
+
+.traffic-connection-panel strong {
+  color: #fbbf24;
+  font-size: 13px;
+}
+
+.traffic-connection-panel span {
+  margin-top: 4px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.traffic-backend-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 24px 0;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.08);
+  padding: 12px;
+}
+
+.traffic-backend-panel.is-danger {
+  border-color: rgba(248, 113, 113, 0.5);
+  background: rgba(248, 113, 113, 0.09);
+}
+
+.traffic-backend-panel__content {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.traffic-backend-panel strong,
+.traffic-backend-panel span {
+  display: block;
+}
+
+.traffic-backend-panel strong {
+  color: #93c5fd;
+  font-size: 13px;
+}
+
+.traffic-backend-panel.is-danger strong,
+.traffic-backend-panel__error {
+  color: #fca5a5;
+}
+
+.traffic-backend-panel span {
+  margin-top: 4px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.traffic-backend-spinner {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(147, 197, 253, 0.35);
+  border-top-color: #93c5fd;
+  border-radius: 50%;
+  animation: traffic-spin 0.75s linear infinite;
+}
+
+@keyframes traffic-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.traffic-pill:focus-visible,
+.traffic-button:focus-visible,
+.traffic-icon-button:focus-visible {
+  outline: 2px solid var(--traffic-blue);
+  outline-offset: 2px;
+}
+
+.traffic-button.is-primary {
+  background: var(--traffic-blue);
+  border-color: var(--traffic-blue);
+}
+
+.traffic-button.is-danger {
+  border-color: rgba(239, 68, 68, 0.7);
+  color: #fca5a5;
+}
+
+.traffic-button.is-success {
+  border-color: rgba(16, 185, 129, 0.65);
+  color: #9ee7ca;
+}
+
+.traffic-button:disabled,
+.traffic-button.is-primary:disabled,
+.traffic-button.is-danger:disabled,
+.traffic-button.is-success:disabled {
+  border-color: rgba(71, 85, 105, 0.65);
+  background: rgba(15, 23, 42, 0.62);
+  color: #64748b;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.traffic-icon-button {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 28px;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid var(--traffic-border);
+  background: #151b27;
+  color: var(--traffic-text);
+  padding: 0 8px;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.traffic-icon-button:hover:not(:disabled) {
+  border-color: var(--traffic-blue);
+}
+
+.traffic-icon-button.is-danger {
+  border-color: rgba(239, 68, 68, 0.75);
+  color: #fca5a5;
+}
+
+.traffic-icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.traffic-inline-link {
+  width: fit-content;
+  border: 0;
+  background: transparent;
+  color: #bfdbfe;
+  padding: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.traffic-inline-link:hover {
+  color: var(--traffic-text);
+  text-decoration: underline;
+}
+
+.traffic-risk-item .traffic-help-button {
+  flex: 0 0 auto;
+}
+
+.traffic-section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.traffic-section-title > span,
+.traffic-header-select-label,
+.traffic-project-mini-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.traffic-collapsible-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--traffic-muted);
+  padding: 0 28px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.traffic-collapsible-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.traffic-collapsible-row.is-pattern-panel {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.traffic-collapsible-row.is-pattern-panel .traffic-collapsible-header {
+  padding-right: 0;
+}
+
+.traffic-collapsible-header:hover span,
+.traffic-collapsible-header:hover strong {
+  color: #bfdbfe;
+}
+
+.traffic-collapsible-header em {
+  color: var(--traffic-muted);
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.traffic-collapsible-header strong {
+  color: var(--traffic-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.traffic-lens-switch {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--traffic-border);
+  border-radius: 999px;
+  background: #111722;
+  padding: 3px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.traffic-lens-segment {
+  min-width: 74px;
+  min-height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--traffic-muted);
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.traffic-lens-segment:hover {
+  color: var(--traffic-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.traffic-lens-segment.is-active {
+  color: #ffffff;
+  background: var(--traffic-blue);
+  box-shadow: 0 8px 18px rgba(79, 140, 255, 0.25);
+}
+
+.traffic-lens-segment:focus-visible {
+  outline: 2px solid #bfdbfe;
+  outline-offset: 2px;
+}
+
+.traffic-board-focus-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(251, 191, 36, 0.08), transparent 42%),
+    rgba(15, 23, 42, 0.62);
+  padding: 8px;
+}
+
+.traffic-board-focus-switch > div:first-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.traffic-board-focus-switch strong {
+  color: var(--traffic-text);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.traffic-board-focus-switch span {
+  color: #dbeafe;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.traffic-focus-segments {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 7px;
+  background: rgba(2, 6, 23, 0.32);
+  padding: 3px;
+}
+
+.traffic-focus-segment {
+  min-height: 28px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #cbd5e1;
+  padding: 0 10px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.traffic-focus-segment:hover {
+  background: rgba(96, 165, 250, 0.14);
+  color: #f8fafc;
+}
+
+.traffic-focus-segment.is-active {
+  background: #c2410c;
+  color: #ffffff;
+}
+
+.traffic-focus-segment:focus-visible {
+  outline: 2px solid #fdba74;
+  outline-offset: 2px;
+}
+
+.traffic-person:active,
+.traffic-tile:active {
+  cursor: grabbing;
+}
+
+.traffic-person-header,
+.traffic-project-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.traffic-person-header > div:first-child,
+.traffic-project-header > div:first-child {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.traffic-person-name,
+.traffic-project-name {
+  font-weight: 650;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.traffic-person-role,
+.traffic-project-meta {
+  margin-top: 3px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.traffic-person-cost,
+.traffic-project-budget {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--traffic-text);
+  font-size: 12px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 5px;
+  padding: 3px 6px;
+  text-overflow: ellipsis;
+}
+
+.traffic-week-person span:not(.traffic-person-dot),
+.traffic-week-person small {
+  color: var(--traffic-muted);
+}
+
+.traffic-week-person .traffic-utilization-meter,
+.traffic-week-person small {
+  grid-column: 2 / -1;
+}
+
+.traffic-week-person.is-over .traffic-utilization-meter span {
+  background: #f87171;
+}
+
+.traffic-week-person.is-healthy .traffic-utilization-meter span {
+  background: #4ade80;
+}
+
+.traffic-project-grid-item > .traffic-project {
+  width: 100%;
+}
+
+.traffic-project,
+.traffic-bench {
+  min-width: 0;
+  max-width: 100%;
+  border: 2px solid var(--traffic-blue);
+  background: var(--traffic-panel);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.traffic-project:has(.traffic-tile:hover),
+.traffic-project:has(.traffic-tile:focus-visible) {
+  z-index: 30;
+}
+
+.traffic-project-review-pulse,
+.traffic-person-review-pulse {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.traffic-app.is-lens-finance .traffic-person-tile-group,
+.traffic-app.is-lens-management .traffic-project {
+  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.2);
+}
+
+.traffic-project.is-dragover,
+.traffic-bench.is-dragover {
+  background: var(--traffic-panel-strong);
+}
+
+.traffic-project-body:has(.traffic-tile:hover),
+.traffic-project-body:has(.traffic-tile:focus-visible) {
+  z-index: 30;
+}
+
+@container traffic-project (max-width: 430px) {
+  .traffic-project-review-pulse,
+    .traffic-person-review-pulse {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+  .traffic-project-review-pulse small,
+    .traffic-person-review-pulse small {
+      display: none;
+    }
+}
+
+.traffic-bench .traffic-tile-grid {
+  margin-top: 10px;
+}
+
+.traffic-rules-result-list .traffic-editor-section-note {
+  margin: 0;
+}
+
+@media (max-width: 1180px) {
+  .traffic-sync-status,
+    .traffic-action-section,
+    .traffic-presence-panel,
+    .traffic-theme-switch,
+    .traffic-actions .traffic-pill,
+    .traffic-actions .traffic-button,
+    .traffic-room-form input,
+    .traffic-header-select select {
+      width: 100%;
+    }
+
+  .traffic-presence-panel,
+    .traffic-theme-switch {
+      min-height: 40px;
+    }
+}
+
+@media (max-width: 900px) {
+  .traffic-header,
+    .traffic-board {
+      grid-template-columns: 1fr;
+    }
+
+  .traffic-sidebar,
+    .traffic-main,
+    .traffic-pattern-panel {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+  .traffic-app {
+      overflow-x: hidden;
+    }
+
+  .traffic-brand,
+    .traffic-actions,
+    .traffic-actions-row,
+    .traffic-action-section,
+    .traffic-room-controls,
+    .traffic-room-form,
+    .traffic-header-select,
+    .traffic-period-controls,
+    .traffic-period-primary-actions {
+      width: 100%;
+    }
+
+  .traffic-actions,
+    .traffic-actions-row,
+    .traffic-room-controls,
+    .traffic-period-controls,
+    .traffic-period-primary-actions {
+      align-items: stretch;
+    }
+
+  .traffic-room-form input,
+    .traffic-actions .traffic-pill,
+    .traffic-actions .traffic-button,
+    .traffic-period-primary-actions .traffic-button,
+    .traffic-header-select select,
+    .traffic-inline-select,
+    .traffic-inline-select select {
+      width: 100%;
+    }
+
+  .traffic-review-panel,
+    .traffic-risk-panel,
+    .traffic-ai-panel,
+    .traffic-board {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+  .traffic-form-grid,
+    .traffic-week-detail,
+    .traffic-revenue-split-row,
+    .traffic-weekly-editor-row,
+    .traffic-person-preference-row,
+    .traffic-editor-requirement-header,
+    .traffic-editor-row {
+      grid-template-columns: 1fr;
+    }
+
+  .traffic-section-title {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+  .traffic-lens-switch {
+      width: 100%;
+    }
+
+  .traffic-lens-segment {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 0 8px;
+    }
+}
+
+@media (max-width: 640px) {
+  .traffic-connection-panel,
+    .traffic-backend-panel {
+      align-items: stretch;
+      flex-direction: column;
+      margin-right: 12px;
+      margin-left: 12px;
+    }
+
+  .traffic-backend-panel .traffic-button,
+    .traffic-connection-panel .traffic-button {
+      width: 100%;
+    }
+}
+
+.traffic-app.is-day .traffic-header,
+.traffic-app.is-day .traffic-editor,
+.traffic-app.is-day .traffic-help-modal {
+  background: #f8fafc;
+}
+
+.traffic-app.is-day .traffic-brand-code,
+.traffic-app.is-day .traffic-help-button,
+.traffic-app.is-day .traffic-project-badge {
+  border-color: #9db8f7;
+  background: #e8f0ff;
+  color: #1d4ed8;
+}
+
+.traffic-app.is-day .traffic-kpi,
+.traffic-app.is-day .traffic-risk-item,
+.traffic-app.is-day .traffic-ai-verdict,
+.traffic-app.is-day .traffic-ai-card,
+.traffic-app.is-day .traffic-ai-empty,
+.traffic-app.is-day .traffic-sidebar,
+.traffic-app.is-day .traffic-pattern-panel,
+.traffic-app.is-day .traffic-perspective-panel,
+.traffic-app.is-day .traffic-period-panel,
+.traffic-app.is-day .traffic-period-comparison-item,
+.traffic-app.is-day .traffic-person,
+.traffic-app.is-day .traffic-month,
+.traffic-app.is-day .traffic-project,
+.traffic-app.is-day .traffic-bench,
+.traffic-app.is-day .traffic-month-people,
+.traffic-app.is-day .traffic-month-collapsible,
+.traffic-app.is-day .traffic-weekly-drilldown,
+.traffic-app.is-day .traffic-week-people,
+.traffic-app.is-day .traffic-week-projects,
+.traffic-app.is-day .traffic-help-topic {
+  background: var(--traffic-panel);
+  color: var(--traffic-text);
+}
+
+.traffic-app.is-day .traffic-action-section,
+.traffic-app.is-day .traffic-sync-status,
+.traffic-app.is-day .traffic-connection-panel,
+.traffic-app.is-day .traffic-backend-panel,
+.traffic-app.is-day .traffic-project-body,
+.traffic-app.is-day .traffic-tile-grid,
+.traffic-app.is-day .traffic-mini-grid,
+.traffic-app.is-day .traffic-overflow-grid,
+.traffic-app.is-day .traffic-month-person,
+.traffic-app.is-day .traffic-week-tab,
+.traffic-app.is-day .traffic-week-person,
+.traffic-app.is-day .traffic-week-project,
+.traffic-app.is-day .traffic-week-empty,
+.traffic-app.is-day .traffic-month-tab,
+.traffic-app.is-day .traffic-archived-projects,
+.traffic-app.is-day .traffic-archived-row,
+.traffic-app.is-day .traffic-editor-row,
+.traffic-app.is-day .traffic-revenue-split-row,
+.traffic-app.is-day .traffic-person-preference-row,
+.traffic-app.is-day .traffic-allocation-summary span,
+.traffic-app.is-day .traffic-allocation-status,
+.traffic-app.is-day .traffic-validation-item,
+.traffic-app.is-day .traffic-meeting-marker-grid label,
+.traffic-app.is-day .traffic-weekly-editor-row,
+.traffic-app.is-day .traffic-skill-chip,
+.traffic-app.is-day .traffic-allocation-context {
+  background: var(--traffic-panel-strong);
+  color: var(--traffic-text);
+}
+
+.traffic-app.is-day .traffic-project.is-dragover,
+.traffic-app.is-day .traffic-bench.is-dragover,
+.traffic-app.is-day .traffic-week-tab.is-active,
+.traffic-app.is-day .traffic-month-tab.is-active,
+.traffic-app.is-day .traffic-period-comparison-item.is-active,
+.traffic-app.is-day .traffic-help-topic:hover,
+.traffic-app.is-day .traffic-help-topic.is-active {
+  background: #dfeaff;
+}
+
+.traffic-app.is-day .traffic-form-grid input,
+.traffic-app.is-day .traffic-form-grid select,
+.traffic-app.is-day .traffic-field-block textarea,
+.traffic-app.is-day .traffic-editor-row input,
+.traffic-app.is-day .traffic-editor-row select,
+.traffic-app.is-day .traffic-meeting-marker-field select,
+.traffic-app.is-day .traffic-room-form input,
+.traffic-app.is-day .traffic-help-search input,
+.traffic-app.is-day .traffic-revenue-split-row input,
+.traffic-app.is-day .traffic-revenue-split-row select,
+.traffic-app.is-day .traffic-weekly-editor-row input,
+.traffic-app.is-day .traffic-inline-select select,
+.traffic-app.is-day .traffic-pill,
+.traffic-app.is-day .traffic-button,
+.traffic-app.is-day .traffic-icon-button,
+.traffic-app.is-day .traffic-theme-switch,
+.traffic-app.is-day .traffic-header-menu-toggle {
+  border-color: #b8c6d8;
+  background: #f8fafc;
+  color: var(--traffic-text);
+}
+
+.traffic-app.is-day .traffic-button:disabled,
+.traffic-app.is-day .traffic-pill:disabled,
+.traffic-app.is-day .traffic-icon-button:disabled {
+  border-color: #cbd5e1;
+  background: #e5ebf3;
+  color: #64748b;
+  opacity: 1;
+}
+
+.traffic-app.is-day .traffic-button.is-primary,
+.traffic-app.is-day .traffic-pill.is-active,
+.traffic-app.is-day .traffic-lens-segment.is-active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.traffic-app.is-day .traffic-button.is-danger {
+  border-color: #b91c1c;
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+.traffic-app.is-day .traffic-button.is-success {
+  border-color: #047857;
+  background: #047857;
+  color: #ffffff;
+}
+
+.traffic-app.is-day .traffic-button:disabled,
+.traffic-app.is-day .traffic-button.is-primary:disabled,
+.traffic-app.is-day .traffic-button.is-danger:disabled,
+.traffic-app.is-day .traffic-button.is-success:disabled {
+  border-color: #cbd5e1;
+  background: #e5ebf3;
+  color: #64748b;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.traffic-app.is-day .traffic-icon-button.is-danger {
+  border-color: #fca5a5;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.traffic-app.is-day .traffic-lens-switch {
+  background: #dfe6f0;
+  box-shadow: none;
+}
+
+.traffic-app.is-day .traffic-lens-segment:hover:not(.is-active) {
+  background: #edf3fb;
+  color: var(--traffic-text);
+}
+
+.traffic-app.is-day .traffic-board-focus-switch {
+  border-color: #cbd5e1;
+  background:
+    linear-gradient(90deg, #fff7ed, transparent 44%),
+    #ffffff;
+}
+
+.traffic-app.is-day .traffic-board-focus-switch span {
+  color: #475569;
+}
+
+.traffic-app.is-day .traffic-focus-segments {
+  border-color: #cbd5e1;
+  background: #edf3fb;
+}
+
+.traffic-app.is-day .traffic-focus-segment {
+  color: #334155;
+}
+
+.traffic-app.is-day .traffic-focus-segment:hover:not(.is-active) {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.traffic-app.is-day .traffic-focus-segment.is-active {
+  background: #c2410c;
+  color: #ffffff;
+}
+
+.traffic-app.is-day .traffic-project-pressure span,
+.traffic-app.is-day .traffic-requirement,
+.traffic-app.is-day .traffic-person-cost,
+.traffic-app.is-day .traffic-project-budget,
+.traffic-app.is-day .traffic-revenue-split-summary span,
+.traffic-app.is-day .traffic-weekly-total span {
+  background: #eef4fb;
+  color: var(--traffic-muted);
+}
+
+.traffic-app.is-day .traffic-project-pressure span.is-warning,
+.traffic-app.is-day .traffic-allocation-status.is-warning,
+.traffic-app.is-day .traffic-validation-item.is-warning,
+.traffic-app.is-day .traffic-weekly-total.is-warning span {
+  border-color: #d97706;
+  color: #92400e;
+}
+
+.traffic-app.is-day .traffic-project-pressure span.is-ok,
+.traffic-app.is-day .traffic-requirement.is-covered,
+.traffic-app.is-day .traffic-allocation-status.is-ok,
+.traffic-app.is-day .traffic-validation-item.is-info,
+.traffic-app.is-day .traffic-project-risk-item.is-info,
+.traffic-app.is-day .traffic-project-positive {
+  border-color: #059669;
+  color: #065f46;
+}
+
+.traffic-app.is-day .traffic-requirement.is-invalid,
+.traffic-app.is-day .traffic-allocation-status.is-invalid,
+.traffic-app.is-day .traffic-validation-item.is-invalid,
+.traffic-app.is-day .traffic-ai-empty.is-danger {
+  border-color: #dc2626;
+  color: #991b1b;
+}
+
+.traffic-app.is-day .traffic-help-summary,
+.traffic-app.is-day .traffic-allocation-context p,
+.traffic-app.is-day .traffic-month-tab em,
+.traffic-app.is-day .traffic-week-tab em,
+.traffic-app.is-day .traffic-week-project em {
+  color: #1d4ed8;
+}
+
+/* End traffic UI styles. */

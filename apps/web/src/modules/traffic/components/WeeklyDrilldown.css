@@ -1,0 +1,146 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-weekly-drilldown {
+  margin-top: 10px;
+  border: 1px solid rgba(48, 56, 75, 0.75);
+  border-radius: 7px;
+  background: #101620;
+  padding: 10px;
+}
+
+.traffic-week-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 7px;
+}
+
+.traffic-week-tab {
+  min-height: 76px;
+  border: 1px solid rgba(48, 56, 75, 0.8);
+  border-radius: 6px;
+  background: #0f131d;
+  color: var(--traffic-text);
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.traffic-week-tab:hover,
+.traffic-week-tab.is-active {
+  border-color: var(--traffic-blue);
+}
+
+.traffic-week-tab.is-over {
+  border-color: rgba(248, 113, 113, 0.75);
+}
+
+.traffic-week-tab.is-active {
+  background: rgba(79, 140, 255, 0.12);
+}
+
+.traffic-week-tab strong,
+.traffic-week-tab span,
+.traffic-week-tab em {
+  display: block;
+}
+
+.traffic-week-tab strong {
+  font-size: 13px;
+}
+
+.traffic-week-tab span {
+  margin-top: 4px;
+  color: var(--traffic-muted);
+  font-size: 10px;
+}
+
+.traffic-week-tab em {
+  margin-top: 6px;
+  color: #bfdbfe;
+  font-size: 11px;
+  font-style: normal;
+}
+
+.traffic-week-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.traffic-week-people,
+.traffic-week-projects {
+  border: 1px solid rgba(48, 56, 75, 0.7);
+  border-radius: 6px;
+  background: #0f131d;
+  padding: 9px;
+}
+
+.traffic-week-people-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 7px;
+}
+
+.traffic-week-person {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 6px;
+  align-items: center;
+  border: 1px solid rgba(48, 56, 75, 0.7);
+  border-radius: 6px;
+  background: #111722;
+  padding: 6px;
+  font-size: 11px;
+}
+
+.traffic-week-person.is-over {
+  border-color: rgba(248, 113, 113, 0.8);
+}
+
+.traffic-week-person.is-healthy {
+  border-color: rgba(74, 222, 128, 0.55);
+}
+
+.traffic-week-person.is-unavailable {
+  opacity: 0.72;
+}
+
+.traffic-week-person strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.traffic-week-project-list {
+  display: grid;
+  gap: 7px;
+}
+
+.traffic-week-project,
+.traffic-week-empty {
+  border: 1px solid rgba(48, 56, 75, 0.7);
+  border-radius: 6px;
+  background: #111722;
+  padding: 7px;
+  font-size: 11px;
+}
+
+.traffic-week-project strong,
+.traffic-week-project span,
+.traffic-week-project em {
+  display: block;
+}
+
+.traffic-week-project span,
+.traffic-week-empty {
+  color: var(--traffic-muted);
+}
+
+.traffic-week-project em {
+  margin-top: 4px;
+  color: #bfdbfe;
+  font-style: normal;
+}
+
+/* End traffic UI styles. */

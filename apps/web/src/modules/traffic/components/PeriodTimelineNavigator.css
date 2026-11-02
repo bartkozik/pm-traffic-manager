@@ -1,0 +1,367 @@
+.period-timeline-nav {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 5px;
+}
+
+.period-timeline-nav.is-collapsed {
+  gap: 0;
+}
+
+.period-timeline-top {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.period-timeline-nav.is-collapsed .period-timeline-top {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.period-timeline-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.period-timeline-copy span,
+.period-timeline-copy small {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--traffic-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.period-timeline-copy span {
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.period-timeline-copy strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--traffic-text);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.period-timeline-copy small {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.period-timeline-mode-switch,
+.period-timeline-top-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.period-timeline-mode-switch {
+  width: max-content;
+  gap: 2px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-panel-strong) 64%, var(--traffic-panel));
+  padding: 2px;
+}
+
+.period-timeline-top-actions {
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.period-timeline-mode-switch button,
+.period-timeline-top-actions button,
+.period-timeline-step,
+.period-timeline-month {
+  min-height: 30px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 6px;
+  background: var(--traffic-panel-strong);
+  color: var(--traffic-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.period-timeline-mode-switch button {
+  min-width: 78px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--traffic-muted);
+  font-weight: 850;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.period-timeline-mode-switch button:hover,
+.period-timeline-mode-switch button:focus-visible {
+  color: var(--traffic-text);
+}
+
+.period-timeline-mode-switch button.is-active {
+  border-color: var(--traffic-blue);
+  background: var(--traffic-blue);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(2, 6, 23, 0.22);
+}
+
+.period-timeline-bar {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  gap: 4px;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-panel-strong) 52%, var(--traffic-panel));
+  padding: 3px;
+}
+
+.period-timeline-step {
+  display: inline-grid;
+  width: auto;
+  place-items: center;
+  border-color: transparent;
+  background: transparent;
+  color: var(--traffic-muted);
+  padding: 0;
+}
+
+.period-timeline-step:hover:not(:disabled),
+.period-timeline-step:focus-visible {
+  border-color: color-mix(in srgb, var(--traffic-blue) 48%, var(--traffic-border));
+  background: color-mix(in srgb, var(--traffic-blue) 12%, var(--traffic-panel));
+  color: var(--traffic-text);
+}
+
+.period-timeline-step span {
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.period-timeline-add,
+.period-timeline-toggle {
+  border-color: color-mix(in srgb, var(--traffic-blue) 42%, var(--traffic-border));
+  background: transparent;
+  color: #bfdbfe;
+  font-weight: 850;
+  padding: 0 9px;
+  white-space: nowrap;
+}
+
+.period-timeline-add:hover,
+.period-timeline-add:focus-visible,
+.period-timeline-toggle:hover,
+.period-timeline-toggle:focus-visible {
+  background: color-mix(in srgb, var(--traffic-blue) 18%, var(--traffic-panel));
+  color: #ffffff;
+}
+
+.period-timeline-mode-switch button:focus-visible,
+.period-timeline-top-actions button:focus-visible,
+.period-timeline-step:focus-visible,
+.period-timeline-month:focus-visible {
+  outline: 2px solid var(--traffic-blue);
+  outline-offset: 2px;
+}
+
+.period-timeline-step:disabled,
+.period-timeline-top-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.period-timeline-rail-wrap {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.period-timeline-rail {
+  display: grid;
+  width: 100%;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 4px;
+  align-items: stretch;
+}
+
+.period-timeline-month {
+  display: grid;
+  min-width: 0;
+  min-height: 32px;
+  align-content: center;
+  justify-items: center;
+  gap: 0;
+  background: var(--traffic-panel);
+  font-weight: 850;
+  line-height: 1;
+  padding: 3px 5px;
+}
+
+.period-timeline-month::before {
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin-bottom: 1px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 999px;
+  background: var(--traffic-panel);
+  content: "";
+}
+
+.period-timeline-month span,
+.period-timeline-month small {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.period-timeline-month span {
+  color: var(--traffic-text);
+  font-size: 11px;
+  line-height: 1;
+  text-transform: capitalize;
+}
+
+.period-timeline-month small {
+  color: var(--traffic-muted);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.period-timeline-month:hover {
+  border-color: var(--traffic-blue);
+  background: color-mix(in srgb, var(--traffic-blue) 9%, var(--traffic-panel));
+}
+
+.period-timeline-month:disabled {
+  cursor: default;
+}
+
+.period-timeline-month:disabled:hover {
+  border-color: var(--traffic-border);
+  background: var(--traffic-panel);
+}
+
+.period-timeline-month.is-in-range {
+  border-color: color-mix(in srgb, var(--traffic-blue) 58%, var(--traffic-border));
+  background: color-mix(in srgb, var(--traffic-blue) 16%, var(--traffic-panel));
+  box-shadow: inset 0 3px 0 var(--traffic-blue);
+}
+
+.period-timeline-month.is-in-range::before {
+  border-color: var(--traffic-blue);
+  background: var(--traffic-blue);
+}
+
+.period-timeline-month.is-active {
+  border-color: var(--traffic-blue);
+  background: var(--traffic-blue);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+.period-timeline-month.is-active span,
+.period-timeline-month.is-active small {
+  color: #ffffff;
+}
+
+.period-timeline-month.is-active::before {
+  border-color: #dbeafe;
+  background: #ffffff;
+}
+
+.traffic-app.is-day .period-timeline-mode-switch {
+  background: #e5edf7;
+}
+
+.traffic-app.is-day .period-timeline-bar {
+  background: #eef4fb;
+}
+
+.traffic-app.is-day .period-timeline-add,
+.traffic-app.is-day .period-timeline-toggle {
+  border-color: #93b4e8;
+  background: #eef4fb;
+  color: #172554;
+}
+
+.traffic-app.is-day .period-timeline-add:hover,
+.traffic-app.is-day .period-timeline-add:focus-visible,
+.traffic-app.is-day .period-timeline-toggle:hover,
+.traffic-app.is-day .period-timeline-toggle:focus-visible {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #111827;
+}
+
+@media (max-width: 760px) {
+  .period-timeline-top {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .period-timeline-copy {
+    grid-column: 1 / -1;
+  }
+
+  .period-timeline-mode-switch {
+    width: 100%;
+  }
+
+  .period-timeline-mode-switch button {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .period-timeline-top-actions {
+    justify-content: flex-end;
+  }
+
+  .period-timeline-bar {
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+  }
+
+  .period-timeline-month.is-mobile-hidden {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .period-timeline-top {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .period-timeline-mode-switch button,
+  .period-timeline-top-actions button,
+  .period-timeline-step {
+    min-height: 38px;
+  }
+
+  .period-timeline-top-actions {
+    justify-content: flex-end;
+  }
+
+  .period-timeline-add {
+    flex: 0 0 auto;
+  }
+
+  .period-timeline-month {
+    min-height: 38px;
+  }
+}

@@ -1,0 +1,70 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  vertical-align: middle;
+}
+
+.traffic-tooltip-bubble {
+  position: fixed;
+  z-index: 1000;
+  display: none;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(260px, calc(100vw - 16px));
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 6px;
+  background: rgba(7, 11, 18, 0.96);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+  color: #f8fafc;
+  padding: 7px 9px;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  text-align: left;
+  transform: scale(0.98);
+  transform-origin: center bottom;
+  transition: opacity 90ms ease, transform 90ms ease;
+  visibility: hidden;
+  white-space: pre-line;
+}
+
+.traffic-tooltip-bubble.is-measuring,
+.traffic-tooltip-bubble.is-visible {
+  display: block;
+}
+
+.traffic-tooltip-bubble.is-measuring {
+  transition: none;
+}
+
+.traffic-tooltip-bubble.is-visible {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: var(--traffic-tooltip-delay, 120ms);
+  visibility: visible;
+}
+
+.traffic-tooltip-bubble.is-top {
+  transform-origin: center bottom;
+}
+
+.traffic-tooltip-bubble.is-bottom {
+  transform-origin: center top;
+}
+
+.traffic-tooltip-bubble.is-left {
+  transform-origin: right center;
+}
+
+.traffic-tooltip-bubble.is-right {
+  transform-origin: left center;
+}
+
+/* End traffic UI styles. */

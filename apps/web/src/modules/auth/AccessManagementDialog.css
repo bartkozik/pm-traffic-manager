@@ -1,0 +1,682 @@
+.ptm-access-backdrop {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 7, 18, 0.72);
+  padding: 20px;
+}
+
+.ptm-access-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: min(920px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  border: 1px solid var(--traffic-border);
+  border-radius: 14px;
+  background: var(--traffic-panel);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+  color: var(--traffic-text);
+  overflow-y: auto;
+  padding: 22px;
+}
+
+.ptm-sso-configuration {
+  display: grid;
+  gap: 13px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 10px;
+  background: var(--traffic-panel-strong);
+  padding: 14px;
+}
+
+.ptm-sso-configuration-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ptm-sso-configuration h3 {
+  margin: 0 0 3px;
+  font-size: 15px;
+}
+
+.ptm-sso-configuration-header p,
+.ptm-sso-configuration-note {
+  margin: 0;
+  color: var(--traffic-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.ptm-sso-summary-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.ptm-sso-overall-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  flex: 0 0 auto;
+  border: 1px solid var(--traffic-border);
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ptm-sso-overall-status.is-ready {
+  border-color: color-mix(in srgb, var(--traffic-green) 60%, var(--traffic-border));
+  background: color-mix(in srgb, var(--traffic-green) 9%, var(--traffic-panel));
+  color: var(--traffic-green);
+}
+
+.ptm-sso-overall-status.is-warning {
+  border-color: color-mix(in srgb, var(--traffic-red) 60%, var(--traffic-border));
+  background: color-mix(in srgb, var(--traffic-red) 9%, var(--traffic-panel));
+  color: var(--traffic-red);
+}
+
+.ptm-sso-configuration-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.ptm-saml-form {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--traffic-border);
+  margin-top: 13px;
+  padding-top: 13px;
+}
+
+.ptm-saml-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(120px, 0.32fr);
+  gap: 10px;
+}
+
+.ptm-saml-form-grid label {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  color: var(--traffic-muted);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.ptm-saml-form-grid label.is-wide {
+  grid-column: 1 / -1;
+}
+
+.ptm-saml-form-grid input,
+.ptm-saml-form-grid textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 7px;
+  background: var(--traffic-panel);
+  color: var(--traffic-text);
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 12px;
+}
+
+.ptm-saml-form-grid input {
+  min-height: 38px;
+}
+
+.ptm-saml-form-grid textarea {
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.45;
+}
+
+.ptm-saml-number-field {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ptm-saml-number-field input {
+  flex: 1 1 auto;
+}
+
+.ptm-saml-enabled-field {
+  grid-column: 1 / -1;
+  display: flex !important;
+  align-items: center;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  padding: 10px 12px;
+}
+
+.ptm-saml-enabled-field > input {
+  width: 17px;
+  min-height: 17px;
+  flex: 0 0 auto;
+  accent-color: var(--traffic-blue);
+}
+
+.ptm-saml-enabled-field > span {
+  display: grid;
+  gap: 2px;
+}
+
+.ptm-saml-enabled-field strong {
+  color: var(--traffic-text);
+  font-size: 12px;
+}
+
+.ptm-saml-enabled-field small,
+.ptm-saml-public-urls > small {
+  color: var(--traffic-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.ptm-saml-public-urls,
+.ptm-saml-public-urls dl {
+  display: grid;
+  gap: 8px;
+}
+
+.ptm-saml-public-urls dl {
+  margin: 0;
+}
+
+.ptm-saml-public-urls > small[role="alert"] {
+  color: var(--traffic-red);
+}
+
+.ptm-saml-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ptm-saml-form-actions p {
+  max-width: 580px;
+  margin: 0;
+  color: var(--traffic-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.ptm-saml-form-actions button {
+  min-height: 38px;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--traffic-blue) 72%, var(--traffic-border));
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--traffic-blue) 18%, var(--traffic-panel));
+  color: var(--traffic-text);
+  cursor: pointer;
+  padding: 0 13px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ptm-saml-form-actions button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.ptm-sso-config-item {
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  padding: 9px 10px;
+}
+
+.ptm-sso-config-item.is-wide {
+  grid-column: 1 / -1;
+}
+
+.ptm-sso-config-item dt {
+  margin-bottom: 4px;
+  color: var(--traffic-muted);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.ptm-sso-config-item dd {
+  margin: 0;
+  color: var(--traffic-text);
+  font-size: 12px;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.ptm-sso-config-item dd.is-ready {
+  color: var(--traffic-green);
+}
+
+.ptm-sso-config-item dd.is-warning {
+  color: var(--traffic-red);
+}
+
+.ptm-sso-config-item.is-wide dd {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.ptm-sso-config-item code {
+  min-width: 0;
+  flex: 1 1 auto;
+  color: var(--traffic-text);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.ptm-sso-config-item button {
+  min-height: 30px;
+  flex: 0 0 auto;
+  border: 1px solid var(--traffic-border);
+  border-radius: 7px;
+  background: var(--traffic-panel-strong);
+  color: var(--traffic-text);
+  cursor: pointer;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.ptm-sso-config-item small {
+  display: block;
+  margin-top: 6px;
+  color: var(--traffic-red);
+  font-size: 10px;
+}
+
+.ptm-access-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.ptm-access-header span {
+  color: var(--traffic-blue);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.ptm-access-header h2 {
+  margin: 4px 0 5px;
+  font-size: 24px;
+}
+
+.ptm-access-header p {
+  margin: 0;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.ptm-access-header > button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel-strong);
+  color: var(--traffic-text);
+  cursor: pointer;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.ptm-team-settings-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--traffic-border);
+}
+
+.ptm-team-settings-tabs button {
+  position: relative;
+  min-height: 42px;
+  border: 0;
+  background: transparent;
+  color: var(--traffic-muted);
+  cursor: pointer;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ptm-team-settings-tabs button::after {
+  position: absolute;
+  right: 12px;
+  bottom: -1px;
+  left: 12px;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  background: transparent;
+  content: '';
+}
+
+.ptm-team-settings-tabs button:hover,
+.ptm-team-settings-tabs button:focus-visible,
+.ptm-team-settings-tabs button.is-active {
+  color: var(--traffic-text);
+}
+
+.ptm-team-settings-tabs button:focus-visible {
+  border-radius: 7px;
+  outline: 2px solid var(--traffic-blue);
+  outline-offset: -2px;
+}
+
+.ptm-team-settings-tabs button.is-active::after {
+  background: var(--traffic-blue);
+}
+
+.ptm-settings-panel {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ptm-settings-panel[hidden] {
+  display: none;
+}
+
+.ptm-settings-section-header h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.ptm-settings-section-header p {
+  margin: 0;
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.ptm-access-add-form {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(150px, 0.42fr) auto;
+  align-items: end;
+  gap: 10px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 10px;
+  background: var(--traffic-panel-strong);
+  padding: 14px;
+}
+
+.ptm-access-add-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--traffic-muted);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.ptm-access-add-form input,
+.ptm-access-add-form select,
+.ptm-access-add-form button,
+.ptm-access-user select,
+.ptm-access-user button {
+  min-height: 38px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 7px;
+  background: var(--traffic-panel);
+  color: var(--traffic-text);
+  padding: 0 10px;
+  font: inherit;
+}
+
+.ptm-access-add-form select,
+.ptm-access-user select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%2394A3B8' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 18px center;
+  background-repeat: no-repeat;
+  background-size: 14px 8px;
+  padding-right: 48px;
+}
+
+body[data-theme="light"] .ptm-access-add-form select,
+body[data-theme="light"] .ptm-access-user select,
+.traffic-app.is-day .ptm-access-add-form select,
+.traffic-app.is-day .ptm-access-user select,
+.diablo-app.is-day .ptm-access-add-form select,
+.diablo-app.is-day .ptm-access-user select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%234B5F78' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.ptm-access-add-form button,
+.ptm-access-user button {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ptm-access-add-form button {
+  border-color: color-mix(in srgb, var(--traffic-blue) 72%, var(--traffic-border));
+  background: color-mix(in srgb, var(--traffic-blue) 18%, var(--traffic-panel));
+}
+
+.ptm-access-add-form button:disabled,
+.ptm-access-user button:disabled,
+.ptm-access-user select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ptm-access-alert {
+  border: 1px solid color-mix(in srgb, var(--traffic-red) 60%, var(--traffic-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-red) 12%, var(--traffic-panel));
+  color: var(--traffic-text);
+  padding: 11px 13px;
+  font-size: 12px;
+}
+
+.ptm-access-list {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 8px;
+  min-height: 120px;
+  overflow-y: visible;
+  padding-right: 3px;
+}
+
+.ptm-access-user {
+  display: grid;
+  grid-template-columns: 38px minmax(180px, 1fr) auto minmax(140px, auto) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 9px;
+  background: var(--traffic-panel-strong);
+  padding: 10px;
+}
+
+.ptm-access-user.is-disabled {
+  opacity: 0.72;
+}
+
+.ptm-access-avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid color-mix(in srgb, var(--traffic-blue) 60%, var(--traffic-border));
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--traffic-blue) 14%, var(--traffic-panel));
+  color: var(--traffic-text);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ptm-access-user-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.ptm-access-user-copy strong,
+.ptm-access-user-copy span,
+.ptm-access-user-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ptm-access-user-copy strong {
+  font-size: 13px;
+}
+
+.ptm-access-user-copy span,
+.ptm-access-user-copy small,
+.ptm-access-self {
+  color: var(--traffic-muted);
+  font-size: 10px;
+}
+
+.ptm-access-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 999px;
+  padding: 0 9px;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.ptm-access-status.is-active {
+  border-color: color-mix(in srgb, var(--traffic-green) 60%, var(--traffic-border));
+  color: var(--traffic-green);
+}
+
+.ptm-access-status.is-disabled {
+  border-color: color-mix(in srgb, var(--traffic-red) 60%, var(--traffic-border));
+  color: var(--traffic-red);
+}
+
+.ptm-access-user button.is-danger {
+  border-color: color-mix(in srgb, var(--traffic-red) 56%, var(--traffic-border));
+}
+
+.ptm-access-user button.is-success {
+  border-color: color-mix(in srgb, var(--traffic-green) 56%, var(--traffic-border));
+}
+
+.ptm-access-self {
+  grid-column: 4 / -1;
+  justify-self: end;
+  margin-top: -6px;
+}
+
+.ptm-access-empty {
+  margin: auto;
+  color: var(--traffic-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 720px) {
+  .ptm-access-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+
+  .ptm-access-dialog {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
+  }
+
+  .ptm-access-add-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ptm-sso-configuration-header {
+    display: grid;
+  }
+
+  .ptm-team-settings-tabs button {
+    flex: 1 1 0;
+    padding: 0 8px;
+  }
+
+  .ptm-sso-summary-actions {
+    justify-self: start;
+    flex-wrap: wrap;
+  }
+
+  .ptm-sso-configuration-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ptm-saml-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ptm-saml-form-grid label.is-wide,
+  .ptm-saml-enabled-field {
+    grid-column: auto;
+  }
+
+  .ptm-saml-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ptm-sso-config-item.is-wide {
+    grid-column: auto;
+  }
+
+  .ptm-sso-config-item.is-wide dd {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ptm-access-user {
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+  }
+
+  .ptm-access-user-copy {
+    grid-column: 2 / -1;
+  }
+
+  .ptm-access-status {
+    grid-column: 1 / 2;
+  }
+
+  .ptm-access-user select {
+    grid-column: 2 / 3;
+    min-width: 0;
+  }
+
+  .ptm-access-user button {
+    grid-column: 3 / 4;
+  }
+
+  .ptm-access-self {
+    grid-column: 2 / -1;
+  }
+}

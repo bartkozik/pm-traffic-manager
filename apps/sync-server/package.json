@@ -1,0 +1,40 @@
+{
+  "name": "@ptm/sync-server",
+  "version": "1.0.0",
+  "description": "Y.js WebSocket sync server for PM Traffic Management",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "dotenv -e ../../.env -- node server.js",
+    "lint": "eslint '**/*.js' --ignore-pattern node_modules --ignore-pattern dist --ignore-pattern data-docs",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lib0": "^0.2.85",
+    "minimatch": "^9.0.7",
+    "node-cron": "^4.6.0",
+    "node-fetch": "^3.3.2",
+    "ws": "^8.21.0",
+    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/node": "^20.10.6",
+    "@types/ws": "^8.5.10",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.15.0"
+  },
+  "keywords": [
+    "yjs",
+    "crdt",
+    "websocket",
+    "collaboration",
+    "sync"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,21 @@
+name: pm-traffic-manager-local
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ptm_local
+      POSTGRES_USER: ptm_local
+      POSTGRES_PASSWORD: local-development-only
+    ports:
+      - "${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - ptm-public-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ptm_local -d ptm_local"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  ptm-public-postgres-data:

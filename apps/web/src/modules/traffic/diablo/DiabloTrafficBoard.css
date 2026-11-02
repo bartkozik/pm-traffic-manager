@@ -1,0 +1,4079 @@
+.diablo-app {
+  --diablo-main-padding: 12px;
+  --diablo-bench-dropzone-height: 88px;
+  --diablo-board-gap: 10px;
+  --diablo-cell: 48px;
+  --diablo-gap: 6px;
+  --diablo-pitch: 54px;
+  --diablo-major-pitch: 216px;
+  --diablo-canvas-bg: #0b0d10;
+  --diablo-canvas-line: rgba(255, 255, 255, 0.18);
+  --diablo-canvas-line-soft: rgba(255, 255, 255, 0.07);
+  --diablo-people-zone-bg: rgba(120, 83, 18, 0.34);
+  --diablo-people-zone-cell: rgba(250, 204, 21, 0.1);
+  --diablo-people-zone-line: rgba(253, 224, 71, 0.22);
+  --diablo-project-zone-bg: rgba(8, 47, 73, 0.16);
+  --diablo-project-zone-cell: rgba(56, 189, 248, 0.06);
+  --diablo-project-zone-line: rgba(125, 211, 252, 0.13);
+  --diablo-panel-bg: rgba(18, 22, 32, 0.92);
+  --diablo-panel-border: rgba(226, 232, 240, 0.2);
+  --diablo-frame-bg: rgba(12, 17, 24, 0.88);
+  --diablo-surface-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.26),
+    0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  --diablo-surface-shadow-soft:
+    0 12px 26px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  --diablo-commercial: #38bdf8;
+  --diablo-rd: #a78bfa;
+  --diablo-waiting: #fbbf24;
+  --diablo-defensive: #fb7185;
+  --diablo-healthy: #34d399;
+  --diablo-danger: #f87171;
+  --diablo-warning: #facc15;
+  --diablo-warning-text: #fef3c7;
+  --diablo-warning-chip-bg: rgba(245, 158, 11, 0.18);
+  --diablo-warning-chip-border: rgba(251, 191, 36, 0.42);
+  display: flex;
+  height: 100vh;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.diablo-app.is-day {
+  --diablo-canvas-bg: #f4f7fb;
+  --diablo-canvas-line: rgba(15, 23, 42, 0.18);
+  --diablo-canvas-line-soft: rgba(15, 23, 42, 0.06);
+  --diablo-people-zone-bg: rgba(254, 243, 199, 0.78);
+  --diablo-people-zone-cell: rgba(250, 204, 21, 0.16);
+  --diablo-people-zone-line: rgba(146, 64, 14, 0.16);
+  --diablo-project-zone-bg: rgba(224, 242, 254, 0.36);
+  --diablo-project-zone-cell: rgba(14, 165, 233, 0.08);
+  --diablo-project-zone-line: rgba(14, 116, 144, 0.12);
+  --diablo-panel-bg: rgba(255, 255, 255, 0.94);
+  --diablo-panel-border: rgba(15, 23, 42, 0.18);
+  --diablo-frame-bg: rgba(255, 255, 255, 0.9);
+  --diablo-surface-shadow:
+    0 18px 42px rgba(15, 23, 42, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.78) inset;
+  --diablo-surface-shadow-soft:
+    0 12px 28px rgba(15, 23, 42, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
+  --diablo-warning-text: #78350f;
+  --diablo-warning-chip-bg: rgba(245, 158, 11, 0.14);
+  --diablo-warning-chip-border: rgba(146, 64, 14, 0.28);
+}
+
+.diablo-empty-state {
+  display: grid;
+  min-height: 360px;
+  place-items: center;
+  color: var(--traffic-muted);
+}
+
+.diablo-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--diablo-main-padding);
+}
+
+.diablo-app .traffic-header {
+  flex: 0 0 auto;
+  padding-right: var(--diablo-main-padding);
+  padding-left: var(--diablo-main-padding);
+}
+
+.diablo-topbar {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  padding: 5px 7px;
+}
+
+/* Week-perspective selector strip (between the month nav and the canvas). */
+.diablo-week-strip {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  padding: 6px 8px;
+}
+
+.diablo-week-strip-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.diablo-week-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: flex-start;
+  min-height: 34px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 7px;
+  background: var(--traffic-panel-strong);
+  padding: 4px 10px;
+  color: var(--traffic-text);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.diablo-week-chip strong { font-size: 12px; }
+.diablo-week-chip small { color: var(--traffic-muted); font-size: 10px; }
+
+.diablo-week-chip:hover {
+  border-color: rgba(147, 197, 253, 0.6);
+  background: rgba(79, 140, 255, 0.12);
+}
+
+.diablo-week-chip.is-today {
+  border-color: rgba(96, 165, 250, 0.55);
+}
+
+.diablo-week-chip.is-active {
+  border-color: rgba(96, 165, 250, 0.9);
+  background: rgba(79, 140, 255, 0.22);
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.25);
+}
+
+.diablo-week-strip-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-week-strip-summary strong { color: var(--traffic-text); font-size: 13px; }
+.diablo-week-strip-summary .is-cross {
+  border: 1px solid var(--diablo-warning-chip-border);
+  border-radius: 999px;
+  background: var(--diablo-warning-chip-bg);
+  color: var(--diablo-warning-text);
+  font-weight: 750;
+  padding: 2px 7px;
+}
+.diablo-week-strip-empty { color: var(--traffic-muted); font-size: 12px; }
+
+.diablo-project-toolbar button,
+.diablo-selected-frame-actions button,
+.diablo-people-sort-controls button,
+.diablo-panel-actions button,
+.diablo-person-frame button,
+.diablo-person-card button,
+.diablo-floating-panel header button,
+.diablo-frame-resize-handle,
+.diablo-tool-island button {
+  min-height: 32px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 6px;
+  background: var(--traffic-panel-strong);
+  color: var(--traffic-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease,
+    color 140ms ease,
+    outline-color 140ms ease;
+}
+
+.diablo-project-toolbar button:not(:disabled):hover,
+.diablo-project-toolbar button:not(:disabled):focus-visible,
+.diablo-selected-frame-actions button:not(:disabled):hover,
+.diablo-selected-frame-actions button:not(:disabled):focus-visible,
+.diablo-panel-actions button:not(:disabled):hover,
+.diablo-panel-actions button:not(:disabled):focus-visible,
+.diablo-person-frame-identity:not(:disabled):hover,
+.diablo-person-frame-identity:not(:disabled):focus-visible,
+.diablo-person-card-header > button:not(:disabled):hover,
+.diablo-person-card-header > button:not(:disabled):focus-visible,
+.diablo-person-card-header > div button:not(:disabled):hover,
+.diablo-person-card-header > div button:not(:disabled):focus-visible,
+.diablo-floating-panel header button:not(:disabled):hover,
+.diablo-floating-panel header button:not(:disabled):focus-visible,
+.diablo-legend-tabs button:not(:disabled):hover,
+.diablo-legend-tabs button:not(:disabled):focus-visible {
+  border-color: rgba(147, 197, 253, 0.72);
+  background: rgba(79, 140, 255, 0.18);
+  color: var(--traffic-text);
+  outline: 2px solid rgba(125, 211, 252, 0.28);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.12);
+}
+
+.diablo-ai-panel {
+  flex: 0 0 auto;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-panel) 90%, transparent);
+  overflow: hidden;
+}
+
+/* Standalone AI Assisted Planning route (off the main board). */
+.diablo-ai-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+  padding: 16px 24px 32px;
+}
+
+.diablo-ai-view-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diablo-ai-view-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: baseline;
+}
+
+.diablo-ai-view-heading strong {
+  font-size: 16px;
+}
+
+.diablo-ai-view-heading small {
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-ai-view-period {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-ai-view-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 1100px;
+}
+
+.diablo-ai-view-loading {
+  color: var(--traffic-muted);
+  font-size: 13px;
+}
+
+/* Weekly planning route. */
+.diablo-week-view {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 16px 24px 32px;
+}
+
+.diablo-week-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diablo-week-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: baseline;
+}
+
+.diablo-week-heading strong {
+  font-size: 16px;
+}
+
+.diablo-week-heading small {
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-week-nav {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.diablo-week-nav .traffic-button {
+  min-height: 32px;
+  padding: 0 12px;
+}
+
+.diablo-week-loading,
+.diablo-week-empty {
+  color: var(--traffic-muted);
+  font-size: 13px;
+}
+
+.diablo-week-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1100px;
+}
+
+.diablo-week-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 10px;
+  background: var(--traffic-panel);
+  padding: 14px 16px;
+}
+
+.diablo-week-summary-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.diablo-week-summary-title strong {
+  font-size: 18px;
+}
+
+.diablo-week-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.diablo-week-badge.is-cross {
+  border: 1px solid rgba(250, 204, 21, 0.6);
+  color: #fde68a;
+}
+
+.diablo-week-badge.is-now {
+  border: 1px solid rgba(96, 165, 250, 0.6);
+  color: #bfdbfe;
+}
+
+.diablo-week-spans {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.diablo-week-span {
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel-strong);
+  padding: 6px 10px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-week-span strong {
+  color: var(--traffic-text);
+}
+
+.diablo-week-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--traffic-muted);
+  font-size: 13px;
+}
+
+.diablo-week-metrics .is-over {
+  color: #fca5a5;
+}
+
+.diablo-week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 14px;
+}
+
+.diablo-week-card {
+  border: 1px solid var(--traffic-border);
+  border-radius: 10px;
+  background: var(--traffic-panel);
+  padding: 12px 14px;
+}
+
+.diablo-week-card h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--traffic-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.diablo-week-people,
+.diablo-week-projects {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.diablo-week-person,
+.diablo-week-project {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--traffic-border);
+  border-left-width: 3px;
+  border-radius: 8px;
+  background: var(--traffic-panel-strong);
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+.diablo-week-person.is-over { border-left-color: #f87171; }
+.diablo-week-person.is-under { border-left-color: #fbbf24; }
+.diablo-week-person.is-healthy { border-left-color: #34d399; }
+.diablo-week-person.is-unavailable { border-left-color: rgba(148, 163, 184, 0.6); }
+
+.diablo-week-person-load,
+.diablo-week-project-load {
+  color: var(--traffic-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.diablo-ai-panel > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 34px;
+  padding: 4px 9px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.diablo-ai-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.diablo-ai-panel > summary:hover {
+  background: rgba(96, 165, 250, 0.08);
+}
+
+.diablo-ai-summary-title {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.diablo-ai-summary-title strong,
+.diablo-ai-summary-title small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-ai-summary-title strong {
+  flex: 0 0 auto;
+  font-size: 13px;
+}
+
+.diablo-ai-summary-title small {
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.diablo-ai-bench-signal {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 999px;
+  background: var(--traffic-panel-strong);
+  padding: 0 10px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.diablo-ai-bench-signal.is-medium {
+  border-color: rgba(250, 204, 21, 0.55);
+  color: #fde68a;
+}
+
+.diablo-ai-bench-signal.is-high,
+.diablo-ai-bench-signal.is-critical {
+  border-color: rgba(248, 113, 113, 0.68);
+  background: rgba(127, 29, 29, 0.42);
+  color: #fecaca;
+}
+
+.diablo-ai-body {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--traffic-border);
+  padding: 10px;
+}
+
+.diablo-ai-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.diablo-ai-card,
+.diablo-ai-empty {
+  min-width: 0;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel);
+  padding: 11px;
+  overflow-wrap: anywhere;
+}
+
+.diablo-ai-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.diablo-ai-empty {
+  color: var(--traffic-muted);
+  font-size: 13px;
+}
+
+.diablo-ai-empty.is-danger,
+.diablo-ai-inline-error {
+  color: #fca5a5;
+}
+
+.diablo-ai-empty.is-danger {
+  border-color: rgba(248, 113, 113, 0.68);
+}
+
+.diablo-ai-verdict.is-pursue {
+  border-color: rgba(52, 211, 153, 0.58);
+}
+
+.diablo-ai-verdict.is-pursue_with_changes,
+.diablo-ai-verdict.is-renegotiate {
+  border-color: rgba(250, 204, 21, 0.62);
+}
+
+.diablo-ai-verdict.is-drop_or_delay {
+  border-color: rgba(248, 113, 113, 0.68);
+}
+
+.diablo-ai-card strong {
+  color: var(--traffic-text);
+  font-size: 13px;
+}
+
+.diablo-ai-card span,
+.diablo-ai-card small,
+.diablo-ai-card p,
+.diablo-ai-card li {
+  color: var(--traffic-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.diablo-ai-card p {
+  margin: 0;
+}
+
+.diablo-ai-card ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 16px;
+}
+
+.diablo-ai-card li span {
+  display: block;
+  color: var(--traffic-text);
+  font-weight: 800;
+}
+
+.diablo-ai-card-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diablo-ai-card-header > span {
+  border: 1px solid var(--traffic-border);
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: var(--traffic-muted);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.diablo-ai-card.is-action {
+  border-color: rgba(52, 211, 153, 0.45);
+}
+
+.diablo-ai-card.is-bench {
+  border-color: rgba(250, 204, 21, 0.52);
+}
+
+.diablo-ai-warning {
+  border: 1px solid rgba(250, 204, 21, 0.55);
+  border-radius: 6px;
+  background: rgba(250, 204, 21, 0.08);
+  padding: 8px;
+}
+
+.diablo-ai-applied {
+  display: grid;
+  gap: 6px;
+}
+
+.diablo-ai-applied strong {
+  color: var(--traffic-green);
+}
+
+.diablo-ai-bench-row {
+  border-left: 3px solid rgba(148, 163, 184, 0.46);
+  padding-left: 7px;
+}
+
+.diablo-ai-bench-row.is-medium {
+  border-left-color: rgba(250, 204, 21, 0.72);
+}
+
+.diablo-ai-bench-row.is-high {
+  border-left-color: rgba(251, 146, 60, 0.82);
+}
+
+.diablo-ai-bench-row.is-critical {
+  border-left-color: rgba(248, 113, 113, 0.92);
+}
+
+.diablo-ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.diablo-ai-inline-error {
+  font-size: 12px;
+}
+
+.diablo-app.is-day .diablo-ai-bench-signal.is-medium {
+  color: #713f12;
+}
+
+.diablo-app.is-day .diablo-ai-bench-signal.is-high,
+.diablo-app.is-day .diablo-ai-bench-signal.is-critical {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.diablo-board-shell {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.diablo-canvas-layout {
+  display: grid;
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  margin-inline: 0;
+  background: transparent;
+}
+
+.diablo-canvas-left-column {
+  display: none;
+  grid-template-rows: minmax(0, 1fr) var(--diablo-bench-dropzone-height);
+  gap: var(--diablo-board-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.diablo-canvas-viewport {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin-inline: 0;
+  overflow: hidden;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background-color: var(--diablo-canvas-bg);
+  background-image:
+    linear-gradient(var(--diablo-canvas-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--diablo-canvas-line) 1px, transparent 1px),
+    linear-gradient(var(--diablo-canvas-line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--diablo-canvas-line-soft) 1px, transparent 1px);
+  background-size:
+    var(--diablo-bg-pitch, 54px) var(--diablo-bg-pitch, 54px),
+    var(--diablo-bg-pitch, 54px) var(--diablo-bg-pitch, 54px),
+    var(--diablo-bg-major, 216px) var(--diablo-bg-major, 216px),
+    var(--diablo-bg-major, 216px) var(--diablo-bg-major, 216px);
+  background-position: var(--diablo-bg-x, 0px) var(--diablo-bg-y, 0px);
+  box-shadow: var(--diablo-surface-shadow);
+  overscroll-behavior: contain;
+  touch-action: none;
+  padding: 4px;
+}
+
+.diablo-canvas-layout .diablo-canvas-viewport {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  margin-inline: 0;
+}
+
+.diablo-canvas-layout .diablo-canvas-viewport:focus-visible {
+  outline: 3px solid rgba(96, 165, 250, 0.72);
+  outline-offset: 2px;
+}
+
+.diablo-canvas-viewport.has-no-horizontal-scroll,
+.diablo-canvas-viewport.has-horizontal-scroll {
+  overflow: hidden;
+}
+
+.diablo-canvas-scale-shell {
+  position: absolute;
+  inset: 0 auto auto 0;
+  z-index: 1;
+  transform-origin: 0 0;
+  will-change: transform;
+  min-width: 0;
+  min-height: 0;
+}
+
+.diablo-canvas-grid {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+  transform-origin: top left;
+  width: 1938px;
+  min-height: 1506px;
+  grid-template-columns: repeat(36, var(--diablo-cell));
+  grid-template-rows: repeat(28, var(--diablo-cell));
+  gap: var(--diablo-gap);
+  padding: 0;
+  cursor: crosshair;
+}
+
+.diablo-canvas-grid.is-tool-move {
+  cursor: grab;
+}
+
+.diablo-canvas-viewport.is-tool-move {
+  cursor: grab;
+}
+
+.diablo-canvas-grid.is-tool-create {
+  cursor: crosshair;
+}
+
+.diablo-canvas-viewport.is-tool-create {
+  cursor: crosshair;
+}
+
+.diablo-canvas-grid.is-move-frame,
+.diablo-canvas-grid.is-move-panel,
+.diablo-canvas-grid.is-pan-canvas,
+.diablo-canvas-viewport.is-pan-canvas {
+  cursor: grabbing;
+}
+
+.diablo-canvas-grid.is-pan-canvas,
+.diablo-canvas-viewport.is-pan-canvas {
+  user-select: none;
+}
+
+.diablo-people-zone-backdrop,
+.diablo-project-zone-backdrop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  min-width: 0;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.diablo-people-zone-backdrop {
+  z-index: 1;
+  background:
+    linear-gradient(var(--diablo-people-zone-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--diablo-people-zone-line) 1px, transparent 1px),
+    linear-gradient(135deg, var(--diablo-people-zone-cell), transparent 54%),
+    var(--diablo-people-zone-bg);
+  background-size:
+    var(--diablo-people-zone-pitch, var(--diablo-pitch)) var(--diablo-people-zone-pitch, var(--diablo-pitch)),
+    var(--diablo-people-zone-pitch, var(--diablo-pitch)) var(--diablo-people-zone-pitch, var(--diablo-pitch)),
+    var(--diablo-people-zone-major-pitch, var(--diablo-major-pitch)) var(--diablo-people-zone-major-pitch, var(--diablo-major-pitch)),
+    auto;
+  background-position:
+    0 var(--diablo-people-zone-y, 0px),
+    0 0,
+    0 var(--diablo-people-zone-y, 0px),
+    0 0;
+}
+
+.diablo-project-zone-backdrop {
+  background:
+    linear-gradient(var(--diablo-project-zone-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--diablo-project-zone-line) 1px, transparent 1px),
+    linear-gradient(135deg, var(--diablo-project-zone-cell), transparent 58%),
+    var(--diablo-project-zone-bg);
+  background-size:
+    var(--diablo-project-zone-pitch, var(--diablo-pitch)) var(--diablo-project-zone-pitch, var(--diablo-pitch)),
+    var(--diablo-project-zone-pitch, var(--diablo-pitch)) var(--diablo-project-zone-pitch, var(--diablo-pitch)),
+    var(--diablo-project-zone-major-pitch, var(--diablo-major-pitch)) var(--diablo-project-zone-major-pitch, var(--diablo-major-pitch)),
+    auto;
+  background-position:
+    0 var(--diablo-project-zone-y, 0px),
+    0 0,
+    0 var(--diablo-project-zone-y, 0px),
+    0 0;
+}
+
+.diablo-people-control-panel,
+.diablo-project-control-panel {
+  position: fixed;
+  z-index: 18;
+  display: flex;
+  width: max-content;
+  height: max-content;
+  max-width: none;
+  flex-wrap: nowrap;
+  gap: 4px 6px;
+  align-items: center;
+  margin: 0;
+  border: 1px solid rgba(250, 204, 21, 0.24);
+  border-radius: 7px;
+  background: rgba(2, 6, 23, 0.84);
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.22);
+  color: #fefce8;
+  padding: 4px;
+  pointer-events: auto;
+}
+
+.diablo-people-control-panel {
+  top: var(--diablo-people-control-panel-top, 12px);
+  left: var(--diablo-people-control-panel-right-x, calc(100vw - 12px));
+  transform: translateX(-100%);
+}
+
+.diablo-project-control-panel {
+  top: var(--diablo-project-control-panel-top, 12px);
+  left: var(--diablo-project-control-panel-left-x, 12px);
+  border-color: rgba(56, 189, 248, 0.26);
+  background: rgba(2, 6, 23, 0.84);
+  color: #e0f2fe;
+}
+
+.diablo-people-control-panel.is-hidden,
+.diablo-project-control-panel.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.diablo-app.is-day .diablo-people-control-panel,
+.diablo-app.is-day .diablo-project-control-panel {
+  border-color: rgba(146, 64, 14, 0.18);
+  background: rgba(255, 251, 235, 0.94);
+  box-shadow: 0 10px 24px rgba(146, 64, 14, 0.11);
+  color: #422006;
+}
+
+.diablo-app.is-day .diablo-project-control-panel {
+  border-color: rgba(14, 116, 144, 0.18);
+  background: rgba(240, 249, 255, 0.94);
+  box-shadow: 0 10px 24px rgba(14, 116, 144, 0.11);
+  color: #0c4a6e;
+}
+
+.diablo-people-control-panel strong,
+.diablo-people-control-panel span,
+.diablo-project-control-panel strong,
+.diablo-project-control-panel span {
+  flex: 0 0 auto;
+  min-width: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.diablo-people-control-panel strong,
+.diablo-project-control-panel strong {
+  padding: 0 4px;
+  font-size: 12px;
+}
+
+.diablo-people-control-panel span,
+.diablo-project-control-panel span {
+  border-radius: 4px;
+  background: rgba(250, 204, 21, 0.12);
+  padding: 3px 5px;
+  color: #fde68a;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.diablo-project-control-panel span {
+  background: rgba(56, 189, 248, 0.13);
+  color: #bae6fd;
+}
+
+.diablo-project-control-panel span.is-warning {
+  background: rgba(250, 204, 21, 0.17);
+  color: #fde68a;
+}
+
+.diablo-project-control-panel span.is-danger {
+  background: rgba(248, 113, 113, 0.17);
+  color: #fecaca;
+}
+
+.diablo-people-control-panel .diablo-clipboard-source,
+.diablo-project-control-panel .diablo-clipboard-source {
+  max-width: 116px;
+  overflow: hidden;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  background: rgba(5, 150, 105, 0.16);
+  color: #bbf7d0;
+  text-overflow: ellipsis;
+}
+
+.diablo-project-control-panel .diablo-clipboard-source {
+  border-color: rgba(125, 211, 252, 0.3);
+  background: rgba(56, 189, 248, 0.13);
+  color: #bae6fd;
+}
+
+.diablo-app.is-day .diablo-people-control-panel span {
+  background: rgba(250, 204, 21, 0.18);
+  color: #713f12;
+}
+
+.diablo-app.is-day .diablo-project-control-panel span {
+  background: rgba(56, 189, 248, 0.16);
+  color: #0e7490;
+}
+
+.diablo-app.is-day .diablo-project-control-panel span.is-warning {
+  background: rgba(250, 204, 21, 0.22);
+  color: #854d0e;
+}
+
+.diablo-app.is-day .diablo-project-control-panel span.is-danger {
+  background: rgba(248, 113, 113, 0.18);
+  color: #991b1b;
+}
+
+.diablo-app.is-day .diablo-people-control-panel .diablo-clipboard-source,
+.diablo-app.is-day .diablo-project-control-panel .diablo-clipboard-source {
+  border-color: rgba(22, 163, 74, 0.28);
+  background: rgba(220, 252, 231, 0.82);
+  color: #166534;
+}
+
+.diablo-app.is-day .diablo-project-control-panel .diablo-clipboard-source {
+  border-color: rgba(14, 116, 144, 0.24);
+  background: rgba(224, 242, 254, 0.86);
+  color: #0e7490;
+}
+
+.diablo-control-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.diablo-control-menu summary {
+  list-style: none;
+}
+
+.diablo-control-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.diablo-people-control-panel button,
+.diablo-project-control-panel button,
+.diablo-control-menu summary {
+  display: inline-flex;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(250, 204, 21, 0.34);
+  border-radius: 5px;
+  background: rgba(250, 204, 21, 0.16);
+  padding: 0 9px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+}
+
+.diablo-control-menu summary {
+  user-select: none;
+}
+
+.diablo-project-control-panel button,
+.diablo-project-control-panel .diablo-control-menu summary {
+  border-color: rgba(56, 189, 248, 0.36);
+  background: rgba(56, 189, 248, 0.16);
+}
+
+.diablo-people-control-panel button:hover,
+.diablo-people-control-panel button:focus-visible,
+.diablo-people-control-panel .diablo-control-menu summary:hover,
+.diablo-people-control-panel .diablo-control-menu summary:focus-visible,
+.diablo-project-control-panel button:hover,
+.diablo-project-control-panel button:focus-visible,
+.diablo-project-control-panel .diablo-control-menu summary:hover,
+.diablo-project-control-panel .diablo-control-menu summary:focus-visible {
+  border-color: rgba(253, 224, 71, 0.72);
+  background: rgba(250, 204, 21, 0.26);
+  outline: 2px solid rgba(253, 224, 71, 0.28);
+  outline-offset: 1px;
+}
+
+.diablo-project-control-panel button:hover,
+.diablo-project-control-panel button:focus-visible,
+.diablo-project-control-panel .diablo-control-menu summary:hover,
+.diablo-project-control-panel .diablo-control-menu summary:focus-visible {
+  border-color: rgba(125, 211, 252, 0.74);
+  background: rgba(56, 189, 248, 0.26);
+  outline-color: rgba(125, 211, 252, 0.28);
+}
+
+.diablo-project-control-panel button.is-confirming {
+  border-color: rgba(248, 113, 113, 0.72);
+  background: rgba(127, 29, 29, 0.34);
+  color: #fee2e2;
+}
+
+.diablo-project-control-panel button.is-confirming:hover,
+.diablo-project-control-panel button.is-confirming:focus-visible {
+  border-color: rgba(252, 165, 165, 0.82);
+  background: rgba(127, 29, 29, 0.46);
+  outline-color: rgba(248, 113, 113, 0.3);
+}
+
+.diablo-people-control-panel button:disabled,
+.diablo-project-control-panel button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.diablo-toolbar-feedback {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 4px;
+  z-index: 21;
+  display: inline-flex;
+  box-sizing: border-box;
+  max-width: min(220px, calc(100vw - 24px));
+  min-height: 26px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(52, 211, 153, 0.42);
+  border-radius: 5px;
+  background: rgba(6, 78, 59, 0.92);
+  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.26);
+  color: #bbf7d0;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1;
+  padding: 0 9px;
+  pointer-events: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-project-control-panel .diablo-toolbar-feedback {
+  right: auto;
+  left: 4px;
+  border-color: rgba(125, 211, 252, 0.44);
+  background: rgba(8, 47, 73, 0.92);
+  color: #bae6fd;
+}
+
+.diablo-control-menu-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: 22;
+  display: grid;
+  min-width: 148px;
+  gap: 4px;
+  border: 1px solid rgba(250, 204, 21, 0.24);
+  border-radius: 6px;
+  background: rgba(2, 6, 23, 0.94);
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.34);
+  padding: 5px;
+}
+
+.diablo-project-control-panel .diablo-control-menu-options {
+  right: auto;
+  left: 0;
+  border-color: rgba(56, 189, 248, 0.26);
+}
+
+.diablo-control-menu-options button {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 11px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.diablo-app.is-day .diablo-control-menu-options {
+  background: rgba(255, 251, 235, 0.98);
+  box-shadow: 0 14px 28px rgba(146, 64, 14, 0.16);
+}
+
+.diablo-app.is-day .diablo-toolbar-feedback {
+  border-color: rgba(22, 163, 74, 0.34);
+  background: rgba(240, 253, 244, 0.98);
+  box-shadow: 0 10px 20px rgba(21, 128, 61, 0.12);
+  color: #166534;
+}
+
+.diablo-app.is-day .diablo-project-control-panel .diablo-control-menu-options {
+  background: rgba(240, 249, 255, 0.98);
+}
+
+.diablo-app.is-day .diablo-project-control-panel .diablo-toolbar-feedback {
+  border-color: rgba(14, 116, 144, 0.3);
+  background: rgba(240, 249, 255, 0.98);
+  color: #0e7490;
+}
+
+.diablo-canvas-grid.is-tool-create .diablo-project-frame-inner,
+.diablo-canvas-grid.is-tool-create .diablo-floating-panel header {
+  cursor: default;
+}
+
+.diablo-selection {
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  border: 2px dashed #e0f2fe;
+  border-radius: 8px;
+  background: rgba(14, 165, 233, 0.2);
+  color: #f0f9ff;
+  pointer-events: none;
+}
+
+.diablo-selection.is-people-selection {
+  border-color: #fde68a;
+  background: rgba(250, 204, 21, 0.24);
+  color: #fef9c3;
+}
+
+.diablo-selection strong,
+.diablo-selection span {
+  border-radius: 4px;
+  background: rgba(2, 6, 23, 0.56);
+  padding: 2px 6px;
+}
+
+.diablo-project-frame {
+  z-index: 3;
+  min-width: 0;
+  min-height: 0;
+}
+
+.diablo-project-frame.is-dragover .diablo-project-frame-inner {
+  box-shadow:
+    0 0 0 3px rgba(96, 165, 250, 0.52),
+    0 18px 42px rgba(0, 0, 0, 0.32);
+}
+
+.diablo-project-frame.is-drop-candidate .diablo-project-frame-inner {
+  box-shadow:
+    inset 0 0 0 2px rgba(56, 189, 248, 0.24),
+    0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.diablo-project-frame.is-drop-candidate .diablo-inventory-cell.is-empty,
+.diablo-project-frame.is-drop-candidate .diablo-inventory-cell.is-padding {
+  border-color: rgba(56, 189, 248, 0.56);
+  background:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.2), transparent 56%),
+    rgba(14, 165, 233, 0.1);
+}
+
+.diablo-project-frame.is-person-frame-drop-preview .diablo-project-frame-inner,
+.diablo-project-frame.is-drop-candidate.is-dragover .diablo-project-frame-inner {
+  outline-color: #38bdf8;
+  box-shadow:
+    inset 0 0 0 3px rgba(56, 189, 248, 0.34),
+    0 0 0 4px rgba(14, 165, 233, 0.32),
+    0 18px 42px rgba(8, 47, 73, 0.28);
+}
+
+.diablo-project-frame-inner {
+  position: relative;
+  display: block;
+  height: 100%;
+  min-width: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 6px;
+  background: var(--diablo-frame-bg);
+  outline: 3px solid var(--diablo-commercial);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  cursor: grab;
+}
+
+.diablo-project-frame.is-selected .diablo-project-frame-inner {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.16), 0 18px 42px rgba(0, 0, 0, 0.32);
+}
+
+.diablo-person-frame {
+  z-index: 4;
+  transition: opacity 140ms ease, filter 140ms ease;
+}
+
+.diablo-person-frame.has-expanded-person-details {
+  z-index: 28;
+}
+
+.diablo-person-frame.is-covered-by-expanded-person-details {
+  opacity: 0.42;
+  filter: saturate(0.72);
+}
+
+.diablo-person-frame.is-person-drag-preview {
+  z-index: 12;
+  pointer-events: none;
+}
+
+.diablo-person-frame .diablo-person-frame-inner {
+  display: grid;
+  overflow: visible;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--diablo-gap);
+  align-content: start;
+  outline-color: color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 82%, #fefce8);
+}
+
+.diablo-person-frame.is-dragover .diablo-person-frame-inner {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 52%, rgba(255, 255, 255, 0.42)),
+    0 18px 42px rgba(0, 0, 0, 0.32);
+}
+
+.diablo-person-frame.is-drop-candidate .diablo-person-frame-inner {
+  box-shadow:
+    inset 0 0 0 3px color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 48%, rgba(255, 255, 255, 0.24)),
+    0 0 0 4px color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 32%, transparent),
+    0 18px 42px rgba(0, 0, 0, 0.26);
+}
+
+.diablo-person-frame.is-person-drag-preview .diablo-person-frame-inner {
+  opacity: 0.92;
+  box-shadow:
+    inset 0 0 0 3px color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 56%, rgba(255, 255, 255, 0.26)),
+    0 0 0 5px rgba(56, 189, 248, 0.18),
+    0 22px 50px rgba(8, 47, 73, 0.32);
+}
+
+.diablo-person-frame.is-bench-warning .diablo-person-frame-inner {
+  box-shadow:
+    inset 0 0 0 2px rgba(251, 146, 60, 0.34),
+    0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.diablo-person-frame.is-bench-critical .diablo-person-frame-inner {
+  box-shadow:
+    inset 0 0 0 2px rgba(248, 113, 113, 0.42),
+    0 18px 42px rgba(127, 29, 29, 0.22);
+}
+
+.diablo-person-frame.is-suspicious-assignment .diablo-person-frame-inner {
+  outline-style: dashed;
+}
+
+.diablo-person-frame-inner.has-free-tiles {
+  overflow: visible;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles {
+  overflow: visible;
+  grid-template-rows: auto auto;
+  gap: 0;
+}
+
+.diablo-person-plate {
+  z-index: 3;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 13%, transparent), transparent 64%),
+    rgba(2, 6, 23, 0.72);
+  padding: 6px;
+  cursor: grab;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-plate {
+  gap: 4px;
+  padding: 5px;
+}
+
+.diablo-app.is-day .diablo-person-plate {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 10%, transparent), transparent 64%),
+    rgba(255, 255, 255, 0.8);
+}
+
+.diablo-person-plate:active {
+  cursor: grabbing;
+}
+
+.diablo-person-frame.has-person-drag-disabled .diablo-person-plate {
+  cursor: default;
+}
+
+.diablo-person-frame.has-person-grab-zone .diablo-person-frame-inner,
+.diablo-person-frame.has-person-grab-zone .diablo-person-plate,
+.diablo-person-frame.has-person-grab-zone .diablo-person-skill-badge-footer {
+  cursor: grab;
+}
+
+.diablo-person-frame.has-person-grab-zone .diablo-person-frame-inner:active,
+.diablo-person-frame.has-person-grab-zone .diablo-person-plate:active,
+.diablo-person-frame.has-person-grab-zone .diablo-person-skill-badge-footer:active {
+  cursor: grabbing;
+}
+
+.diablo-person-reset-button {
+  border-color: rgba(248, 113, 113, 0.38);
+  background: rgba(248, 113, 113, 0.13);
+  color: #fecaca;
+}
+
+.diablo-person-reset-button:not(:disabled):hover,
+.diablo-person-reset-button:not(:disabled):focus-visible {
+  border-color: rgba(248, 113, 113, 0.82);
+  background: rgba(248, 113, 113, 0.24);
+  color: #fee2e2;
+  outline: 2px solid rgba(248, 113, 113, 0.34);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.14);
+}
+
+.diablo-app.is-day .diablo-person-reset-button {
+  border-color: rgba(185, 28, 28, 0.22);
+  background: rgba(248, 113, 113, 0.11);
+  color: #991b1b;
+}
+
+.diablo-app.is-day .diablo-person-reset-button:not(:disabled):hover,
+.diablo-app.is-day .diablo-person-reset-button:not(:disabled):focus-visible {
+  border-color: rgba(185, 28, 28, 0.54);
+  background: rgba(248, 113, 113, 0.2);
+  color: #7f1d1d;
+  outline-color: rgba(248, 113, 113, 0.28);
+}
+
+.diablo-person-frame-meta {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.diablo-person-free-status {
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.18);
+  padding: 2px 5px;
+  color: #fecaca;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.diablo-person-free-status.is-empty {
+  background: rgba(34, 197, 94, 0.14);
+  color: #bbf7d0;
+}
+
+.diablo-app.is-day .diablo-person-free-status {
+  background: rgba(239, 68, 68, 0.13);
+  color: #991b1b;
+}
+
+.diablo-app.is-day .diablo-person-free-status.is-empty {
+  background: rgba(34, 197, 94, 0.13);
+  color: #166534;
+}
+
+.diablo-person-frame-tile-section {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  align-content: start;
+  justify-content: stretch;
+  border-top: 0;
+  padding: 0;
+  cursor: default;
+}
+
+.diablo-person-frame-tile-section * {
+  cursor: default;
+}
+
+.diablo-person-frame-tile-section .diablo-inventory-person-tile,
+.diablo-person-frame-tile-section .diablo-inventory-person-tile * {
+  cursor: grab;
+}
+
+.diablo-person-frame-tile-section.has-no-free-tiles {
+  place-items: start stretch;
+  min-height: 0;
+  padding: 1px 5px 4px;
+}
+
+.diablo-person-skill-badge-footer {
+  position: absolute;
+  top: calc(100% + var(--diablo-gap));
+  right: 0;
+  z-index: 7;
+  display: flex;
+  justify-content: flex-end;
+  max-width: min(220px, 100%);
+  pointer-events: auto;
+}
+
+.diablo-person-skill-badge-footer .traffic-person-visual-badge.is-compact {
+  justify-content: flex-end;
+  width: max-content;
+  max-width: 100%;
+  gap: 3px;
+  margin-top: 0;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 6px;
+  background: rgba(2, 6, 23, 0.82);
+  padding: 3px;
+}
+
+.diablo-app.is-day .diablo-person-skill-badge-footer .traffic-person-visual-badge.is-compact {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.diablo-person-frame .diablo-person-frame-grid {
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(var(--diablo-person-tile-columns), var(--diablo-cell));
+  grid-template-rows: repeat(var(--diablo-person-tile-rows), var(--diablo-cell));
+}
+
+.diablo-person-frame-grid .diablo-inventory-cell.is-person-empty {
+  background:
+    linear-gradient(135deg, rgba(254, 243, 199, 0.07), transparent 48%),
+    rgba(15, 23, 42, 0.38);
+}
+
+.diablo-app.is-day .diablo-person-frame-grid .diablo-inventory-cell.is-person-empty {
+  background:
+    linear-gradient(135deg, rgba(146, 64, 14, 0.05), transparent 48%),
+    rgba(255, 251, 235, 0.76);
+}
+
+.diablo-person-frame-details {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.diablo-person-frame-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  align-items: start;
+  min-width: 0;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-frame-summary {
+  gap: 4px;
+}
+
+.diablo-person-frame-identity {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  text-align: left;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-frame-identity {
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 6px;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-avatar {
+  width: 26px;
+  height: 26px;
+  font-size: 10px;
+}
+
+.diablo-person-frame-identity span:last-child {
+  display: grid;
+  min-width: 0;
+}
+
+.diablo-person-frame-summary strong,
+.diablo-person-frame-summary small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-person-frame-summary small {
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.diablo-person-frame-footer {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-frame-footer {
+  gap: 4px;
+}
+
+.diablo-person-hover-details {
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+  left: 0;
+  z-index: 18;
+  display: none;
+  min-width: 0;
+  gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 42%, rgba(148, 163, 184, 0.26));
+  border-radius: 0 0 6px 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 12%, transparent), transparent 70%),
+    rgba(2, 6, 23, 0.96);
+  box-shadow:
+    0 0 0 2px rgba(15, 23, 42, 0.45),
+    0 18px 40px rgba(0, 0, 0, 0.38);
+  padding: 6px;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.diablo-person-frame-inner.has-expanded-hover-details .diablo-person-hover-details {
+  display: grid;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-hover-details {
+  gap: 4px;
+}
+
+.diablo-app.is-day .diablo-person-hover-details {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 9%, transparent), transparent 70%),
+    rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.68),
+    0 18px 38px rgba(15, 23, 42, 0.18);
+}
+
+.diablo-project-toolbar.diablo-person-frame-actions {
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-content: start;
+  justify-content: flex-start;
+}
+
+.diablo-project-frame.is-work-research_development .diablo-project-frame-inner {
+  outline-color: var(--diablo-rd);
+}
+
+.diablo-project-frame.is-work-waiting_room .diablo-project-frame-inner {
+  outline-color: var(--diablo-waiting);
+}
+
+.diablo-project-frame.is-work-defensive_maintenance .diablo-project-frame-inner {
+  outline-color: var(--diablo-defensive);
+}
+
+.diablo-project-frame.is-work-time_off .diablo-project-frame-inner {
+  outline-color: #111827;
+}
+
+.diablo-project-frame.is-overflow .diablo-project-frame-inner,
+.diablo-project-frame.is-pressure .diablo-project-frame-inner {
+  box-shadow: inset 0 0 0 2px rgba(248, 113, 113, 0.38), 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.diablo-project-frame.is-gap .diablo-project-frame-inner {
+  box-shadow: inset 0 0 0 2px rgba(250, 204, 21, 0.32), 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.diablo-project-frame.is-ghost .diablo-project-frame-inner {
+  outline-style: dashed;
+}
+
+.diablo-project-plate {
+  position: absolute;
+  top: -36px;
+  left: 0;
+  z-index: 8;
+  display: flex;
+  max-width: min(360px, max(210px, 100%));
+  height: 28px;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 6px;
+  background: rgba(2, 6, 23, 0.86);
+  padding: 3px 4px 3px 8px;
+  color: #f8fafc;
+  pointer-events: auto;
+}
+
+.diablo-app.is-day .diablo-project-plate {
+  background: rgba(255, 255, 255, 0.94);
+  color: #0f172a;
+}
+
+.diablo-project-plate > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.diablo-project-plate strong,
+.diablo-project-plate span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-project-plate strong {
+  font-size: 12px;
+}
+
+.diablo-project-plate span {
+  color: #cbd5e1;
+  font-size: 11px;
+}
+
+.diablo-app.is-day .diablo-project-plate span {
+  color: #64748b;
+}
+
+.diablo-project-toolbar {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.diablo-project-toolbar button {
+  min-height: 26px;
+  padding: 0 8px;
+}
+
+.diablo-project-toolbar .diablo-frame-action-button {
+  box-sizing: border-box;
+  width: 54px;
+  min-width: 54px;
+  min-height: 26px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.diablo-selected-frame-actions {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 11;
+  display: flex;
+  box-sizing: border-box;
+  max-width: min(360px, max(220px, calc(100% - 12px)));
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 7px;
+  background: rgba(2, 6, 23, 0.9);
+  padding: 3px;
+  pointer-events: auto;
+}
+
+.diablo-app.is-day .diablo-selected-frame-actions {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.diablo-selected-frame-actions button {
+  min-height: 26px;
+  min-width: 0;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.diablo-selected-frame-resize-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 26px);
+  gap: 2px;
+  align-items: center;
+  border-inline: 1px solid rgba(148, 163, 184, 0.24);
+  padding-inline: 4px;
+}
+
+.diablo-selected-frame-resize-actions button {
+  width: 26px;
+  min-width: 26px;
+  padding-inline: 0;
+  text-align: center;
+}
+
+.diablo-selected-frame-actions button.is-danger {
+  border-color: rgba(248, 113, 113, 0.72);
+  background: rgba(127, 29, 29, 0.52);
+  color: #fecaca;
+}
+
+.diablo-selected-frame-actions button.is-danger:not(:disabled):hover,
+.diablo-selected-frame-actions button.is-danger:not(:disabled):focus-visible {
+  border-color: rgba(248, 113, 113, 0.9);
+  background: rgba(127, 29, 29, 0.68);
+  color: #fee2e2;
+  outline-color: rgba(248, 113, 113, 0.36);
+}
+
+.diablo-app.is-day .diablo-selected-frame-actions button.is-danger {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.diablo-app.is-day .diablo-selected-frame-actions button.is-danger:not(:disabled):hover,
+.diablo-app.is-day .diablo-selected-frame-actions button.is-danger:not(:disabled):focus-visible {
+  border-color: rgba(185, 28, 28, 0.62);
+  background: #fecaca;
+  color: #7f1d1d;
+}
+
+.diablo-selected-frame-actions button.is-confirming {
+  border-color: var(--diablo-warning);
+  background: rgba(250, 204, 21, 0.2);
+  color: #fef3c7;
+}
+
+.diablo-selected-frame-actions button.is-confirming:not(:disabled):hover,
+.diablo-selected-frame-actions button.is-confirming:not(:disabled):focus-visible {
+  border-color: rgba(250, 204, 21, 0.9);
+  background: rgba(250, 204, 21, 0.28);
+  color: #fefce8;
+  outline-color: rgba(250, 204, 21, 0.34);
+}
+
+.diablo-app.is-day .diablo-selected-frame-actions button.is-confirming {
+  background: #fef9c3;
+  color: #713f12;
+}
+
+.diablo-app.is-day .diablo-selected-frame-actions button.is-confirming:not(:disabled):hover,
+.diablo-app.is-day .diablo-selected-frame-actions button.is-confirming:not(:disabled):focus-visible {
+  border-color: rgba(180, 83, 9, 0.58);
+  background: #fde68a;
+  color: #713f12;
+}
+
+.diablo-project-signals {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 9;
+  display: flex;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.diablo-project-signals i {
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.35);
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px rgba(2, 6, 23, 0.65);
+}
+
+.diablo-project-signals i.is-warning {
+  background: var(--diablo-warning);
+}
+
+.diablo-project-signals i.is-danger {
+  background: var(--diablo-danger);
+}
+
+.diablo-project-signals i.is-positive {
+  background: var(--diablo-healthy);
+}
+
+.diablo-skill-zone-map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--diablo-frame-columns), var(--diablo-cell));
+  grid-template-rows: repeat(var(--diablo-frame-rows), var(--diablo-cell));
+  gap: var(--diablo-gap);
+  overflow: hidden;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.diablo-skill-zone {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  align-content: start;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: #ffffff;
+  opacity: 0;
+  padding: 3px;
+  pointer-events: none;
+}
+
+.diablo-skill-zone span {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--diablo-skill-color) 86%, #020617);
+  padding: 2px 4px;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(2, 6, 23, 0.42);
+  white-space: nowrap;
+}
+
+.diablo-project-frame.is-dragover .diablo-skill-zone-map,
+.diablo-skill-zone.is-dragover {
+  z-index: 7;
+}
+
+.diablo-project-frame.is-dragover .diablo-skill-zone {
+  border-color: color-mix(in srgb, var(--diablo-skill-color) 62%, rgba(255, 255, 255, 0.28));
+  background: color-mix(in srgb, var(--diablo-skill-color) 18%, rgba(15, 23, 42, 0.28));
+  opacity: 0.9;
+  pointer-events: auto;
+}
+
+.diablo-project-frame.is-person-frame-drop-preview .diablo-skill-zone.is-zone-start span,
+.diablo-project-frame.is-dragover .diablo-skill-zone.is-zone-start span,
+.diablo-skill-zone.is-dragover span {
+  opacity: 1;
+}
+
+.diablo-skill-zone.is-dragover {
+  border-color: color-mix(in srgb, var(--diablo-skill-color) 76%, #ffffff);
+  background: color-mix(in srgb, var(--diablo-skill-color) 32%, rgba(15, 23, 42, 0.46));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--diablo-skill-color) 82%, #ffffff);
+  opacity: 1;
+}
+
+.diablo-app.is-day .diablo-skill-zone {
+  color: #0f172a;
+}
+
+.diablo-app.is-day .diablo-skill-zone.is-dragover {
+  background: color-mix(in srgb, var(--diablo-skill-color) 28%, rgba(255, 255, 255, 0.74));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--diablo-skill-color) 82%, #0f172a);
+}
+
+.diablo-inventory-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(var(--diablo-frame-columns), var(--diablo-cell));
+  grid-template-rows: repeat(var(--diablo-frame-rows), var(--diablo-cell));
+  gap: var(--diablo-gap);
+}
+
+.diablo-inventory-cell,
+.diablo-inventory-person-tile,
+.diablo-overflow-person-tile {
+  width: var(--diablo-cell);
+  height: var(--diablo-cell);
+  min-width: 0;
+  min-height: 0;
+  border-radius: 4px;
+}
+
+.diablo-inventory-cell {
+  display: grid;
+  place-items: end center;
+  border: 1px solid rgba(226, 232, 240, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%),
+    rgba(15, 23, 42, 0.5);
+  padding: 2px;
+}
+
+.diablo-inventory-cell.has-skill-zone {
+  border-color: color-mix(in srgb, var(--diablo-skill-color) 64%, rgba(226, 232, 240, 0.24));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--diablo-skill-color) 28%, rgba(255, 255, 255, 0.08)), transparent 58%),
+    color-mix(in srgb, var(--diablo-skill-color) 24%, rgba(15, 23, 42, 0.62));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--diablo-skill-color) 44%, transparent);
+}
+
+.diablo-app.is-day .diablo-inventory-cell {
+  border-color: rgba(15, 23, 42, 0.14);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.04), transparent 42%),
+    rgba(241, 245, 249, 0.78);
+}
+
+.diablo-app.is-day .diablo-inventory-cell.has-skill-zone {
+  border-color: color-mix(in srgb, var(--diablo-skill-color) 62%, rgba(15, 23, 42, 0.18));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--diablo-skill-color) 24%, rgba(255, 255, 255, 0.76)), transparent 58%),
+    color-mix(in srgb, var(--diablo-skill-color) 20%, #ffffff);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--diablo-skill-color) 28%, transparent);
+}
+
+.diablo-inventory-cell.is-padding {
+  opacity: 0.28;
+}
+
+.diablo-inventory-cell.is-missing {
+  border-color: rgba(248, 113, 113, 0.55);
+  background: rgba(248, 113, 113, 0.18);
+}
+
+.diablo-inventory-person-tile,
+.diablo-overflow-person-tile {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--diablo-person-color) 64%, transparent);
+  color: #fff;
+  cursor: grab;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42);
+}
+
+.diablo-inventory-person-tile {
+  align-content: center;
+  gap: 2px;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  overflow: hidden;
+}
+
+.diablo-inventory-person-tile.has-skill-zone::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--diablo-skill-color) 76%, rgba(255, 255, 255, 0.16));
+  content: "";
+  pointer-events: none;
+}
+
+.diablo-tile-initials {
+  display: inline-grid;
+  min-width: 22px;
+  min-height: 16px;
+  place-items: center;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  border-radius: 4px;
+  background: rgba(248, 250, 252, 0.94);
+  box-shadow:
+    0 1px 2px rgba(2, 6, 23, 0.34),
+    0 0 0 1px rgba(248, 250, 252, 0.22) inset;
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 950;
+  line-height: 1;
+  text-shadow: none;
+}
+
+.diablo-tile-micro-badges {
+  display: flex;
+  max-width: 100%;
+  gap: 1px;
+  justify-content: center;
+  padding: 0 2px;
+  pointer-events: none;
+}
+
+.diablo-tile-micro-badges small {
+  overflow: hidden;
+  max-width: 22px;
+  border-radius: 3px;
+  background: rgba(2, 6, 23, 0.58);
+  padding: 0 2px;
+  color: #f8fafc;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 10px;
+  text-overflow: ellipsis;
+  text-shadow: none;
+  white-space: nowrap;
+}
+
+.diablo-inventory-person-tile.is-weekly-slot,
+.diablo-overflow-person-tile.is-weekly-slot {
+  grid-template-rows: auto auto;
+  padding: 2px;
+}
+
+.diablo-tile-metric-value,
+.diablo-weekly-slot-value {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(2, 6, 23, 0.54);
+  padding: 0 2px;
+  color: #f8fafc;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 11px;
+  text-overflow: ellipsis;
+  text-shadow: none;
+  white-space: nowrap;
+}
+
+.diablo-overflow-person-tile {
+  width: 30px;
+  height: 30px;
+  font-size: 10px;
+}
+
+.diablo-overflow-person-tile .diablo-tile-initials {
+  min-width: 18px;
+  min-height: 13px;
+  border-radius: 3px;
+  font-size: 9px;
+}
+
+.diablo-inventory-person-tile[data-layer="work"],
+.diablo-overflow-person-tile[data-layer="work"] {
+  background: var(--traffic-red);
+}
+
+.diablo-inventory-person-tile[data-layer="admin"],
+.diablo-overflow-person-tile[data-layer="admin"] {
+  background: var(--traffic-orange);
+}
+
+.diablo-inventory-person-tile[data-layer="sales"],
+.diablo-overflow-person-tile[data-layer="sales"] {
+  background: var(--traffic-green);
+}
+
+.diablo-inventory-person-tile[data-layer="margin"],
+.diablo-overflow-person-tile[data-layer="margin"] {
+  background: var(--traffic-margin);
+}
+
+.diablo-inventory-person-tile:hover,
+.diablo-inventory-person-tile:focus-visible,
+.diablo-overflow-person-tile:hover,
+.diablo-overflow-person-tile:focus-visible {
+  z-index: 10;
+  outline: 2px solid #bfdbfe;
+  outline-offset: 1px;
+}
+
+.diablo-inventory-person-tile.is-multi-selected,
+.diablo-overflow-person-tile.is-multi-selected {
+  z-index: 11;
+  outline: 3px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.diablo-inventory-person-tile.is-multi-selected::after,
+.diablo-overflow-person-tile.is-multi-selected::after {
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(248, 250, 252, 0.86);
+  border-radius: 3px;
+  content: "";
+  pointer-events: none;
+}
+
+.diablo-canvas-grid.is-person-highlight-active .diablo-inventory-person-tile.is-person-muted,
+.diablo-canvas-grid.is-person-highlight-active .diablo-overflow-person-tile.is-person-muted {
+  opacity: 0.34;
+  filter: saturate(0.55) brightness(0.82);
+}
+
+.diablo-inventory-person-tile.has-warning,
+.diablo-overflow-person-tile.has-warning {
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--diablo-person-color) 64%, transparent),
+    0 0 0 2px var(--diablo-warning);
+}
+
+.diablo-inventory-person-tile.has-positive,
+.diablo-overflow-person-tile.has-positive {
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--diablo-person-color) 64%, transparent),
+    0 0 0 2px var(--diablo-healthy);
+}
+
+.diablo-inventory-person-tile[data-cost-coverage="unassigned"],
+.diablo-person-bench-tile[data-cost-coverage="unassigned"] {
+  border-color: rgba(248, 113, 113, 0.95);
+  background: var(--traffic-red);
+}
+
+.diablo-inventory-person-tile[data-cost-coverage="covered"],
+.diablo-overflow-person-tile[data-cost-coverage="covered"] {
+  border-color: rgba(52, 211, 153, 0.76);
+  background: var(--traffic-green);
+}
+
+.diablo-inventory-person-tile[data-cost-coverage="pending"],
+.diablo-overflow-person-tile[data-cost-coverage="pending"] {
+  border-color: rgba(248, 113, 113, 0.82);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 58%),
+    var(--diablo-person-color, var(--traffic-red));
+}
+
+.diablo-inventory-person-tile[data-cost-coverage="non-covering"],
+.diablo-overflow-person-tile[data-cost-coverage="non-covering"] {
+  border-color: rgba(167, 139, 250, 0.85);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.22) 0 4px,
+      rgba(255, 255, 255, 0.06) 4px 8px
+    ),
+    var(--diablo-rd);
+}
+
+.diablo-inventory-person-tile[data-cost-coverage="time-off"],
+.diablo-overflow-person-tile[data-cost-coverage="time-off"] {
+  border-color: rgba(148, 163, 184, 0.9);
+  background: #111827;
+}
+
+.diablo-inventory-person-tile.has-cluster-handoff {
+  outline: 2px solid #60a5fa;
+  outline-offset: -3px;
+}
+
+.diablo-inventory-person-tile.has-cluster-plan-b {
+  outline: 2px dashed #facc15;
+  outline-offset: -3px;
+}
+
+.diablo-inventory-person-tile.has-cluster-mentoring {
+  outline: 2px solid #c084fc;
+  outline-offset: -3px;
+}
+
+.diablo-inventory-person-tile.has-cluster-backup {
+  outline: 2px solid #34d399;
+  outline-offset: -3px;
+}
+
+.diablo-inventory-person-tile.has-cluster-changed {
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--diablo-person-color) 64%, transparent),
+    0 0 0 2px #fb923c;
+}
+
+.diablo-inventory-person-tile.is-person-highlighted,
+.diablo-overflow-person-tile.is-person-highlighted {
+  z-index: 13;
+  outline: 3px solid #f8fafc;
+  outline-offset: 3px;
+  filter: saturate(1.25) brightness(1.08);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--diablo-person-color) 78%, transparent),
+    0 0 0 3px rgba(56, 189, 248, 0.95),
+    0 10px 26px rgba(14, 165, 233, 0.38);
+}
+
+.diablo-inventory-person-tile:active,
+.diablo-overflow-person-tile:active {
+  cursor: grabbing;
+}
+
+.diablo-allocation-group-drag-preview {
+  position: fixed;
+  top: -240px;
+  left: -240px;
+  z-index: 9999;
+  display: grid;
+  grid-template-columns: repeat(4, 22px);
+  gap: 3px;
+  width: max-content;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.35);
+  padding: 6px;
+  pointer-events: none;
+}
+
+.diablo-allocation-group-drag-preview span,
+.diablo-allocation-group-drag-preview b {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.36);
+}
+
+.diablo-allocation-group-drag-preview span {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--diablo-person-color) 64%, transparent);
+}
+
+.diablo-allocation-group-drag-preview span[data-layer="work"] {
+  background: var(--traffic-red);
+}
+
+.diablo-allocation-group-drag-preview span[data-layer="admin"] {
+  background: var(--traffic-orange);
+}
+
+.diablo-allocation-group-drag-preview span[data-layer="sales"] {
+  background: var(--traffic-green);
+}
+
+.diablo-allocation-group-drag-preview span[data-layer="margin"] {
+  background: var(--traffic-margin);
+}
+
+.diablo-allocation-group-drag-preview b {
+  background: rgba(96, 165, 250, 0.8);
+}
+
+.diablo-allocation-group-drag-preview strong {
+  grid-column: 1 / -1;
+  color: #f8fafc;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: none;
+}
+
+.diablo-project-frame-footer {
+  position: absolute;
+  top: calc(100% + var(--diablo-gap));
+  left: 0;
+  z-index: 7;
+  display: grid;
+  width: max-content;
+  max-width: min(360px, max(180px, 100%));
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.diablo-project-inventory-badges {
+  display: flex;
+  flex-wrap: wrap;
+  width: max-content;
+  max-width: 100%;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 6px;
+  background: rgba(2, 6, 23, 0.82);
+}
+
+.diablo-app.is-day .diablo-project-inventory-badges {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.diablo-project-inventory-badges span {
+  display: inline-grid;
+  min-width: 24px;
+  height: 20px;
+  place-items: center;
+  border: 2px solid rgba(148, 163, 184, 0.26);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.74);
+  color: #f8fafc;
+  font-size: 8px;
+  font-weight: 950;
+  line-height: 1;
+  text-shadow: none;
+  white-space: nowrap;
+}
+
+.diablo-app.is-day .diablo-project-inventory-badges span {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+.diablo-project-inventory-badges .is-more {
+  border-color: rgba(148, 163, 184, 0.62);
+  background: rgba(51, 65, 85, 0.82);
+}
+
+.diablo-project-overflow-strip {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: min(320px, 100%);
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid rgba(248, 113, 113, 0.38);
+  border-radius: 6px;
+  background: rgba(2, 6, 23, 0.82);
+}
+
+.diablo-project-overflow-strip span {
+  display: inline-grid;
+  min-width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(248, 113, 113, 0.42);
+  border-radius: 4px;
+  color: var(--diablo-danger);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.diablo-frame-resize-handle {
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+  z-index: 12;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  border-color: rgba(191, 219, 254, 0.9);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, transparent 0 44%, rgba(191, 219, 254, 0.96) 45% 55%, transparent 56%),
+    linear-gradient(135deg, transparent 0 64%, rgba(191, 219, 254, 0.96) 65% 75%, transparent 76%),
+    rgba(15, 23, 42, 0.92);
+  box-shadow: 0 0 0 2px rgba(2, 6, 23, 0.56);
+  cursor: nwse-resize;
+  padding: 0;
+}
+
+.diablo-frame-resize-handle:hover,
+.diablo-frame-resize-handle:focus-visible {
+  outline: 2px solid #bfdbfe;
+  outline-offset: 2px;
+}
+
+.diablo-project-overflow {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(248, 113, 113, 0.35);
+  padding-top: 8px;
+}
+
+.diablo-project-overflow > strong {
+  color: var(--diablo-danger);
+  font-size: 12px;
+}
+
+.diablo-floating-panel {
+  z-index: 12;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--diablo-panel-border);
+  border-radius: 8px;
+  background: var(--diablo-panel-bg);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+.diablo-canvas-people-panel {
+  z-index: 14;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-self: stretch;
+  gap: 8px;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-panel) 90%, transparent);
+  box-shadow: var(--diablo-surface-shadow);
+  padding: 8px;
+}
+
+.diablo-legend-panel {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.diablo-legend-panel.is-collapsed {
+  grid-template-rows: auto;
+}
+
+.diablo-legend-content {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.diablo-floating-panel header,
+.diablo-canvas-people-panel header {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  padding: 8px;
+}
+
+.diablo-floating-panel header {
+  cursor: grab;
+}
+
+.diablo-canvas-people-panel header {
+  cursor: default;
+  flex-wrap: wrap;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.26);
+}
+
+.diablo-app.is-day .diablo-canvas-people-panel header {
+  border-color: rgba(148, 163, 184, 0.34);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(238, 244, 251, 0.92)),
+    var(--traffic-panel);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.diablo-floating-panel header > div:first-child,
+.diablo-canvas-people-panel header > div:first-child {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.diablo-floating-panel header strong,
+.diablo-canvas-people-panel header strong {
+  font-size: 13px;
+}
+
+.diablo-floating-panel header span,
+.diablo-canvas-people-panel header span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--traffic-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-panel-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.diablo-panel-actions button {
+  padding: 0 7px;
+}
+
+.diablo-people-header-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.diablo-people-header-tools button {
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+}
+
+.diablo-people-header-tools .traffic-help-button {
+  width: 32px;
+  min-width: 32px;
+  border-radius: 6px;
+  padding: 0;
+}
+
+.diablo-people-sort-controls {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  min-width: 0;
+}
+
+.diablo-canvas-people-panel header .traffic-tooltip {
+  display: inline-flex;
+  overflow: visible;
+  color: inherit;
+  font-size: inherit;
+  white-space: normal;
+}
+
+.diablo-people-sort-controls button {
+  display: inline-grid;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  place-items: center;
+  padding: 0;
+  color: var(--traffic-muted);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.diablo-people-sort-controls button.is-active,
+.diablo-people-sort-controls button[aria-pressed="true"] {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: rgba(14, 165, 233, 0.2);
+  color: #e0f2fe;
+}
+
+.diablo-people-sort-controls button:hover,
+.diablo-people-sort-controls button:focus-visible {
+  border-color: rgba(125, 211, 252, 0.74);
+  color: #f8fafc;
+  outline: 2px solid rgba(125, 211, 252, 0.28);
+  outline-offset: 1px;
+}
+
+.diablo-app.is-day .diablo-people-sort-controls button.is-active,
+.diablo-app.is-day .diablo-people-sort-controls button[aria-pressed="true"] {
+  border-color: rgba(37, 99, 235, 0.48);
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.diablo-bench-alert-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.36);
+  padding: 6px 8px;
+}
+
+.diablo-bench-alert-summary.has-severe-alerts {
+  background: linear-gradient(90deg, rgba(127, 29, 29, 0.52), rgba(120, 53, 15, 0.42));
+}
+
+.diablo-app.is-day .diablo-bench-alert-summary {
+  background: #edf3fa;
+}
+
+.diablo-app.is-day .diablo-bench-alert-summary.has-severe-alerts {
+  background: linear-gradient(90deg, #fee2e2, #fef3c7);
+}
+
+.diablo-bench-alert-summary span {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+  color: var(--traffic-muted);
+  font-size: 10px;
+  line-height: 1.15;
+}
+
+.diablo-bench-alert-summary strong {
+  color: var(--traffic-text);
+  font-size: 13px;
+  line-height: 1.05;
+}
+
+.diablo-people-list,
+.diablo-legend-list {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.diablo-people-list {
+  align-content: start;
+  overscroll-behavior: contain;
+  padding: 4px 6px 8px 4px;
+  scroll-padding-bottom: 8px;
+}
+
+.diablo-people-list.has-top-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 26px, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 26px, #000 100%);
+}
+
+.diablo-legend-list {
+  padding: 8px;
+}
+
+.diablo-person-card {
+  display: grid;
+  gap: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.24);
+  padding: 8px;
+}
+
+.diablo-canvas-person-card {
+  position: relative;
+  align-content: start;
+  gap: 6px;
+  grid-auto-rows: max-content;
+  box-sizing: border-box;
+  border: 3px solid rgba(148, 163, 184, 0.34);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.045), transparent 42%),
+    rgba(15, 23, 42, 0.28);
+  padding: 8px;
+}
+
+.diablo-person-card.is-bench-watch {
+  border-color: rgba(250, 204, 21, 0.34);
+}
+
+.diablo-canvas-person-card.is-bench-watch {
+  border-color: rgba(250, 204, 21, 0.62);
+}
+
+.diablo-person-card.is-bench-warning {
+  border-color: rgba(251, 146, 60, 0.72);
+  box-shadow: inset 4px 0 0 rgba(251, 146, 60, 0.72);
+}
+
+.diablo-canvas-person-card.is-bench-warning {
+  border-color: rgba(251, 146, 60, 0.84);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.diablo-person-card.is-bench-critical {
+  border-color: rgba(248, 113, 113, 0.9);
+  background:
+    linear-gradient(90deg, rgba(127, 29, 29, 0.42), transparent 46%),
+    rgba(15, 23, 42, 0.24);
+  box-shadow: inset 5px 0 0 rgba(248, 113, 113, 0.92), 0 0 0 1px rgba(248, 113, 113, 0.25);
+}
+
+.diablo-canvas-person-card.is-bench-critical {
+  border-color: rgba(248, 113, 113, 0.96);
+  background:
+    linear-gradient(90deg, rgba(127, 29, 29, 0.42), transparent 54%),
+    rgba(15, 23, 42, 0.28);
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.26), 0 16px 30px rgba(127, 29, 29, 0.18);
+}
+
+.diablo-app.is-day .diablo-person-card.is-bench-critical {
+  background:
+    linear-gradient(90deg, #fee2e2, transparent 54%),
+    rgba(241, 245, 249, 0.8);
+}
+
+.diablo-app.is-day .diablo-canvas-person-card {
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.035), transparent 42%),
+    rgba(255, 255, 255, 0.86);
+}
+
+.diablo-app.is-day .diablo-canvas-person-card.is-bench-critical {
+  background:
+    linear-gradient(90deg, #fee2e2, transparent 54%),
+    rgba(255, 255, 255, 0.86);
+}
+
+.diablo-person-card.is-suspicious-assignment {
+  border-style: dashed;
+}
+
+.diablo-canvas-person-card.is-suspicious-assignment {
+  border-style: dashed;
+}
+
+.diablo-app.is-day .diablo-person-card {
+  background: rgba(241, 245, 249, 0.8);
+}
+
+.diablo-person-card-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: start;
+}
+
+.diablo-person-card-header > button {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: 0 7px;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+}
+
+.diablo-person-avatar {
+  display: inline-grid;
+  grid-row: 1 / span 2;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 64%, rgba(255, 255, 255, 0.9));
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    color-mix(in srgb, var(--diablo-person-color, var(--traffic-blue)) 52%, #020617);
+  box-shadow:
+    0 1px 2px rgba(2, 6, 23, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset;
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-shadow: 0 1px 2px rgba(2, 6, 23, 0.72);
+}
+
+.diablo-person-card-header strong,
+.diablo-person-card-header small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-person-card-header small,
+.diablo-person-card-header span:not(.diablo-person-avatar) {
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.diablo-person-card-header > div {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.diablo-person-card-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  justify-content: flex-end;
+  min-width: max-content;
+}
+
+.diablo-person-highlight-button {
+  min-height: 22px;
+  border-color: rgba(96, 165, 250, 0.42);
+  background: rgba(59, 130, 246, 0.14);
+  padding: 2px 7px;
+  color: #bfdbfe;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.diablo-person-highlight-button:hover,
+.diablo-person-highlight-button:focus-visible,
+.diablo-person-highlight-button.is-active {
+  border-color: rgba(56, 189, 248, 0.88);
+  background: rgba(14, 165, 233, 0.28);
+  color: #f8fafc;
+  outline: 2px solid rgba(125, 211, 252, 0.42);
+  outline-offset: 1px;
+}
+
+.diablo-app.is-day .diablo-person-highlight-button {
+  border-color: rgba(37, 99, 235, 0.28);
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+}
+
+.diablo-app.is-day .diablo-person-highlight-button:hover,
+.diablo-app.is-day .diablo-person-highlight-button:focus-visible,
+.diablo-app.is-day .diablo-person-highlight-button.is-active {
+  border-color: rgba(14, 116, 144, 0.58);
+  background: rgba(14, 165, 233, 0.2);
+  color: #0f172a;
+}
+
+.diablo-bench-alert-badge {
+  justify-self: end;
+  border-radius: 4px;
+  background: rgba(248, 113, 113, 0.18);
+  padding: 2px 5px;
+  color: #fecaca;
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-frame-meta {
+  gap: 3px;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-free-status,
+.diablo-person-frame-inner.has-no-free-tiles .diablo-bench-alert-badge {
+  padding: 1px 4px;
+}
+
+.diablo-app.is-day .diablo-bench-alert-badge {
+  color: #991b1b;
+}
+
+.diablo-bench-alert-detail {
+  border-radius: 5px;
+  background: rgba(248, 113, 113, 0.12);
+  padding: 3px 6px;
+  color: var(--traffic-text);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.diablo-canvas-person-card .traffic-person-visual-badge.is-compact {
+  margin-top: 0;
+}
+
+.diablo-person-card-header > div button {
+  min-height: 24px;
+  padding: 0 6px;
+}
+
+.diablo-person-cost-summary {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.18);
+  padding: 0;
+  color: var(--traffic-text);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.diablo-app.is-day .diablo-person-cost-summary {
+  background: rgba(241, 245, 249, 0.72);
+}
+
+.diablo-person-cost-summary > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 6px;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 7px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.diablo-person-cost-summary > summary::-webkit-details-marker {
+  display: none;
+}
+
+.diablo-person-cost-summary > summary::before {
+  content: ">";
+  color: var(--traffic-muted);
+  font-size: 10px;
+}
+
+.diablo-person-cost-summary[open] > summary::before {
+  content: "v";
+}
+
+.diablo-person-cost-summary > summary span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-cost-summary > summary {
+  gap: 4px;
+  min-height: 24px;
+  padding: 3px 6px;
+}
+
+.diablo-person-cost-summary strong {
+  color: var(--traffic-text);
+  font-size: 13px;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-cost-summary strong {
+  font-size: 12px;
+}
+
+.diablo-person-cost-summary em,
+.diablo-person-cost-summary .is-muted {
+  color: var(--traffic-muted);
+  font-style: normal;
+}
+
+.diablo-person-cost-summary-details {
+  display: grid;
+  gap: 2px;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 4px 7px 6px 18px;
+}
+
+.diablo-person-cost-summary .is-time-off {
+  color: #cbd5e1;
+}
+
+.diablo-person-assignments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-assignments {
+  gap: 3px;
+}
+
+.diablo-person-assignments span {
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  border-radius: 5px;
+  background: rgba(59, 130, 246, 0.12);
+  padding: 2px 5px;
+  color: var(--traffic-text);
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-person-frame-inner.has-no-free-tiles .diablo-person-assignments span {
+  padding: 1px 4px;
+  font-size: 10px;
+}
+
+.diablo-person-assignments span.is-covering-cost {
+  border-color: rgba(52, 211, 153, 0.36);
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.diablo-person-assignments span.is-non-covering-cost {
+  border-color: rgba(167, 139, 250, 0.42);
+  background: rgba(167, 139, 250, 0.16);
+}
+
+.diablo-person-assignments span.is-time-off-cost {
+  border-color: rgba(148, 163, 184, 0.42);
+  background: rgba(15, 23, 42, 0.24);
+}
+
+.diablo-person-bench-tiles,
+.diablo-person-bench-footprint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.diablo-person-bench-footprint {
+  align-items: center;
+}
+
+.diablo-person-bench-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--diablo-cell));
+  grid-auto-rows: var(--diablo-cell);
+  gap: var(--diablo-gap);
+  justify-content: start;
+  min-width: 0;
+}
+
+.diablo-person-bench-tile {
+  align-content: center;
+  gap: 2px;
+  grid-template-rows: auto;
+  justify-items: center;
+  overflow: hidden;
+}
+
+.diablo-bench-footprint-cell {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 4px;
+  color: #fff;
+  cursor: grab;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 0;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.36);
+}
+
+.diablo-bench-footprint-cell[data-layer="work"] {
+  background: var(--traffic-red);
+}
+
+.diablo-bench-footprint-cell[data-layer="admin"] {
+  background: var(--traffic-orange);
+}
+
+.diablo-bench-footprint-cell[data-layer="sales"] {
+  background: var(--traffic-green);
+}
+
+.diablo-bench-footprint-cell[data-layer="margin"] {
+  background: var(--traffic-margin);
+}
+
+.diablo-bench-footprint-cell:hover,
+.diablo-bench-footprint-cell:focus-visible {
+  outline: 2px solid #bfdbfe;
+  outline-offset: 1px;
+}
+
+.diablo-person-bench-tiles .traffic-tile {
+  width: 22px;
+  height: 22px;
+  min-height: 22px;
+}
+
+.diablo-more-tiles,
+.diablo-person-empty {
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.diablo-person-frame-tile-section.has-no-free-tiles .diablo-person-empty {
+  box-sizing: border-box;
+  display: block;
+  line-height: 1.1;
+  padding: 4px 6px 0;
+}
+
+.diablo-bench-dropzone {
+  display: grid;
+  position: relative;
+  z-index: 90;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 48%),
+    #111827;
+  padding: 4px;
+  box-shadow: var(--diablo-surface-shadow-soft);
+}
+
+.diablo-bench-dropzone-inner {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  align-content: center;
+  gap: 5px;
+  box-sizing: border-box;
+  border: 1px dashed rgba(148, 163, 184, 0.56);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.16);
+  padding: 10px;
+}
+
+.diablo-bench-dropzone.is-dragover .diablo-bench-dropzone-inner {
+  border-color: var(--diablo-healthy);
+  background: rgba(52, 211, 153, 0.16);
+}
+
+.diablo-app.is-day .diablo-bench-dropzone {
+  border-color: rgba(148, 163, 184, 0.3);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(238, 244, 251, 0.92)),
+    var(--traffic-panel);
+  box-shadow: var(--diablo-surface-shadow-soft);
+}
+
+.diablo-app.is-day .diablo-bench-dropzone-inner {
+  border-color: rgba(37, 99, 235, 0.28);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.diablo-app.is-day .diablo-bench-dropzone.is-dragover .diablo-bench-dropzone-inner {
+  background: #d1fae5;
+}
+
+.diablo-bench-dropzone strong {
+  font-size: 14px;
+}
+
+.diablo-bench-dropzone span {
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-legend-tabs {
+  display: flex;
+  gap: 4px;
+  min-height: 39px;
+  align-items: center;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  padding: 6px 8px;
+}
+
+.diablo-legend-tabs button {
+  min-height: 26px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.34);
+  color: var(--traffic-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.diablo-legend-tabs button.is-active {
+  border-color: var(--traffic-blue);
+  background: rgba(79, 140, 255, 0.2);
+  color: var(--traffic-text);
+}
+
+.diablo-app.is-day .diablo-legend-tabs button {
+  background: #edf3fa;
+}
+
+.diablo-legend-list {
+  align-content: start;
+  gap: 10px;
+}
+
+.diablo-legend-description {
+  margin: 0;
+  color: var(--traffic-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.diablo-legend-group {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.diablo-legend-group > strong {
+  color: var(--traffic-text);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.diablo-legend-group > div {
+  display: grid;
+  gap: 6px;
+}
+
+.diablo-legend-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.18);
+  padding: 6px;
+}
+
+.diablo-app.is-day .diablo-legend-item {
+  background: rgba(241, 245, 249, 0.72);
+}
+
+.diablo-legend-item i {
+  display: inline-grid;
+  width: 24px;
+  height: 20px;
+  place-items: center;
+  border: 2px solid var(--diablo-commercial);
+  border-radius: 5px;
+  color: #f8fafc;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: none;
+}
+
+.diablo-legend-item.is-kind-tone i {
+  border: 0;
+  background: var(--traffic-muted);
+}
+
+.diablo-legend-item.is-tone-red i {
+  background: var(--traffic-red);
+}
+
+.diablo-legend-item.is-tone-yellow i {
+  background: #fbbf24;
+}
+
+.diablo-legend-item.is-tone-green i {
+  background: var(--traffic-green);
+}
+
+.diablo-legend-item.is-tone-blue i {
+  background: var(--traffic-blue);
+}
+
+.diablo-legend-item.is-tone-orange i {
+  background: var(--traffic-orange);
+}
+
+.diablo-legend-item.is-tone-purple i {
+  background: #a855f7;
+}
+
+.diablo-legend-item.is-tone-dark i {
+  background: #111827;
+}
+
+.diablo-legend-item.is-tone-mixed i {
+  background: linear-gradient(90deg, var(--traffic-green), #fbbf24, var(--traffic-red));
+}
+
+.diablo-legend-item.is-work-research_development i {
+  border-color: var(--diablo-rd);
+}
+
+.diablo-legend-item.is-work-waiting_room i,
+.diablo-legend-item.is-gap i {
+  border-color: var(--diablo-warning);
+}
+
+.diablo-legend-item.is-work-defensive_maintenance i {
+  border-color: var(--diablo-defensive);
+}
+
+.diablo-legend-item.is-work-time_off i {
+  border-color: #111827;
+}
+
+.diablo-legend-item.is-ghost i {
+  border-color: var(--traffic-blue);
+  border-style: dashed;
+}
+
+.diablo-legend-item.is-overflow i {
+  border-color: var(--diablo-danger);
+  background: rgba(248, 113, 113, 0.2);
+}
+
+.diablo-legend-item.is-healthy i {
+  border-color: var(--diablo-healthy);
+  background: rgba(52, 211, 153, 0.16);
+}
+
+.diablo-legend-item.is-filled i {
+  border-color: #10b981;
+  background: #10b981;
+}
+
+.diablo-legend-item.is-empty i {
+  border-color: #fbbf24;
+  border-style: dashed;
+  background: rgba(251, 191, 36, 0.16);
+}
+
+.diablo-legend-item.is-poolRemaining i {
+  border-color: #60a5fa;
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0.72), rgba(96, 165, 250, 0.18));
+}
+
+.diablo-legend-item.is-kind-week i,
+.diablo-legend-item.is-overflow i {
+  border-color: var(--diablo-danger);
+  background: repeating-linear-gradient(45deg, #ef4444 0 5px, #991b1b 5px 10px);
+}
+
+.diablo-legend-item.is-bench-critical i {
+  border-color: var(--diablo-danger);
+  background: linear-gradient(90deg, rgba(248, 113, 113, 0.76), rgba(251, 146, 60, 0.46));
+}
+
+.diablo-legend-item.is-bench-warning i,
+.diablo-legend-item.is-bench-watch i,
+.diablo-legend-item.is-underloaded i {
+  border-color: #fb923c;
+  background: rgba(251, 146, 60, 0.22);
+}
+
+.diablo-legend-item.is-suspicious-assignment i,
+.diablo-legend-item.has-underloaded-critical i,
+.diablo-legend-item.is-underloaded-critical i {
+  border-color: var(--diablo-danger);
+  background: linear-gradient(135deg, #7f1d1d 0 48%, #9a3412 48%);
+}
+
+.diablo-legend-item.is-bench-footprint i,
+.diablo-legend-item.has-low-workload i,
+.diablo-legend-item.has-bench-only i,
+.diablo-legend-item.is-low-workload i,
+.diablo-legend-item.is-bench-only i {
+  border-color: #64748b;
+  background: repeating-linear-gradient(135deg, #020617 0 5px, #475569 5px 10px);
+}
+
+.diablo-legend-item.is-micro-badge i {
+  border-color: rgba(191, 219, 254, 0.82);
+  background:
+    linear-gradient(#0f172a, #0f172a) padding-box,
+    linear-gradient(135deg, var(--traffic-red), var(--traffic-green)) border-box;
+}
+
+.diablo-legend-item.is-cluster-outline i {
+  border-color: #60a5fa;
+  border-style: dashed;
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.28);
+}
+
+.diablo-legend-item.is-kind-glyph i {
+  border-color: rgba(191, 219, 254, 0.62);
+  background: rgba(15, 23, 42, 0.76);
+}
+
+.diablo-legend-item.is-layer-work i {
+  background: var(--traffic-red);
+}
+
+.diablo-legend-item.is-layer-admin i {
+  background: var(--traffic-orange);
+}
+
+.diablo-legend-item.is-layer-sales i {
+  background: var(--traffic-green);
+}
+
+.diablo-legend-item.is-layer-margin i {
+  background: var(--traffic-margin);
+}
+
+.diablo-legend-item.is-kind-marker i,
+.diablo-legend-item.is-kind-relationship i {
+  border: 0;
+  border-radius: 999px;
+  background: #475569;
+}
+
+.diablo-legend-item.is-changed i {
+  background: #fbbf24;
+}
+
+.diablo-legend-item.is-handoff i,
+.diablo-legend-item.is-underloaded i {
+  background: #c2410c;
+}
+
+.diablo-legend-item.is-plan-b i {
+  background: #2563eb;
+}
+
+.diablo-legend-item.is-mentoring i,
+.diablo-legend-item.is-rd-work i,
+.diablo-legend-item.has-rd-work i,
+.diablo-legend-item.is-rd-project i {
+  background: #7c3aed;
+}
+
+.diablo-legend-item.is-backup i {
+  background: #047857;
+}
+
+.diablo-legend-item.is-moved i {
+  background: #0891b2;
+}
+
+.diablo-legend-item.is-active-engagement i,
+.diablo-legend-item.has-active-engagement i {
+  background: #0f766e;
+}
+
+.diablo-legend-item.is-unavailable-context i,
+.diablo-legend-item.has-unavailable-context i {
+  background: #111827;
+}
+
+.diablo-legend-item.is-waiting-room i,
+.diablo-legend-item.has-waiting-room i,
+.diablo-legend-item.is-waiting-room-project i {
+  background: #92400e;
+}
+
+.diablo-legend-item.is-low-value i,
+.diablo-legend-item.has-low-value i,
+.diablo-legend-item.is-low-value-project i {
+  background: #a855f7;
+}
+
+.diablo-legend-item.is-ownership i,
+.diablo-legend-item.has-ownership i {
+  background: #38bdf8;
+  color: #082f49;
+}
+
+.diablo-legend-item.is-kind-project i {
+  border-color: rgba(148, 163, 184, 0.26);
+  background: rgba(15, 23, 42, 0.74);
+  color: #f8fafc;
+}
+
+.diablo-legend-item.is-healthy-team i {
+  background: #10b981;
+}
+
+.diablo-legend-item.is-single-person i {
+  background: #38bdf8;
+  color: #082f49;
+}
+
+.diablo-legend-item.is-people-shortage i,
+.diablo-legend-item.is-empty-project i {
+  background: #ef4444;
+}
+
+.diablo-legend-item.is-many-project-people i,
+.diablo-legend-item.is-fragmented-collaborators i,
+.diablo-legend-item.has-fragmentation i,
+.diablo-legend-item.is-fragmented i {
+  background: linear-gradient(90deg, var(--traffic-green), #fbbf24, var(--traffic-red));
+}
+
+.diablo-legend-item.is-source-mismatch i {
+  background: #f97316;
+}
+
+.diablo-legend-item.is-kind-project i,
+.diablo-project-inventory-badges span {
+  border-color: rgba(148, 163, 184, 0.26);
+  background: rgba(15, 23, 42, 0.74);
+  color: #f8fafc;
+}
+
+.diablo-app.is-day .diablo-legend-item.is-kind-project i,
+.diablo-app.is-day .diablo-project-inventory-badges span {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+.diablo-legend-item.is-healthy-team i,
+.diablo-project-inventory-badges .is-healthy-team {
+  background: #10b981;
+}
+
+.diablo-legend-item.is-single-person i,
+.diablo-project-inventory-badges .is-single-person {
+  background: #38bdf8;
+  color: #082f49;
+}
+
+.diablo-legend-item.is-people-shortage i,
+.diablo-legend-item.is-empty-project i,
+.diablo-project-inventory-badges .is-people-shortage,
+.diablo-project-inventory-badges .is-empty-project {
+  background: #ef4444;
+}
+
+.diablo-legend-item.is-many-project-people i,
+.diablo-legend-item.is-fragmented-collaborators i,
+.diablo-project-inventory-badges .is-many-project-people,
+.diablo-project-inventory-badges .is-fragmented-collaborators {
+  background: linear-gradient(90deg, var(--traffic-green), #fbbf24, var(--traffic-red));
+}
+
+.diablo-legend-item.is-rd-project i,
+.diablo-project-inventory-badges .is-rd-project {
+  background: #7c3aed;
+}
+
+.diablo-legend-item.is-waiting-room-project i,
+.diablo-project-inventory-badges .is-waiting-room-project {
+  background: #92400e;
+}
+
+.diablo-legend-item.is-low-value-project i,
+.diablo-project-inventory-badges .is-low-value-project {
+  background: #a855f7;
+}
+
+.diablo-legend-item.is-source-mismatch i,
+.diablo-project-inventory-badges .is-source-mismatch {
+  background: #f97316;
+}
+
+.diablo-legend-item div {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.diablo-legend-item strong {
+  font-size: 12px;
+}
+
+.diablo-legend-item span {
+  color: var(--traffic-muted);
+  font-size: 11px;
+}
+
+.diablo-legend-item em {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  color: var(--traffic-muted);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+  padding: 4px 6px;
+}
+
+.diablo-legend-item.is-coverage-supported em {
+  border-color: rgba(52, 211, 153, 0.42);
+  color: #bbf7d0;
+}
+
+.diablo-legend-item.is-coverage-partial em {
+  border-color: rgba(250, 204, 21, 0.42);
+  color: #fef3c7;
+}
+
+.diablo-legend-item.is-coverage-classic {
+  opacity: 0.72;
+}
+
+.diablo-app.is-day .diablo-legend-item.is-coverage-supported em {
+  color: #166534;
+}
+
+.diablo-app.is-day .diablo-legend-item.is-coverage-partial em {
+  color: #854d0e;
+}
+
+.diablo-tool-island {
+  position: fixed;
+  left: var(--diablo-tool-island-center-x, 50vw);
+  bottom: 16px;
+  z-index: 18;
+  display: flex;
+  max-width: calc(100vw - 16px);
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  transform: translateX(-50%);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  background: rgba(8, 12, 20, 0.88);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  backdrop-filter: blur(14px);
+}
+
+.diablo-app.is-day .diablo-tool-island {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.diablo-tool-island button {
+  display: inline-flex;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0;
+}
+
+.diablo-tool-island button span {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--traffic-text);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.diablo-tool-island button.is-active {
+  border-color: var(--traffic-blue);
+  background: rgba(79, 140, 255, 0.2);
+}
+
+.diablo-tool-island button:hover,
+.diablo-tool-island button:focus-visible {
+  border-color: rgba(147, 197, 253, 0.72);
+  background: rgba(79, 140, 255, 0.18);
+}
+
+.diablo-tool-island button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.diablo-tool-island .diablo-hidden-projects-trigger {
+  width: auto;
+  min-width: 78px;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+.diablo-tool-island .diablo-clear-month-trigger {
+  width: auto;
+  min-width: 122px;
+  padding: 0 12px;
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.diablo-tool-island .diablo-project-people-sort-trigger {
+  width: 42px;
+  min-width: 42px;
+}
+
+.diablo-tool-island .diablo-project-people-sort-trigger span {
+  width: auto;
+  min-width: 0;
+  padding: 0 2px;
+  font-size: 11px;
+}
+
+.diablo-tool-island .diablo-hidden-projects-trigger span {
+  width: auto;
+  min-width: 0;
+  height: auto;
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.diablo-tool-island .diablo-clear-month-trigger span {
+  width: auto;
+  min-width: 0;
+  height: auto;
+  background: transparent;
+  color: #fecaca;
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.diablo-tool-island .diablo-clear-month-trigger.is-confirming {
+  border-color: rgba(248, 113, 113, 0.8);
+  background: rgba(127, 29, 29, 0.42);
+}
+
+.diablo-tool-island .diablo-clear-month-trigger.is-confirming span {
+  color: #fee2e2;
+}
+
+.diablo-tool-island .diablo-hidden-projects-trigger b {
+  display: inline-grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.diablo-tool-island .diablo-hidden-projects-trigger:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.diablo-tool-island .diablo-clear-month-trigger:disabled span {
+  color: rgba(254, 202, 202, 0.7);
+}
+
+.diablo-hidden-projects-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(3, 7, 18, 0.64);
+  backdrop-filter: blur(8px);
+}
+
+.diablo-hidden-projects-modal {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(680px, calc(100vh - 40px));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--traffic-panel) 96%, #020617);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
+}
+
+.diablo-hidden-projects-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--traffic-border) 78%, transparent);
+  padding: 18px 18px 16px;
+}
+
+.diablo-hidden-projects-header span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.diablo-hidden-projects-header h2 {
+  margin: 0;
+  color: var(--traffic-text);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.diablo-hidden-projects-header button,
+.diablo-hidden-project-row button {
+  min-height: 34px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 8px;
+  background: var(--traffic-panel-strong);
+  color: var(--traffic-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.diablo-hidden-projects-header button {
+  padding: 0 12px;
+}
+
+.diablo-hidden-projects-list {
+  display: grid;
+  gap: 10px;
+  overflow: auto;
+  padding: 14px;
+}
+
+.diablo-hidden-project-row {
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) minmax(240px, 1.25fr) auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid color-mix(in srgb, var(--traffic-border) 82%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--traffic-panel-strong) 74%, transparent);
+  padding: 12px;
+}
+
+.diablo-hidden-project-row strong,
+.diablo-hidden-project-row span {
+  display: block;
+}
+
+.diablo-hidden-project-row strong {
+  color: var(--traffic-text);
+  font-size: 14px;
+}
+
+.diablo-hidden-project-row span {
+  margin-top: 3px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.diablo-hidden-project-row dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.diablo-hidden-project-row dl div {
+  min-width: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-panel) 76%, transparent);
+  padding: 7px 8px;
+}
+
+.diablo-hidden-project-row dt,
+.diablo-hidden-project-row dd {
+  margin: 0;
+}
+
+.diablo-hidden-project-row dt {
+  color: var(--traffic-muted);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.diablo-hidden-project-row dd {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--traffic-text);
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diablo-hidden-project-row button {
+  min-width: 92px;
+  border-color: color-mix(in srgb, var(--traffic-green) 58%, var(--traffic-border));
+  color: #86efac;
+  padding: 0 12px;
+}
+
+.diablo-hidden-project-row button:hover,
+.diablo-hidden-project-row button:focus-visible,
+.diablo-hidden-projects-header button:hover,
+.diablo-hidden-projects-header button:focus-visible {
+  border-color: rgba(147, 197, 253, 0.72);
+  background: rgba(79, 140, 255, 0.18);
+}
+
+.diablo-hidden-projects-empty {
+  margin: 0;
+  padding: 28px 18px 30px;
+  color: var(--traffic-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.diablo-app.is-day .diablo-tool-island .diablo-hidden-projects-trigger b {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.diablo-app.is-day .diablo-tool-island .diablo-clear-month-trigger {
+  border-color: rgba(220, 38, 38, 0.42);
+}
+
+.diablo-app.is-day .diablo-tool-island .diablo-clear-month-trigger span {
+  color: #991b1b;
+}
+
+.diablo-app.is-day .diablo-tool-island .diablo-clear-month-trigger.is-confirming {
+  border-color: rgba(220, 38, 38, 0.74);
+  background: rgba(254, 226, 226, 0.9);
+}
+
+.diablo-app.is-day .diablo-hidden-projects-overlay {
+  background: rgba(15, 23, 42, 0.28);
+}
+
+.diablo-app.is-day .diablo-hidden-projects-modal {
+  background: #ffffff;
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.24);
+}
+
+.diablo-app.is-day .diablo-hidden-project-row {
+  background: #f8fafc;
+}
+
+.diablo-app.is-day .diablo-hidden-project-row dl div {
+  background: #eef4fb;
+}
+
+.diablo-app.is-day .diablo-hidden-project-row button {
+  border-color: #047857;
+  color: #047857;
+}
+
+@media (max-width: 760px) {
+  .diablo-hidden-project-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .diablo-hidden-project-row dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .diablo-hidden-project-row button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .diablo-app {
+    --diablo-main-padding: 8px;
+    --diablo-bench-dropzone-height: 82px;
+  }
+
+  .diablo-topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .diablo-canvas-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .diablo-canvas-left-column {
+    display: none;
+  }
+
+  .diablo-canvas-layout .diablo-canvas-viewport {
+    height: 100%;
+    border-radius: 8px;
+  }
+
+  .diablo-tool-island {
+    bottom: 12px;
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    border-radius: 18px;
+    padding: 5px;
+  }
+
+  .diablo-tool-island .diablo-clear-month-trigger {
+    min-width: 118px;
+    flex: 1 1 118px;
+  }
+
+  .diablo-tool-island .diablo-hidden-projects-trigger {
+    min-width: 84px;
+    flex: 0 1 104px;
+  }
+}

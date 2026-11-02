@@ -1,0 +1,45 @@
+{
+  "name": "pm-traffic-management",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "packageManager": "pnpm@8.15.4",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "dev": "pnpm --filter @ptm/web dev",
+    "dev:db": "docker compose -f docker-compose.dev.yml up -d postgres",
+    "dev:web": "pnpm --filter @ptm/web dev",
+    "dev:api": "pnpm --filter @ptm/api dev",
+    "dev:auth-preview": "node apps/web/scripts/auth-preview-api.mjs",
+    "dev:sync": "pnpm --filter @ptm/sync-server dev",
+    "dev:mcp": "pnpm --filter @ptm/mcp-server dev",
+    "dev:all": "pnpm dev:db && concurrently --kill-others-on-fail --names web,api,sync --prefix-colors cyan,green,magenta \"pnpm dev:web\" \"pnpm dev:api\" \"pnpm dev:sync\"",
+    "build": "pnpm --filter @ptm/web build && pnpm --filter @ptm/api build && pnpm --filter @ptm/mcp-server build",
+    "build:prod": "pnpm --filter @ptm/web build:prod",
+    "docker:build:web": "docker build -f apps/web/Dockerfile -t ptm-web .",
+    "docker:build:api": "docker build -f apps/api/Dockerfile -t ptm-api .",
+    "docker:build:sync": "docker build -t ptm-sync-server apps/sync-server",
+    "docker:build": "pnpm docker:build:web && pnpm docker:build:api && pnpm docker:build:sync",
+    "lint": "eslint .",
+    "preview": "pnpm --filter @ptm/web preview",
+    "test": "pnpm --filter @ptm/domain test && pnpm --filter @ptm/web test && pnpm --filter @ptm/api test && pnpm --filter @ptm/mcp-server test",
+    "test:watch": "pnpm --filter @ptm/web test:watch"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "concurrently": "^10.0.3",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.12.0",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.15.0"
+  }
+}

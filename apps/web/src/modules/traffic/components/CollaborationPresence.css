@@ -1,0 +1,414 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-presence-panel {
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  min-height: 40px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 6px 8px;
+  width: 100%;
+}
+
+.traffic-presence-panel.is-disabled {
+  background: color-mix(in srgb, var(--traffic-panel) 72%, transparent);
+  opacity: 0.62;
+}
+
+.traffic-presence-self,
+.traffic-presence-controls,
+.traffic-presence-peers,
+.traffic-presence-activity {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  gap: 5px;
+  min-width: 0;
+}
+
+.traffic-presence-self {
+  flex: 1 1 210px;
+}
+
+.traffic-presence-controls {
+  flex: 1 1 260px;
+}
+
+.traffic-presence-self input {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 6px;
+  color: var(--traffic-text);
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 0.78rem;
+  max-width: none;
+  min-width: 0;
+  padding: 4px 6px;
+  width: 100%;
+}
+
+.traffic-presence-self input:disabled,
+.traffic-presence-controls select:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.traffic-presence-controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  justify-content: stretch;
+}
+
+.traffic-presence-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--traffic-muted);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  min-height: 24px;
+  padding: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.traffic-presence-switch {
+  background: rgba(100, 116, 139, 0.32);
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 14px;
+  pointer-events: none;
+  position: relative;
+  width: 26px;
+}
+
+.traffic-presence-switch::after {
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
+  content: "";
+  height: 10px;
+  left: 1px;
+  position: absolute;
+  top: 1px;
+  transition: transform 140ms ease;
+  width: 10px;
+}
+
+.traffic-presence-toggle[aria-checked="true"] .traffic-presence-switch {
+  background: rgba(37, 99, 235, 0.72);
+  border-color: rgba(96, 165, 250, 0.9);
+}
+
+.traffic-presence-toggle[aria-checked="true"] .traffic-presence-switch::after {
+  transform: translateX(12px);
+}
+
+.traffic-presence-toggle:focus-visible .traffic-presence-switch {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.traffic-presence-controls select {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 6px;
+  color: var(--traffic-text);
+  font: inherit;
+  font-size: 0.72rem;
+  max-width: none;
+  min-height: 24px;
+  min-width: 0;
+  padding: 3px 5px;
+  width: 100%;
+}
+
+.traffic-presence-avatar {
+  align-items: center;
+  background: var(--traffic-presence-color);
+  border: 2px solid rgba(255, 255, 255, 0.76);
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 800;
+  height: 24px;
+  justify-content: center;
+  text-transform: uppercase;
+  width: 24px;
+}
+
+.traffic-presence-empty,
+.traffic-presence-more {
+  color: var(--traffic-muted);
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.traffic-presence-peers {
+  flex: 0 0 auto;
+  gap: 0;
+  justify-content: flex-start;
+  min-width: 0;
+  overflow: hidden;
+  width: auto;
+}
+
+.traffic-presence-peers .traffic-presence-avatar {
+  box-shadow: 0 0 0 1px var(--traffic-panel);
+}
+
+.traffic-presence-peers .traffic-presence-avatar + .traffic-presence-avatar,
+.traffic-presence-peers .traffic-presence-more {
+  margin-left: -8px;
+}
+
+.traffic-presence-more {
+  align-items: center;
+  background: rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: 800;
+  height: 24px;
+  justify-content: center;
+  min-width: 28px;
+  padding: 0 6px;
+}
+
+.traffic-presence-activity {
+  flex: 1 1 190px;
+  max-width: 260px;
+  overflow: hidden;
+  border-left: 1px solid rgba(148, 163, 184, 0.24);
+  padding-left: 8px;
+  white-space: nowrap;
+}
+
+.traffic-presence-activity strong {
+  flex: 0 0 auto;
+  color: var(--traffic-text);
+  font-size: 0.72rem;
+}
+
+.traffic-presence-activity span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--traffic-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+
+.traffic-presence-layer {
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  z-index: 80;
+}
+
+.traffic-remote-cursor,
+.traffic-presence-target {
+  pointer-events: none;
+  position: fixed;
+}
+
+.traffic-remote-cursor {
+  transform: translate(3px, 3px);
+  z-index: 86;
+}
+
+.traffic-remote-cursor-pointer {
+  border-bottom: 9px solid transparent;
+  border-left: 8px solid var(--traffic-presence-color);
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.28));
+  height: 0;
+  opacity: 0.82;
+  width: 0;
+}
+
+.traffic-remote-cursor-label,
+.traffic-presence-target span {
+  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--traffic-panel) 86%, var(--traffic-presence-color) 14%);
+  border: 1px solid color-mix(in srgb, var(--traffic-presence-color) 56%, transparent);
+  border-left-width: 4px;
+  border-radius: 7px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+  color: var(--traffic-text);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1;
+  max-width: 160px;
+  overflow: hidden;
+  padding: 4px 7px 4px 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.traffic-remote-cursor-label {
+  margin-left: 7px;
+  margin-top: -4px;
+}
+
+.traffic-presence-target {
+  background: color-mix(in srgb, var(--traffic-presence-color) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--traffic-presence-color) 68%, transparent);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--traffic-presence-color) 12%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, #ffffff 24%, transparent);
+  z-index: 82;
+}
+
+.traffic-presence-target.is-active {
+  border-style: dashed;
+  opacity: 0.82;
+}
+
+.traffic-presence-target.is-editing {
+  border-style: solid;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--traffic-presence-color) 16%, transparent),
+    0 8px 20px color-mix(in srgb, var(--traffic-presence-color) 10%, transparent);
+}
+
+.traffic-presence-target.is-conflict {
+  border-color: color-mix(in srgb, var(--traffic-presence-color) 74%, #f59e0b 26%);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--traffic-presence-color) 18%, transparent),
+    0 0 0 5px rgba(245, 158, 11, 0.12);
+}
+
+.traffic-presence-target span {
+  left: 8px;
+  max-width: calc(100% - 16px);
+  position: absolute;
+  top: -23px;
+}
+
+.traffic-presence-conflict {
+  background: color-mix(in srgb, var(--traffic-panel) 88%, #f59e0b 12%);
+  border: 1px solid rgba(245, 158, 11, 0.42);
+  border-radius: 8px;
+  bottom: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.26);
+  color: var(--traffic-text);
+  display: grid;
+  gap: 3px;
+  max-width: min(360px, calc(100vw - 24px));
+  padding: 10px 12px;
+  position: fixed;
+  right: 18px;
+  z-index: 88;
+}
+
+.traffic-presence-conflict strong {
+  color: var(--traffic-text);
+  font-size: 0.82rem;
+}
+
+.traffic-presence-conflict span {
+  font-size: 0.78rem;
+}
+
+@media (max-width: 1180px) {
+  .traffic-presence-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    }
+
+  .traffic-presence-self,
+    .traffic-presence-controls,
+    .traffic-presence-peers,
+    .traffic-presence-activity {
+      width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+  .traffic-presence-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+  .traffic-presence-self input,
+    .traffic-presence-controls select {
+      flex: 1 1 140px;
+      max-width: none;
+    }
+
+  .traffic-presence-controls {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+  .traffic-presence-peers {
+      justify-content: flex-start;
+      max-width: none;
+    }
+
+  .traffic-presence-activity {
+      max-width: none;
+    }
+}
+
+.traffic-app.is-day .traffic-presence-panel {
+  background: rgba(255, 255, 255, 0.84);
+  border-color: rgba(148, 163, 184, 0.46);
+}
+
+.traffic-app.is-day .traffic-presence-panel.is-disabled {
+  background: rgba(241, 245, 249, 0.86);
+}
+
+.traffic-app.is-day .traffic-presence-self input,
+.traffic-app.is-day .traffic-presence-controls select {
+  background: #fff;
+  border-color: rgba(148, 163, 184, 0.62);
+  color: #0f172a;
+}
+
+.traffic-app.is-day .traffic-presence-toggle {
+  color: #475569;
+}
+
+.traffic-app.is-day .traffic-presence-switch {
+  background: #d8e2ef;
+  border-color: #b8c6d8;
+}
+
+.traffic-app.is-day .traffic-presence-toggle[aria-checked="true"] .traffic-presence-switch {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.traffic-app.is-day .traffic-presence-peers .traffic-presence-avatar {
+  box-shadow: 0 0 0 1px #ffffff;
+}
+
+.traffic-app.is-day .traffic-presence-empty,
+.traffic-app.is-day .traffic-presence-more {
+  color: #475569;
+}
+
+.traffic-app.is-day .traffic-presence-more {
+  background: #e7eef8;
+  border-color: #cbd5e1;
+}
+
+/* End traffic UI styles. */

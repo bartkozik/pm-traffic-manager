@@ -1,0 +1,444 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-rules-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 450;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 7, 18, 0.72);
+  padding: 12px;
+}
+
+.traffic-rules-modal {
+  --traffic-rules-control-bg: color-mix(in srgb, var(--traffic-panel) 84%, var(--traffic-bg) 16%);
+  --traffic-rules-control-hover-bg: color-mix(in srgb, var(--traffic-panel) 90%, var(--traffic-blue) 10%);
+  --traffic-rules-control-selected-bg: color-mix(in srgb, var(--traffic-panel) 86%, var(--traffic-blue) 14%);
+  --traffic-rules-control-selected-border: color-mix(in srgb, var(--traffic-blue) 68%, var(--traffic-border) 32%);
+  --traffic-rules-muted-border: color-mix(in srgb, var(--traffic-border) 82%, transparent);
+  --traffic-rules-row-bg: color-mix(in srgb, var(--traffic-panel) 92%, var(--traffic-bg) 8%);
+  --traffic-rules-row-hover-bg: color-mix(in srgb, var(--traffic-panel) 88%, var(--traffic-blue) 12%);
+
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 14px;
+  width: min(1040px, 100%);
+  height: min(860px, calc(100vh - 24px));
+  overflow: hidden;
+  border: 1px solid var(--traffic-border);
+  border-radius: 10px;
+  background: var(--traffic-panel);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  padding: 18px;
+}
+
+.traffic-app.is-day .traffic-rules-modal,
+.diablo-app.is-day .traffic-rules-modal {
+  --traffic-rules-control-bg: #ffffff;
+  --traffic-rules-control-hover-bg: #f8fbff;
+  --traffic-rules-control-selected-bg: #eff6ff;
+  --traffic-rules-control-selected-border: #2563eb;
+  --traffic-rules-muted-border: #d5dfec;
+  --traffic-rules-row-bg: #ffffff;
+  --traffic-rules-row-hover-bg: #f8fbff;
+}
+
+.traffic-rules-toolbar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+  gap: 14px;
+}
+
+.traffic-rules-toolbar label,
+.traffic-rules-field,
+.traffic-rules-people-picker {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  color: var(--traffic-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.traffic-rules-toolbar input,
+.traffic-rules-toolbar select,
+.traffic-rules-field input,
+.traffic-rules-field select,
+.traffic-rules-field textarea,
+.traffic-rules-people-picker input,
+.traffic-rules-people-picker select {
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid var(--traffic-border);
+  border-radius: 6px;
+  background: var(--traffic-rules-control-bg);
+  color: var(--traffic-text);
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.traffic-rules-toolbar input::placeholder,
+.traffic-rules-field textarea::placeholder,
+.traffic-rules-people-picker input::placeholder {
+  color: color-mix(in srgb, var(--traffic-muted) 78%, transparent);
+  font-weight: 500;
+}
+
+.traffic-rules-toolbar input:disabled,
+.traffic-rules-toolbar select:disabled {
+  cursor: not-allowed;
+  border-color: var(--traffic-rules-muted-border);
+  background: color-mix(in srgb, var(--traffic-rules-control-bg) 74%, var(--traffic-bg) 26%);
+  color: color-mix(in srgb, var(--traffic-muted) 72%, transparent);
+}
+
+.traffic-rules-toolbar input:disabled::placeholder {
+  color: color-mix(in srgb, var(--traffic-muted) 56%, transparent);
+}
+
+.traffic-rules-field textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.traffic-rules-field-label {
+  color: var(--traffic-muted);
+}
+
+.traffic-rules-section-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.traffic-rules-form {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(380px, 1.05fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.traffic-rules-person-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.traffic-rules-scope-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.traffic-rules-scope-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.traffic-rules-person-options {
+  display: grid;
+  gap: 4px;
+  max-height: 136px;
+  min-height: 136px;
+  overflow: auto;
+  border: 1px solid var(--traffic-rules-muted-border);
+  border-radius: 6px;
+  background: var(--traffic-rules-control-bg);
+  padding: 5px;
+  scrollbar-color: color-mix(in srgb, var(--traffic-border) 72%, var(--traffic-blue) 28%) transparent;
+}
+
+.traffic-rules-person-options::-webkit-scrollbar-thumb {
+  border-width: 4px;
+  background: color-mix(in srgb, var(--traffic-border) 72%, var(--traffic-blue) 28%);
+  background-clip: padding-box;
+}
+
+.traffic-rules-person-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--traffic-text);
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
+.traffic-rules-person-option:hover {
+  border-color: var(--traffic-rules-muted-border);
+  background: var(--traffic-rules-control-hover-bg);
+}
+
+.traffic-rules-person-option.is-selected {
+  border-color: var(--traffic-rules-control-selected-border);
+  background: var(--traffic-rules-control-selected-bg);
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input {
+  position: absolute;
+  width: 1px;
+  min-width: 1px;
+  height: 1px;
+  min-height: 1px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.traffic-rules-person-option .traffic-rules-choice-control {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid color-mix(in srgb, var(--traffic-muted) 68%, var(--traffic-border) 32%);
+  background: var(--traffic-rules-control-bg);
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input[type="radio"] + .traffic-rules-choice-control {
+  border-radius: 999px;
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input[type="checkbox"] + .traffic-rules-choice-control {
+  border-radius: 4px;
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input:checked + .traffic-rules-choice-control {
+  border-color: var(--traffic-blue);
+  background: var(--traffic-blue);
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input[type="radio"]:checked + .traffic-rules-choice-control {
+  background: radial-gradient(circle, var(--traffic-blue) 0 42%, var(--traffic-rules-control-bg) 45%);
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input[type="checkbox"]:checked + .traffic-rules-choice-control::after {
+  content: "";
+  width: 7px;
+  height: 4px;
+  margin-bottom: 1px;
+  border-bottom: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  transform: rotate(-45deg);
+}
+
+.traffic-rules-person-option .traffic-rules-choice-input:focus-visible + .traffic-rules-choice-control {
+  outline: 2px solid color-mix(in srgb, var(--traffic-blue) 42%, transparent);
+  outline-offset: 2px;
+}
+
+.traffic-rules-choice-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.traffic-rules-choice-copy strong,
+.traffic-rules-choice-copy small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.traffic-rules-person-option small,
+.traffic-rules-empty-option,
+.traffic-rules-selected-summary {
+  color: var(--traffic-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.traffic-rules-empty-option {
+  margin: 0;
+  padding: 8px;
+}
+
+.traffic-rules-selected-summary,
+.traffic-rules-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.traffic-rules-selected-summary span {
+  min-width: 0;
+}
+
+.traffic-rules-actions {
+  justify-content: flex-start;
+}
+
+.traffic-rules-actions .traffic-button {
+  min-width: 180px;
+}
+
+.traffic-rules-create,
+.traffic-rules-list {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--traffic-rules-muted-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--traffic-panel) 94%, var(--traffic-bg) 6%);
+  padding: 14px;
+}
+
+.traffic-rules-list {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.traffic-rules-create h3,
+.traffic-rules-create p {
+  margin: 0;
+}
+
+.traffic-rules-create p {
+  color: var(--traffic-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.traffic-rules-list-header,
+.traffic-rule-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.traffic-rules-list-header span {
+  color: var(--traffic-muted);
+  font-size: 12px;
+}
+
+.traffic-rules-result-list {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  scrollbar-color: color-mix(in srgb, var(--traffic-border) 72%, var(--traffic-blue) 28%) transparent;
+}
+
+.traffic-rules-result-list::-webkit-scrollbar-thumb {
+  border-width: 4px;
+  background: color-mix(in srgb, var(--traffic-border) 72%, var(--traffic-blue) 28%);
+  background-clip: padding-box;
+}
+
+.traffic-rule-row {
+  border: 1px solid var(--traffic-rules-muted-border);
+  border-radius: 8px;
+  background: var(--traffic-rules-row-bg);
+  padding: 12px 14px;
+}
+
+.traffic-rule-row:hover {
+  background: var(--traffic-rules-row-hover-bg);
+}
+
+.traffic-rule-row div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.traffic-rule-row-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.traffic-rule-scope-badge {
+  flex: 0 0 auto;
+  border: 1px solid var(--traffic-rules-muted-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--traffic-rules-control-bg) 88%, var(--traffic-border) 12%);
+  color: var(--traffic-muted);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.traffic-rule-scope-badge.is-permanent {
+  border-color: color-mix(in srgb, var(--traffic-green) 34%, var(--traffic-rules-muted-border) 66%);
+  background: color-mix(in srgb, var(--traffic-green) 12%, var(--traffic-rules-control-bg) 88%);
+  color: color-mix(in srgb, var(--traffic-green) 76%, var(--traffic-text) 24%);
+}
+
+.traffic-rule-scope-badge.is-period {
+  border-color: color-mix(in srgb, var(--traffic-blue) 34%, var(--traffic-rules-muted-border) 66%);
+  background: color-mix(in srgb, var(--traffic-blue) 12%, var(--traffic-rules-control-bg) 88%);
+  color: color-mix(in srgb, var(--traffic-blue) 76%, var(--traffic-text) 24%);
+}
+
+.traffic-rule-row strong,
+.traffic-rule-row span,
+.traffic-rule-row p {
+  min-width: 0;
+  margin: 0;
+}
+
+.traffic-rule-row > div > span:not(.traffic-rule-row-heading),
+.traffic-rule-row p {
+  color: var(--traffic-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.traffic-rule-row .traffic-inline-link {
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--traffic-red) 36%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--traffic-red) 10%, transparent);
+  color: var(--traffic-red);
+  padding: 4px 9px;
+}
+
+.traffic-rule-row .traffic-inline-link:hover {
+  border-color: var(--traffic-red);
+  background: color-mix(in srgb, var(--traffic-red) 16%, transparent);
+  color: var(--traffic-red);
+  text-decoration: none;
+}
+
+@media (max-width: 960px) {
+  .traffic-rules-modal {
+      padding: 16px;
+    }
+
+  .traffic-rules-toolbar,
+    .traffic-rules-form,
+    .traffic-rules-person-panel,
+    .traffic-rules-scope-grid {
+      grid-template-columns: 1fr;
+    }
+
+  .traffic-rules-person-options {
+      min-height: 130px;
+      max-height: 170px;
+    }
+}
+
+/* End traffic UI styles. */

@@ -1,0 +1,45 @@
+{
+  "name": "@ptm/web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "dotenv -e ../../.env -- vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "build:prod": "tsc && vite build --base=__PUBLIC_URL__",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.17.8",
+    "@mantine/hooks": "^7.17.8",
+    "@ptm/contracts": "workspace:*",
+    "@ptm/domain": "workspace:*",
+    "i18next": "^24.2.2",
+    "i18next-icu": "^2.3.0",
+    "mantine-datatable": "^7.17.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet-async": "^2.0.5",
+    "react-i18next": "^15.4.1",
+    "react-router-dom": "^7.15.1",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "happy-dom": "^17.2.2",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.7"
+  }
+}

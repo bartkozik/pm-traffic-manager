@@ -1,0 +1,35 @@
+{
+  "server": {
+    "serverId": "local-public-workspace"
+  },
+  "backupSources": [],
+  "defaultRetentionPolicy": {
+    "lastHour": {
+      "interval": "minute",
+      "keep": 60
+    },
+    "today": {
+      "interval": "hour",
+      "keep": 24
+    },
+    "thisWeek": {
+      "interval": "day",
+      "keep": 7
+    },
+    "thisMonth": {
+      "interval": "2days",
+      "keep": 15
+    },
+    "thisYear": {
+      "interval": "week",
+      "keep": 52
+    },
+    "older": {
+      "action": "delete"
+    }
+  },
+  "cleanup": {
+    "intervalMinutes": 15,
+    "enableLogging": true
+  }
+}

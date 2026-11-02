@@ -1,0 +1,25 @@
+# Node modules
+node_modules
+
+# Local env
+.env
+.env.*
+
+# Logs
+logs
+*.log
+
+# Storage (runtime data)
+storage
+
+# Tests / coverage
+coverage
+
+# OS/editor
+.DS_Store
+.vscode
+.idea
+
+# Misc
+*.tmp
+*.swp

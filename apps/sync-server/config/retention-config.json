@@ -1,0 +1,46 @@
+{
+  "retentionPolicies": {
+    "default": {
+      "lastHour": {
+        "interval": "minute",
+        "keep": 60,
+        "description": "Keep every minute for the last hour"
+      },
+      "today": {
+        "interval": "hour", 
+        "keep": 24,
+        "description": "Keep every hour for today (excluding last hour)"
+      },
+      "thisWeek": {
+        "interval": "day",
+        "keep": 7,
+        "description": "Keep every day for this week (excluding today)"
+      },
+      "thisMonth": {
+        "interval": "2days",
+        "keep": 15,
+        "description": "Keep every 2 days for this month (excluding this week)"
+      },
+      "thisYear": {
+        "interval": "week",
+        "keep": 52,
+        "description": "Keep every week for this year (excluding this month)"
+      },
+      "older": {
+        "action": "delete",
+        "description": "Delete everything older than 1 year"
+      }
+    }
+  },
+  "cleanup": {
+    "intervalMinutes": 15,
+    "maxVersionsPerCleanup": 1000,
+    "enableLogging": true,
+    "dryRun": false
+  },
+  "storage": {
+    "compression": true,
+    "maxDocumentSize": "100MB",
+    "maxTotalStorage": "10GB"
+  }
+}

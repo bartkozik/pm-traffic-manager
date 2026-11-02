@@ -1,0 +1,109 @@
+/* Traffic UI styles scoped to this stylesheet. */
+
+.traffic-person-visual-badge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  min-width: 0;
+}
+
+.traffic-person-visual-badge.is-compact {
+  margin-top: 3px;
+  gap: 3px;
+}
+
+.traffic-skill-glyphs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.traffic-skill-glyph,
+.traffic-seniority-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 5px;
+  padding: 2px 5px;
+  color: #e5eefc;
+  background: rgba(30, 41, 59, 0.88);
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.traffic-person-visual-badge.is-compact .traffic-skill-glyph,
+.traffic-person-visual-badge.is-compact .traffic-seniority-glyph {
+  min-width: 20px;
+  min-height: 16px;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 8px;
+}
+
+.traffic-seniority-glyph {
+  color: #0f172a;
+  background: #facc15;
+  border-color: rgba(250, 204, 21, 0.76);
+}
+
+.traffic-skill-glyph.is-design {
+  color: #fef3c7;
+  background: #b45309;
+  border-color: rgba(251, 191, 36, 0.56);
+}
+
+.traffic-skill-glyph.is-backend {
+  color: #fee2e2;
+  background: #9f1239;
+  border-color: rgba(248, 113, 113, 0.58);
+}
+
+.traffic-skill-glyph.is-frontend {
+  color: #ffedd5;
+  background: #9a3412;
+  border-color: rgba(251, 146, 60, 0.58);
+}
+
+.traffic-skill-glyph.is-fullstack {
+  color: #dbeafe;
+  background: #1d4ed8;
+  border-color: rgba(96, 165, 250, 0.58);
+}
+
+.traffic-skill-glyph.is-qa {
+  color: #dcfce7;
+  background: #15803d;
+  border-color: rgba(74, 222, 128, 0.58);
+}
+
+.traffic-skill-glyph.is-pm {
+  color: #f5f3ff;
+  background: #6d28d9;
+  border-color: rgba(167, 139, 250, 0.58);
+}
+
+.traffic-skill-glyph.is-devops {
+  color: #ccfbf1;
+  background: #0f766e;
+  border-color: rgba(45, 212, 191, 0.58);
+}
+
+.traffic-skill-glyph.is-mobile {
+  color: #f0f9ff;
+  background: #0369a1;
+  border-color: rgba(56, 189, 248, 0.58);
+}
+
+.traffic-app.is-day .traffic-seniority-glyph {
+  border-color: #d97706;
+  color: #78350f;
+  background: #fef3c7;
+}
+
+/* End traffic UI styles. */
