@@ -3,6 +3,27 @@ import { TEST_IDP_CERTIFICATE } from './auth/saml.testSupport.js';
 import { getConfig } from './config.js';
 
 describe('getConfig', () => {
+  it('isolates demo authentication and AI from ordinary environment credentials', () => {
+    const config = getConfig({ PTM_DEMO_ENABLED: 'true', PTM_AUTH_ENABLED: 'true', OPENAI_API_KEY: 'ambient-key', PTM_OPENAI_API_KEY: 'ordinary-key' });
+    expect(config.demo?.enabled).toBe(true);
+    expect(config.demo?.openAiApiKey).toBeUndefined();
+    expect(config.auth.enabled).toBe(false);
+    expect(getConfig({ PTM_DEMO_ENABLED: 'true', PTM_DEMO_OPENAI_API_KEY: 'dedicated-key' }).demo?.openAiApiKey).toBe('dedicated-key');
+  });
+
+  it('ignores SAML bootstrap and ordinary AI credentials in demo mode', () => {
+    const config = getConfig({ PTM_DEMO_ENABLED: 'true', PTM_SAML_SP_PRIVATE_KEY_BASE64: 'invalid!', PTM_SAML_IDP_ENTITY_ID: 'partial', PTM_AI_PROVIDER: 'unsupported', OPENAI_API_KEY: 'ambient', PTM_OPENAI_API_KEY: 'ordinary' });
+    expect(config.openAiApiKey).toBeUndefined();
+    expect(config.auth.samlSpPrivateKey).toBe('');
+    expect(config.auth.cookieSecure).toBe(true);
+  });
+
+  it('requires an exact HTTPS demo browser origin in production', () => {
+    expect(() => getConfig({ PTM_DEMO_ENABLED: 'true', NODE_ENV: 'production', CORS_ORIGIN: 'http://demo.test' })).toThrow('HTTPS');
+    expect(() => getConfig({ PTM_DEMO_ENABLED: 'true', CORS_ORIGIN: 'https://demo.test/path' })).toThrow('origin');
+    expect(getConfig({ PTM_DEMO_ENABLED: 'true', NODE_ENV: 'production', CORS_ORIGIN: 'https://demo.test' }).demo?.enabled).toBe(true);
+  });
+
   it('defaults AI Check to OpenAI with the OpenAI model default', () => {
     const config = getConfig({});
 

@@ -1,3 +1,7 @@
+import { isTrustedDemoProxy } from './demo/demoProxy.js';
+import { DemoRepository } from './demo/demo.repository.js';
+import { DemoOpportunityCheckService } from './demo/demoAi.service.js';
+import { registerDemoRoutes } from './demo/demo.router.js';
 import formbody from '@fastify/formbody';
 import Fastify, { FastifyInstance } from 'fastify';
 import { createBootstrapAccessUsers } from './auth/access.defaults.js';
@@ -21,6 +25,8 @@ import { TrafficBoardService } from './traffic/services/trafficBoard.service.js'
 
 export async function buildApp(config: ApiConfig): Promise<FastifyInstance> {
   const app = Fastify({
+    trustProxy: config.demo?.enabled ? isTrustedDemoProxy : false,
+    bodyLimit: config.demo?.enabled ? 524288 : 1048576,
     logger: {
       serializers: {
         req(request) {
@@ -38,6 +44,25 @@ export async function buildApp(config: ApiConfig): Promise<FastifyInstance> {
   const pool = createPostgresPool(config.databaseUrl);
   await initializePostgresDatabase(pool);
   await app.register(formbody);
+  if (config.demo?.enabled) {
+    const repository = new DemoRepository(pool);
+    await repository.initialize();
+    const boardService = new TrafficBoardService(repository);
+    const realtime = new TrafficBoardRealtimeHub(boardService, undefined, config.corsOrigin, repository);
+    realtime.attach(app);
+    registerDemoRoutes(app, repository, config.corsOrigin, Boolean(config.demo.openAiApiKey), realtime);
+    app.get('/api/health', async (_request, reply) => {
+      try {
+        await pool.query('SELECT 1');
+        return { ok: true, mode: 'demo' };
+      } catch {
+        return reply.code(503).send({ ok: false, mode: 'demo' });
+      }
+    });
+    await registerTrafficBoardRoutes(app, boardService, new DemoOpportunityCheckService(repository, config.demo.openAiApiKey), new NbpFxRateProvider(config.fxRateProviderBaseUrl), realtime);
+    app.addHook('onClose', async () => pool.end());
+    return app;
+  }
   const accessRepository = new PostgresAccessUserRepository(pool);
   const samlConfigurationRepository = new PostgresSamlConfigurationRepository(pool);
   await accessRepository.seedUsers(createBootstrapAccessUsers(config.auth.allowedEmails));

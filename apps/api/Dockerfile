@@ -1,21 +1,24 @@
-FROM node:24.11.0-bookworm-slim AS builder
+FROM node:24-bookworm-slim@sha256:c86ecead9e55a5210ac1727de38a4ca840bf03dcaf34dc9749addbf383b1920c AS builder
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g pnpm@10.13.1
+RUN npm install -g pnpm@8.15.4
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json apps/api/package.json
+COPY apps/mcp-server/package.json apps/mcp-server/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY apps/sync-server/package.json apps/sync-server/package.json
 COPY packages/domain/package.json packages/domain/package.json
 COPY packages/contracts/package.json packages/contracts/package.json
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY apps/api apps/api
 COPY packages packages
 RUN pnpm --filter @ptm/api build
 
-FROM node:24.11.0-bookworm-slim AS production
+FROM node:24-bookworm-slim@sha256:c86ecead9e55a5210ac1727de38a4ca840bf03dcaf34dc9749addbf383b1920c AS production
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PTM_API_HOST=0.0.0.0

@@ -43,3 +43,8 @@ apps/sync-server/data-docs
 apps/sync-server/config/sync-server-config.json
 **/data-docs/
 **/*.tsbuildinfo
+.agents/
+.codex/
+docs/plans/
+specs/
+plans/

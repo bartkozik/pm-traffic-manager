@@ -137,6 +137,20 @@ describe('trafficStore durable persistence', () => {
     vi.useRealTimers();
   });
 
+  it('ignores a late snapshot after switching to a fresh demo board', async () => {
+    let finishOld!: (value: Awaited<ReturnType<typeof loadTrafficBoardSnapshot>>) => void;
+    mockedLoadTrafficBoardSnapshot.mockImplementationOnce(() => new Promise((resolve) => { finishOld = resolve; }));
+    const fresh = { ...createDurableSnapshot(), activePeriodId: '2026-07' };
+    mockedLoadTrafficBoardSnapshot.mockResolvedValueOnce({ boardId: 'new', snapshot: fresh, updatedAt: '2026-06-11T08:00:00Z', version: 1 });
+    useTrafficStore.getState().initializeBoard('old');
+    useTrafficStore.getState().initializeBoard('new');
+    await flushPromises();
+    finishOld({ boardId: 'old', snapshot: createDurableSnapshot(), updatedAt: '2026-06-11T08:00:00Z', version: 99 });
+    await flushPromises();
+    expect(useTrafficStore.getState().activePeriodId).toBe('2026-07');
+    expect(useTrafficStore.getState().durableVersion).toBe(1);
+  });
+
   it('loads the API snapshot without saving it back during startup sync', async () => {
     const snapshot = createDurableSnapshot();
     mockedLoadTrafficBoardSnapshot.mockResolvedValue({

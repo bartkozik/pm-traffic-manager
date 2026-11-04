@@ -1,3 +1,4 @@
+import { DemoError, DemoRepository } from '../../demo/demo.repository.js';
 import { IncomingMessage } from 'node:http';
 import { Duplex } from 'node:stream';
 import { FastifyInstance } from 'fastify';
@@ -16,13 +17,16 @@ import { isAllowedBrowserOrigin } from '../../auth/browserOrigin.js';
 export class TrafficBoardRealtimeHub {
   private readonly clientsByActorId = new Map<string, Set<WebSocket>>();
   private readonly clientsByBoardId = new Map<string, Set<WebSocket>>();
-  private readonly webSocketServer = new WebSocketServer({ noServer: true });
+  private readonly webSocketServer: WebSocketServer;
 
   constructor(
     private readonly service: TrafficBoardService,
     private readonly authService?: AuthService,
-    private readonly allowedOrigin?: string
-  ) {}
+    private readonly allowedOrigin?: string,
+    private readonly demoRepository?: DemoRepository
+  ) {
+    this.webSocketServer = new WebSocketServer({ noServer: true, maxPayload: demoRepository ? 524288 : 1048576 });
+  }
 
   attach(app: FastifyInstance) {
     app.server.on('upgrade', (request, socket, head) => {
@@ -52,13 +56,14 @@ export class TrafficBoardRealtimeHub {
       closeUpgradeSocket(socket);
       return;
     }
-    if (this.authService?.enabled && !isAllowedBrowserOrigin(request.headers.origin, this.allowedOrigin)) {
+    if ((this.demoRepository && request.headers.origin !== this.allowedOrigin) || (this.authService?.enabled && !isAllowedBrowserOrigin(request.headers.origin, this.allowedOrigin))) {
       closeUpgradeSocket(socket, 403, 'Forbidden');
       return;
     }
 
     try {
-      const actorId = await this.authService?.getRequestActor(
+      const demoSession = await this.demoRepository?.authenticate(request.headers.cookie, boardId);
+      const actorId = demoSession?.token_hash ?? await this.authService?.getRequestActor(
         request.headers.cookie,
         request.headers.authorization
       );
@@ -66,12 +71,20 @@ export class TrafficBoardRealtimeHub {
         closeUpgradeSocket(socket, 401, 'Unauthorized');
         return;
       }
-      const sessionExpiresAt = this.authService?.getSessionExpiresAt(request.headers.cookie);
+      const sessionExpiresAt = demoSession?.expires_at.getTime() ?? this.authService?.getSessionExpiresAt(request.headers.cookie);
+      if (demoSession && (this.webSocketServer.clients.size >= 200 || (this.clientsByActorId.get(demoSession.token_hash)?.size ?? 0) >= 4)) {
+        closeUpgradeSocket(socket, 429, 'Too Many Requests');
+        return;
+      }
 
       this.webSocketServer.handleUpgrade(request, socket, head, (webSocket) => {
         this.webSocketServer.emit('connection', webSocket, request, boardId, actorId, sessionExpiresAt);
       });
-    } catch {
+    } catch (error) {
+      if (error instanceof DemoError) {
+        closeUpgradeSocket(socket, error.statusCode, error.statusCode === 401 ? 'Unauthorized' : 'Forbidden');
+        return;
+      }
       closeUpgradeSocket(socket, 503, 'Service Unavailable');
     }
   }
@@ -124,8 +137,18 @@ export class TrafficBoardRealtimeHub {
       }
     });
 
+    let windowStart = Date.now();
+    let messageCount = 0;
+    let pendingCommands = 0;
+    webSocket.on('error', () => webSocket.close());
     webSocket.on('message', (data) => {
-      void this.handleClientMessage(webSocket, boardId, data, actorId);
+      if (this.demoRepository) {
+        if (Date.now() - windowStart >= 1000) { windowStart = Date.now(); messageCount = 0; }
+        messageCount += 1;
+        if (messageCount > 30 || pendingCommands >= 5) { webSocket.close(1008, 'Demo realtime limit reached.'); return; }
+      }
+      pendingCommands += 1;
+      void this.handleClientMessage(webSocket, boardId, data, actorId).finally(() => { pendingCommands -= 1; });
     });
 
     try {
@@ -226,8 +249,12 @@ function parseRealtimeBoardId(request: IncomingMessage) {
   const match = url.pathname.match(/^\/api\/boards\/([^/]+)\/realtime$/);
   if (!match) return null;
 
-  const parsed = trafficBoardIdSchema.safeParse(decodeURIComponent(match[1]));
-  return parsed.success ? parsed.data : null;
+  try {
+    const parsed = trafficBoardIdSchema.safeParse(decodeURIComponent(match[1]));
+    return parsed.success ? parsed.data : null;
+  } catch {
+    return null;
+  }
 }
 
 function closeUpgradeSocket(socket: Duplex, status = 404, statusText = 'Not Found') {

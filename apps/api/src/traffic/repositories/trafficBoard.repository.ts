@@ -1,4 +1,4 @@
-import { TrafficSnapshot } from '@ptm/domain';
+import { TrafficSnapshot, TrafficBoardCommand } from '@ptm/domain';
 
 export interface TrafficBoardRecord {
   boardId: string;
@@ -60,6 +60,8 @@ export const trafficEntityTables: TrafficEntityTable[] = [
 ];
 
 export interface TrafficBoardRepository {
+  validateCommand?(snapshot: TrafficSnapshot, command: TrafficBoardCommand): void;
+  saveIfCurrent?(boardId: string, snapshot: TrafficSnapshot, baseUpdatedAt?: string): Promise<TrafficBoardRecord>;
   find(boardId: string): Promise<TrafficBoardRecord | null>;
   updateAtomically(
     boardId: string,

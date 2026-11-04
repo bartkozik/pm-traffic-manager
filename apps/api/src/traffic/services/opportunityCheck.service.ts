@@ -156,7 +156,7 @@ function extractJsonText(content: string) {
   return fencedMatch?.[1]?.trim() || trimmed;
 }
 
-function getOpportunitySystemPrompt() {
+export function getOpportunitySystemPrompt() {
   return [
     'You are an operations and commercial planning analyst for a software house.',
     'Use only the supplied data. Do not invent numbers.',
@@ -177,7 +177,7 @@ function getOpportunitySystemPrompt() {
   ].join(' ');
 }
 
-function getOpportunityUserPrompt(analysis: MonthOpportunityAnalysis) {
+export function getOpportunityUserPrompt(analysis: MonthOpportunityAnalysis) {
   return JSON.stringify({
     objective: 'Assess whether this monthly pipeline is worth pursuing and what to change.',
     outputSchema: {
@@ -201,7 +201,7 @@ function getOpportunityUserPrompt(analysis: MonthOpportunityAnalysis) {
   });
 }
 
-function normalizeOpportunityModelResult(value: unknown): unknown {
+export function normalizeOpportunityModelResult(value: unknown): unknown {
   if (!value || typeof value !== 'object') return value;
 
   const result = value as Record<string, unknown>;

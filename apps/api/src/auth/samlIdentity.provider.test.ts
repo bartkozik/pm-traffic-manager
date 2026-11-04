@@ -1,4 +1,5 @@
 import { generateKeyPairSync } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import type { CacheItem, CacheProvider, Profile } from '@node-saml/node-saml';
 import { describe, expect, it } from 'vitest';
 import { InMemorySamlConfigurationRepository } from './inMemorySamlConfiguration.repository.testSupport.js';
@@ -18,7 +19,9 @@ const privateKey = generateKeyPairSync('rsa', {
   privateKeyEncoding: { format: 'pem', type: 'pkcs8' },
   publicKeyEncoding: { format: 'pem', type: 'spki' },
 }).privateKey;
-const certificate = '-----BEGIN CERTIFICATE-----\nVEVTVC1DRVJUSUZJQ0FURQ==\n-----END CERTIFICATE-----';
+const certificate = execFileSync('openssl', [
+  'req', '-new', '-x509', '-key', '/dev/stdin', '-subj', '/CN=ptm-test.invalid', '-days', '1',
+], { input: privateKey, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
 
 describe('SamlWorkspaceIdentityProvider', () => {
   it('creates a signed HTTP-POST AuthnRequest and signed SP metadata', async () => {
