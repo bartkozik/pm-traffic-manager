@@ -53,3 +53,10 @@ docker-compose.override.yml
 apps/sync-server/config/sync-server-config.json
 **/data-docs/
 **/*.tsbuildinfo
+.git
+.github
+.agents
+.codex
+docs
+plans
+specs

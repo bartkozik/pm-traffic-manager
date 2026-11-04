@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
     globals: true,
+    maxWorkers: 2,
     environment: 'happy-dom',
     setupFiles: ['./src/test/setup.ts'],
     exclude: ['**/node_modules/**', '**/apps/sync-server/**', '**/apps/api/dist/**'],

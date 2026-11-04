@@ -146,7 +146,7 @@ const projectImportSchema = z.object({
   projectRateNativeH: z.number().positive().optional(),
   projectRateCurrency: z.string().regex(/^[A-Za-z]{3}$/).optional(),
   companyTargetRatePlnH: z.number().positive().optional(),
-  skillRatesPlnH: z.record(skillSchema, z.number().positive()).optional(),
+  skillRatesPlnH: z.partialRecord(skillSchema, z.number().positive()).optional(),
   billingCurrency: z.string().regex(/^[A-Za-z]{3}$/).optional(),
   fxMode: fxModeSchema.optional(),
   fx: fxRateSnapshotSchema.optional(),

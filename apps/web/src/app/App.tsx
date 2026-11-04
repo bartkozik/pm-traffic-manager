@@ -9,6 +9,7 @@ import { router } from "./routes";
 import i18n from '@/app/i18n/i18n';
 import { AuthGate } from '@/modules/auth/AuthGate';
 import { AuthProvider } from '@/modules/auth/AuthProvider';
+import { demoEnabled } from '@/modules/demo/demoRuntime';
 import '@mantine/core/styles.css';
 import 'mantine-datatable/styles.css';
 import '@/modules/traffic/styles/trafficBase.css';
@@ -19,11 +20,11 @@ export default function App() {
       <I18nextProvider i18n={i18n}>
         <ThemeProvider>
           <MantineProvider>
-            <AuthProvider>
+            {demoEnabled ? <ReactRouterProvider router={router} /> : <AuthProvider>
               <AuthGate>
                 <ReactRouterProvider router={router} />
               </AuthGate>
-            </AuthProvider>
+            </AuthProvider>}
           </MantineProvider>
         </ThemeProvider>
       </I18nextProvider>

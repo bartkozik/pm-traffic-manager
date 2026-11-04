@@ -5,6 +5,7 @@ import type {
 import type { FxRateSnapshot, MoveTrafficAllocation, TrafficBoardCommand } from '@ptm/domain';
 import type { TrafficSnapshot } from '../models/traffic.model';
 import { apiBaseUrl, apiFetch } from '@/core/api/apiClient';
+import { demoEnabled, DEMO_REFRESH_EVENT } from '@/modules/demo/demoRuntime';
 
 export interface TrafficBoardResponse {
   boardId: string;
@@ -156,6 +157,7 @@ export async function runOpportunityCheck(
   const response = await apiFetch(`${apiBaseUrl}/boards/${encodeURIComponent(boardId)}/periods/${encodeURIComponent(periodId)}/ai-opportunity-check`, {
     method: 'POST',
   });
+  if (demoEnabled) window.dispatchEvent(new Event(DEMO_REFRESH_EVENT));
   if (!response.ok) {
     let message = `Failed to run AI opportunity check: ${response.status}`;
     try {

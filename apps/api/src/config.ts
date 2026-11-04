@@ -7,6 +7,7 @@ export interface ApiConfig {
   auth: AuthConfig;
   corsOrigin: string;
   databaseUrl: string;
+  demo?: { enabled: boolean; openAiApiKey?: string };
   fxRateProviderBaseUrl: string;
   host: string;
   openAiApiKey?: string;
@@ -41,19 +42,26 @@ export interface AuthConfig {
 type AiProvider = 'openai' | 'anthropic';
 
 export function getConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
-  const aiProvider = parseAiProvider(env.PTM_AI_PROVIDER);
+  const demoEnabled = parseBoolean(env.PTM_DEMO_ENABLED, false);
+  const aiProvider = demoEnabled ? 'openai' : parseAiProvider(env.PTM_AI_PROVIDER);
   const corsOrigin = env.CORS_ORIGIN || env.PTM_API_CORS_ORIGIN || 'http://localhost:5173';
+
+  if (demoEnabled) {
+    validateAuthUrl('Demo browser origin', corsOrigin, env.NODE_ENV === 'production');
+    if (new URL(corsOrigin).origin !== corsOrigin) throw new Error('Demo browser origin must contain only scheme, hostname and port.');
+  }
 
   return {
     aiModel: env.PTM_AI_MODEL || env.PTM_OPENAI_MODEL || (aiProvider === 'anthropic' ? 'claude-sonnet-4-20250514' : 'gpt-4o-mini'),
     aiProvider,
-    anthropicApiKey: env.PTM_ANTHROPIC_API_KEY || env.ANTHROPIC_API_KEY,
-    auth: parseAuthConfig(env, corsOrigin),
+    anthropicApiKey: demoEnabled ? undefined : env.PTM_ANTHROPIC_API_KEY || env.ANTHROPIC_API_KEY,
+    auth: parseAuthConfig(demoEnabled ? { NODE_ENV: env.NODE_ENV, PTM_AUTH_ENABLED: 'false', PTM_AUTH_COOKIE_SECURE: 'true' } : env, corsOrigin),
+    demo: { enabled: demoEnabled, openAiApiKey: env.PTM_DEMO_OPENAI_API_KEY?.trim() || undefined },
     corsOrigin,
     databaseUrl: env.PTM_DATABASE_URL || env.DATABASE_URL || 'postgres://ptm:ptm@127.0.0.1:5432/ptm',
     fxRateProviderBaseUrl: env.PTM_FX_RATE_PROVIDER_BASE_URL || 'https://api.nbp.pl/api',
     host: env.PTM_API_HOST || '0.0.0.0',
-    openAiApiKey: env.PTM_OPENAI_API_KEY || env.OPENAI_API_KEY,
+    openAiApiKey: demoEnabled ? undefined : env.PTM_OPENAI_API_KEY || env.OPENAI_API_KEY,
     port: Number(env.PTM_API_PORT || 4000),
   };
 }

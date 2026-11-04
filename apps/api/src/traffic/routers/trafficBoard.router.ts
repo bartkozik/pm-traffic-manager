@@ -21,7 +21,7 @@ import { TrafficBoardConflictError, TrafficBoardService } from '../services/traf
 export async function registerTrafficBoardRoutes(
   app: FastifyInstance,
   service: TrafficBoardService,
-  opportunityCheckService: OpportunityCheckService,
+  opportunityCheckService: Pick<OpportunityCheckService, 'check'>,
   fxRateProvider: NbpFxRateProvider,
   realtimeHub?: TrafficBoardRealtimeHub,
   authService?: AuthService

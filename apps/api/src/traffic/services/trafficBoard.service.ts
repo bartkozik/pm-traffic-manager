@@ -31,6 +31,7 @@ export class TrafficBoardService {
         throw new TrafficBoardConflictError(existing);
       }
 
+      if (this.repository.saveIfCurrent) return this.repository.saveIfCurrent(boardId, snapshot, options.baseUpdatedAt);
       return this.repository.upsert(boardId, snapshot);
     });
   }
@@ -57,7 +58,10 @@ export class TrafficBoardService {
       return this.repository.updateAtomically(
         boardId,
         createSeedTrafficSnapshot(),
-        (snapshot) => applyTrafficBoardCommand(snapshot, command),
+        (snapshot) => {
+          this.repository.validateCommand?.(snapshot, command);
+          return applyTrafficBoardCommand(snapshot, command);
+        },
         getTrafficBoardCommandAuditAction(command),
         auditContext
       );

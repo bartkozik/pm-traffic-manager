@@ -1,4 +1,8 @@
 import { generateKeyPairSync } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import type { CacheItem, CacheProvider, Profile } from '@node-saml/node-saml';
 import { describe, expect, it } from 'vitest';
 import { InMemorySamlConfigurationRepository } from './inMemorySamlConfiguration.repository.testSupport.js';
@@ -18,7 +22,18 @@ const privateKey = generateKeyPairSync('rsa', {
   privateKeyEncoding: { format: 'pem', type: 'pkcs8' },
   publicKeyEncoding: { format: 'pem', type: 'spki' },
 }).privateKey;
-const certificate = '-----BEGIN CERTIFICATE-----\nVEVTVC1DRVJUSUZJQ0FURQ==\n-----END CERTIFICATE-----';
+const certificate = (() => {
+  const directory = mkdtempSync(join(tmpdir(), 'ptm-saml-test-'));
+  try {
+    const keyPath = join(directory, 'key.pem');
+    writeFileSync(keyPath, privateKey, { mode: 0o600 });
+    return execFileSync('openssl', [
+      'req', '-new', '-x509', '-key', keyPath, '-subj', '/CN=ptm-test.invalid', '-days', '1',
+    ], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+})();
 
 describe('SamlWorkspaceIdentityProvider', () => {
   it('creates a signed HTTP-POST AuthnRequest and signed SP metadata', async () => {

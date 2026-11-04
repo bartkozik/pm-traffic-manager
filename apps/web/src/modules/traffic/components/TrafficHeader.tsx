@@ -11,6 +11,7 @@ import ptmLogo from '@/assets/portfolio-mark.svg';
 import type { HelpTopicId } from '../help/helpContent';
 import { AuthAccount } from '@/modules/auth/AuthAccount';
 import './TrafficHeader.css';
+import { demoEnabled } from '@/modules/demo/demoRuntime';
 
 export interface RoomPreset {
   id: string;
@@ -154,7 +155,7 @@ export function TrafficHeader({
         id="traffic-header-menu"
       >
         <div className="traffic-actions-row traffic-actions-row-primary">
-          <div className="traffic-action-section traffic-action-section-board">
+          {!demoEnabled && <div className="traffic-action-section traffic-action-section-board">
             <span className="traffic-action-section-label">Tablica</span>
             <div className="traffic-room-controls" aria-label="Wybór tablicy i scenariusza">
               <select
@@ -184,8 +185,8 @@ export function TrafficHeader({
                 </button>
               </form>
             </div>
-          </div>
-          <div className="traffic-action-section traffic-action-section-collaboration">
+          </div>}
+          {!demoEnabled && <div className="traffic-action-section traffic-action-section-collaboration">
             <span className="traffic-action-section-label">Współpraca</span>
             <TrafficTooltip className="traffic-sync-tooltip" label={syncDetail} placement="bottom">
               <div className={`traffic-sync-status ${isConnected && isSynced ? 'is-ok' : 'is-warning'}`}>
@@ -203,7 +204,7 @@ export function TrafficHeader({
               onTrackingEnabledChange={onTrackingEnabledChange}
               onUserNameChange={onUserNameChange}
             />
-          </div>
+          </div>}
           <div className="traffic-action-section traffic-action-section-view">
             <span className="traffic-action-section-label">Widok</span>
             <select
@@ -282,7 +283,7 @@ export function TrafficHeader({
                         </Link>
                       </TrafficTooltip>
                     ) : null}
-                    <TrafficTooltip className="traffic-tool-tooltip" label="Przywraca dane startowe tej tablicy" placement="top">
+                    {!demoEnabled && <TrafficTooltip className="traffic-tool-tooltip" label="Przywraca dane startowe tej tablicy" placement="top">
                       <button
                         className={`traffic-button traffic-tool-button ${resetConfirmationPending ? 'is-danger' : ''}`}
                         type="button"
@@ -291,7 +292,7 @@ export function TrafficHeader({
                       >
                         {resetConfirmationPending ? 'Potwierdź reset' : 'Resetuj dane'}
                       </button>
-                    </TrafficTooltip>
+                    </TrafficTooltip>}
                     <TrafficTooltip className="traffic-tool-tooltip" label="Kopiuje krótkie podsumowanie boardu do schowka" placement="top">
                       <button
                         className={`traffic-button traffic-tool-button ${snapshotStatus === 'copied' ? 'is-success' : snapshotStatus === 'failed' ? 'is-danger' : ''}`}

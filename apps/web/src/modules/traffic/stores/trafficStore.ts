@@ -1,6 +1,7 @@
 // Public snapshot: identity labels and financial amounts below are synthetic fixture values.
 // Existing schema, relationships, planning scenarios and implementation are retained.
 import { create } from 'zustand';
+import { demoEnabled, DEMO_RESET_EVENT } from '@/modules/demo/demoRuntime';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import {
@@ -938,11 +939,12 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
   initializeBoard: (roomName, serverConfig) => {
     get().cleanup();
 
+    let disposed = false;
     const doc = new Y.Doc();
     const wsUrl = getSyncServerWsUrl(serverConfig);
     // Keep business board maps local-only; API/Postgres is the durable source of truth.
     const presenceDoc = new Y.Doc();
-    const provider = new WebsocketProvider(wsUrl, `${roomName}:presence`, presenceDoc);
+    const provider = new WebsocketProvider(wsUrl, `${roomName}:presence`, presenceDoc, { connect: !demoEnabled, disableBc: demoEnabled });
     const collaborationUser = get().collaborationUser;
     const ySettings = doc.getMap<unknown>('settings');
     const ySkills = doc.getMap<Skill>('skills');
@@ -1045,6 +1047,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
       version: number | undefined,
       options: { force?: boolean } = {}
     ) => {
+      if (disposed) return;
       const currentVersion = get().durableVersion;
       if (
         !options.force &&
@@ -1074,13 +1077,14 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
     };
 
     const commitBoardCommand = (command: TrafficBoardCommand) => {
-      if (hasDurableLoadFailed) return;
+      if (disposed || hasDurableLoadFailed || !hasDurableLoadSettled) return;
       set({ durableSaveStatus: 'saving', durableError: null });
       void executeTrafficBoardCommand(roomName, command)
         .then((response) => {
           applyVersionedSnapshot(response.snapshot, response.updatedAt, response.version);
         })
         .catch((error) => {
+          if (disposed) return;
           const errorMessage = error instanceof Error ? error.message : 'Nie udało się zapisać komendy w backendzie.';
           set({
             durableSaveStatus: 'failed',
@@ -1088,6 +1092,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
           });
           void reloadCanonicalSnapshot()
             .then(() => {
+              if (disposed) return;
               const state = get();
               if (state.durableSaveStatus !== 'failed' || state.durableError !== errorMessage) return;
               set({
@@ -1115,16 +1120,19 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
     };
 
     provider.on('status', (event: { status: string }) => {
+      if (disposed) return;
       set({ isConnected: event.status === 'connected' });
     });
 
     provider.on('sync', (isSynced: boolean) => {
+      if (disposed) return;
       set({ isSynced });
       if (!hasDurableLoadSettled && !hasYjsBoardData()) {
         syncFromYjs({ skipDurableSave: true });
         return;
       }
       if (hasDurableLoadFailed) {
+        if (demoEnabled) return;
         withSystemSnapshot(() => {
           seedIfEmpty();
           refreshDerivedAllocations();
@@ -1158,6 +1166,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
 
     realtimeConnection = connectTrafficBoardRealtime(roomName, {
       onEvent: (event) => {
+        if (disposed) return;
         if (event.type === 'board.snapshot' || event.type === 'board.updated') {
           applyVersionedSnapshot(event.snapshot, event.updatedAt, event.version);
           return;
@@ -1170,6 +1179,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         }
       },
       onError: () => {
+        if (disposed) return;
         set({
           durableError: 'Połączenie realtime z API zostało przerwane. Zmiany nadal idą przez REST command endpoint.',
         });
@@ -1214,6 +1224,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         applyVersionedSnapshot(snapshot, updatedAt, version);
       })
       .catch((error) => {
+        if (disposed) return;
         hasDurableLoadSettled = true;
         hasDurableLoadFailed = true;
         set({
@@ -1221,6 +1232,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
           durableSaveStatus: 'idle',
           durableError: error instanceof Error ? error.message : 'Nie udało się pobrać danych z backendu.',
         });
+        if (demoEnabled) return;
         withSystemSnapshot(() => {
           seedIfEmpty();
           refreshDerivedAllocations();
@@ -1228,8 +1240,8 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         syncFromYjs({ skipDurableSave: true });
       });
 
-    window.setTimeout(() => {
-      if (!hasDurableLoadSettled || !hasDurableLoadFailed) return;
+    const recoveryTimer = window.setTimeout(() => {
+      if (disposed || demoEnabled || !hasDurableLoadSettled || !hasDurableLoadFailed) return;
       withSystemSnapshot(() => {
         seedIfEmpty();
         refreshDerivedAllocations();
@@ -1239,6 +1251,9 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
 
     set({
       cleanup: () => {
+        if (disposed) return;
+        disposed = true;
+        window.clearTimeout(recoveryTimer);
         ySettings.unobserve(observeSettingsChanges);
         ySkills.unobserve(observeSkillChanges);
         yPeriods.unobserve(observePeriodChanges);
@@ -1255,6 +1270,17 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         presenceDoc.destroy();
         doc.destroy();
         set({
+          schemaVersion: SCHEMA_VERSION,
+          skills: [],
+          periods: [],
+          tileUnits: [],
+          activePeriodId: DEFAULT_ACTIVE_PERIOD_ID,
+          activeTileUnitId: ACTIVE_TILE_UNIT_ID,
+          people: [],
+          projects: [],
+          allocations: [],
+          weeklyAllocations: [],
+          planningRules: [],
           doc: null,
           provider: null,
           ySettings: null,
@@ -2002,6 +2028,10 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
   },
 
   resetBoard: () => {
+    if (demoEnabled) {
+      window.dispatchEvent(new Event(DEMO_RESET_EVENT));
+      return;
+    }
     const { doc, ySettings, ySkills, yPeriods, yTileUnits, yPeople, yProjects, yAllocations, yWeeklyAllocations, yPlanningRules } = get();
     if (!doc || !ySettings || !ySkills || !yPeriods || !yTileUnits || !yPeople || !yProjects || !yAllocations || !yWeeklyAllocations || !yPlanningRules) return;
 
