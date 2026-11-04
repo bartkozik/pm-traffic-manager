@@ -7,6 +7,13 @@ import { connectTrafficBoardRealtime, executeTrafficBoardCommand, loadTrafficBoa
 import { createPersonDraft } from '../utils/trafficBoardDrafts';
 import { useTrafficStore } from './trafficStore';
 
+const demoMode = vi.hoisted(() => ({ enabled: false }));
+
+vi.mock('@/modules/demo/demoRuntime', () => ({
+  get demoEnabled() { return demoMode.enabled; },
+  DEMO_RESET_EVENT: 'ptm:demo-reset',
+}));
+
 const websocketMock = vi.hoisted(() => {
   class MockWebsocketProvider {
     awareness: {
@@ -109,6 +116,7 @@ async function flushPromises() {
 describe('trafficStore durable persistence', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    demoMode.enabled = false;
     window.localStorage.clear();
     websocketMock.providers.length = 0;
     realtimeConnections.length = 0;
@@ -135,6 +143,24 @@ describe('trafficStore durable persistence', () => {
     useTrafficStore.getState().cleanup();
     vi.clearAllTimers();
     vi.useRealTimers();
+  });
+
+  it('clears the previous demo data while the replacement board loads and if loading fails', async () => {
+    demoMode.enabled = true;
+    mockedLoadTrafficBoardSnapshot.mockResolvedValueOnce({ boardId: 'old', snapshot: createDurableSnapshot(), updatedAt: '2026-06-11T08:00:00Z', version: 1 });
+    useTrafficStore.getState().initializeBoard('old');
+    await flushPromises();
+    expect(useTrafficStore.getState().people.length).toBeGreaterThan(0);
+    let failLoad!: (error: Error) => void;
+    mockedLoadTrafficBoardSnapshot.mockImplementationOnce(() => new Promise((_, reject) => { failLoad = reject; }));
+    useTrafficStore.getState().cleanup();
+    const empty = { people: [], projects: [], periods: [], skills: [], tileUnits: [], allocations: [], weeklyAllocations: [], planningRules: [] };
+    expect(useTrafficStore.getState()).toMatchObject(empty);
+    useTrafficStore.getState().initializeBoard('new');
+    expect(useTrafficStore.getState()).toMatchObject({ ...empty, durableLoadStatus: 'loading' });
+    failLoad(new Error('Connection unavailable'));
+    await flushPromises();
+    expect(useTrafficStore.getState()).toMatchObject({ ...empty, durableLoadStatus: 'failed' });
   });
 
   it('ignores a late snapshot after switching to a fresh demo board', async () => {

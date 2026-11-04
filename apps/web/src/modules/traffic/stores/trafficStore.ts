@@ -1270,6 +1270,17 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         presenceDoc.destroy();
         doc.destroy();
         set({
+          schemaVersion: SCHEMA_VERSION,
+          skills: [],
+          periods: [],
+          tileUnits: [],
+          activePeriodId: DEFAULT_ACTIVE_PERIOD_ID,
+          activeTileUnitId: ACTIVE_TILE_UNIT_ID,
+          people: [],
+          projects: [],
+          allocations: [],
+          weeklyAllocations: [],
+          planningRules: [],
           doc: null,
           provider: null,
           ySettings: null,
