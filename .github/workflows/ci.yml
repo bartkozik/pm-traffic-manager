@@ -55,6 +55,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm audit --prod --audit-level=high
+      - name: Verify standalone sync-server dependencies
+        run: npm ci --omit=dev --ignore-scripts --prefix apps/sync-server
       - run: pnpm --filter @ptm/domain test
       - run: pnpm --filter @ptm/web test
       - run: pnpm --filter @ptm/api exec vitest run --no-file-parallelism
