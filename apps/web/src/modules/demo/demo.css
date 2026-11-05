@@ -12,3 +12,39 @@
 .demo-reset { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; flex-basis: 100%; }
 .demo-banner [role=alert] { flex-basis: 100%; margin: 0; }
 .demo-intro :focus-visible, .demo-banner :focus-visible { outline: 3px solid #1756bd; outline-offset: 3px; }
+
+.demo-guide { background: #161b27; color: #e8ebf3; border: 1px solid #7a6537; border-radius: 12px; font-family: system-ui, sans-serif; }
+.demo-guide-header { background: #161b27; color: #e8ebf3; padding: 20px 24px 12px; border-bottom: 1px solid #30394a; }
+.demo-guide-title { font-size: 14px; font-weight: 600; }
+.demo-guide-close { color: #d5d9e3; }
+.demo-guide-close:hover { background: #30394a; }
+.demo-guide-body { padding: 24px; line-height: 1.65; }
+.demo-guide-progress { margin: 0 0 10px; color: #e2bb64; font-size: 12px; font-weight: 600; }
+.demo-guide-track { display: flex; gap: 6px; margin-bottom: 24px; }
+.demo-guide-track span { height: 3px; flex: 1; border-radius: 2px; background: #354055; }
+.demo-guide-track [data-current], .demo-guide-track [data-complete] { background: #e2bb64; }
+.demo-guide-body h2 { margin: 0 0 12px; font-size: clamp(22px, 4vw, 30px); line-height: 1.2; }
+.demo-guide-body h2:focus { outline: none; }
+.demo-guide-body > p { margin-top: 0; }
+.demo-guide-example { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 24px 0; }
+.demo-guide-example > span { display: flex; flex-direction: column; gap: 12px; min-height: 90px; padding: 12px; border: 1px solid #495469; border-radius: 6px; background: #202737; font-size: 13px; font-weight: 600; }
+.demo-guide-example > span:last-child { border-color: #d5ab4b; background: #302a1c; }
+.demo-guide-example small { color: #e2bb64; font-size: 11px; }
+.demo-guide-action { padding-left: 14px; border-left: 3px solid #e2bb64; font-weight: 600; }
+.demo-guide-hint { color: #b7c0d1; font-size: 13px; }
+.demo-guide-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid #30394a; }
+.demo-guide-actions > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.demo-guide-actions button { min-height: 44px; padding: 10px 14px; border: 1px solid #566176; border-radius: 6px; background: transparent; color: #e8ebf3; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.demo-guide-actions button:hover { background: #30394a; }
+.demo-guide-actions .demo-guide-next { border-color: #e2bb64; background: #e2bb64; color: #1a1720; }
+.demo-guide-actions .demo-guide-next:hover { background: #f0ce85; }
+.demo-guide-actions .demo-guide-skip { border-color: transparent; color: #b7c0d1; }
+.demo-guide button:focus-visible { outline: 3px solid #e2bb64; outline-offset: 3px; }
+@media (max-width: 480px) {
+  .demo-guide-header { padding-inline: 16px; }
+  .demo-guide-body { padding: 20px 16px; }
+  .demo-guide-example { gap: 6px; }
+  .demo-guide-example > span { padding: 10px 8px; font-size: 11px; }
+  .demo-guide-actions { align-items: stretch; }
+  .demo-guide-actions > div { flex: 1; justify-content: flex-end; }
+}
