@@ -97,7 +97,7 @@ export const personCardStateLegend = [
 
 export const projectInventoryStateLegend = [
   { id: 'healthy-team', className: 'is-healthy-team', code: getProjectInventoryPatternCode('healthyTeam'), label: 'self-sufficient team', detail: 'several people cover the frame without gaps or fragmentation' },
-  { id: 'single-person', className: 'is-single-person', code: getProjectInventoryPatternCode('singlePersonProject'), label: 'one-person project', detail: 'one person holds the context projektu' },
+  { id: 'single-person', className: 'is-single-person', code: getProjectInventoryPatternCode('singlePersonProject'), label: 'one-person project', detail: 'one person holds the project context' },
   { id: 'people-shortage', className: 'is-people-shortage', code: getProjectInventoryPatternCode('peopleShortage'), label: 'People shortage', detail: 'missing hours in project requirements' },
   { id: 'empty-project', className: 'is-empty-project', code: getProjectInventoryPatternCode('emptyProject'), label: 'no people', detail: 'no person is assigned to the project this month' },
   { id: 'many-project-people', className: 'is-many-project-people', code: getProjectInventoryPatternCode('manyProjectPeople'), label: 'people across multiple projects', detail: 'someone in the frame also works elsewhere' },

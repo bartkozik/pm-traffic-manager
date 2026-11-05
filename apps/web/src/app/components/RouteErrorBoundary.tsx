@@ -14,7 +14,7 @@ function getErrorMessage(error: unknown) {
     return error;
   }
 
-  return 'Nieznany blad aplikacji.';
+  return 'Unknown application error.';
 }
 
 export function RouteErrorBoundary() {
@@ -25,18 +25,17 @@ export function RouteErrorBoundary() {
     <main className="route-error-page">
       <section className="route-error-panel" aria-labelledby="route-error-title">
         <p className="route-error-eyebrow">PTM recovery</p>
-        <h1 id="route-error-title">Nie udalo sie zaladowac widoku</h1>
+        <h1 id="route-error-title">Could not load this view</h1>
         <p className="route-error-message">
-          Aplikacja zatrzymala renderowanie tej trasy. Mozesz wrocic do glownego boardu albo odswiezyc widok,
-          zeby sprobowac ponownie.
+          This view could not be displayed. Return to the board or reload the page to try again.
         </p>
         <pre className="route-error-details">{message}</pre>
         <div className="route-error-actions">
           <Link className="route-error-button is-primary" to="/diablo-board/ptm-mvp">
-            Wroc do boardu
+            Back to board
           </Link>
           <button className="route-error-button" type="button" onClick={() => window.location.reload()}>
-            Odswiez widok
+            Reload page
           </button>
         </div>
       </section>
