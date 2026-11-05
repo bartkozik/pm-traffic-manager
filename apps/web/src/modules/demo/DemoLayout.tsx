@@ -4,6 +4,7 @@ import { demoSessionResponseSchema as sessionSchema, type DemoSessionResponse as
 import { apiBaseUrl, AUTH_REQUIRED_EVENT } from '@/core/api/apiClient';
 import { useTrafficStore } from '@/modules/traffic/stores/trafficStore';
 import { DEMO_REFRESH_EVENT, DEMO_RESET_EVENT } from './demoRuntime';
+import { DemoGuide } from './DemoGuide';
 import './demo.css';
 
 
@@ -27,6 +28,8 @@ export function DemoLayout() {
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState('');
   const [confirmReset, setConfirmReset] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const guideButton = useRef<HTMLButtonElement>(null);
   const operation = useRef(0);
   const location = useLocation();
 
@@ -35,10 +38,14 @@ export function DemoLayout() {
     setBusy(true);
     setError('');
     setConfirmReset(false);
+    setGuideOpen(false);
     useTrafficStore.getState().cleanup();
     try {
       const next = await requestSession(action, signal);
-      if (id === operation.current && !signal?.aborted) setSession(next);
+      if (id === operation.current && !signal?.aborted) {
+        setSession(next);
+        if (action === 'start' && next) setGuideOpen(true);
+      }
     } catch (cause) {
       if (id === operation.current && !signal?.aborted) {
         setError(cause instanceof Error && cause.message.startsWith('Demo osiągnęło')
@@ -60,6 +67,7 @@ export function DemoLayout() {
       ++operation.current;
       useTrafficStore.getState().cleanup();
       setSession(null);
+      setGuideOpen(false);
       setBusy(false);
       setError('Sesja wygasła. Uruchom nowe demo, aby wrócić do danych startowych.');
     };
@@ -83,6 +91,11 @@ export function DemoLayout() {
       window.removeEventListener(DEMO_REFRESH_EVENT, refresh);
     };
   }, [session]);
+
+  const closeGuide = () => {
+    setGuideOpen(false);
+    window.requestAnimationFrame(() => guideButton.current?.focus());
+  };
 
   if (!session) return <main className="demo-intro">
     <a href="https://kozikowski.it/projects/pm-traffic-manager">← Portfolio</a>
@@ -108,6 +121,7 @@ export function DemoLayout() {
       <div><strong>DEMO · Fikcyjne dane</strong><span>Prywatna tablica · sesja do 24 h · Pozostałe analizy AI: {session.aiRemaining}</span>
         {session.aiAvailable === false && <span>AI jest obecnie niedostępne. Planowanie i obliczenia działają niezależnie.</span>}</div>
       <a href="https://kozikowski.it/projects/pm-traffic-manager">Portfolio ↗</a>
+      <button ref={guideButton} disabled={busy} onClick={() => setGuideOpen(true)}>Jak to działa?</button>
       <button disabled={busy} onClick={() => setConfirmReset((value) => !value)}>Reset demo</button>
       {confirmReset && <div className="demo-reset" role="group" aria-label="Potwierdzenie resetu">
         <span>Usunąć Twoje zmiany i odtworzyć dane? Limit AI pozostaje bez zmian.</span>
@@ -116,6 +130,7 @@ export function DemoLayout() {
       </div>}
       {error && <p role="alert">{error}</p>}
     </aside>
+    {guideOpen && !busy && location.pathname === target && <DemoGuide onClose={closeGuide} />}
     {busy ? <p role="status">Przygotowanie tablicy…</p> : location.pathname !== target
       ? <Navigate to={target} replace />
       : <Suspense fallback={<p role="status">Ładowanie tablicy…</p>}><Outlet key={session.boardId} /></Suspense>}

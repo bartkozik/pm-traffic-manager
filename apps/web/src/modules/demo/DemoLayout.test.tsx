@@ -1,3 +1,4 @@
+import { MantineProvider } from '@mantine/core';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -13,13 +14,56 @@ function setup(path = '/') {
   const router = createMemoryRouter([{ element: <DemoLayout />, children: [
     { path: '*', element: <div>Private board</div> },
   ] }], { initialEntries: [path] });
-  render(<RouterProvider router={router} />);
+  render(<MantineProvider env="test"><RouterProvider router={router} /></MantineProvider>);
   return router;
 }
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('guest demo', () => {
+  it('guides a new guest through the basics without changing data or requesting AI', async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(json({}, 401)).mockResolvedValueOnce(json(session));
+    vi.stubGlobal('fetch', fetchMock);
+    setup();
+    fireEvent.click(await screen.findByRole('button', { name: 'Uruchom demo' }));
+    await screen.findByRole('dialog', { name: 'Przewodnik po demo' });
+    expect(screen.getByRole('heading', { name: 'Przydziel osoby do projektów' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Dalej' }));
+    expect(screen.getByRole('heading', { name: 'Zmieniaj perspektywę czasu' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Wstecz' }));
+    expect(screen.getByRole('heading', { name: 'Przydziel osoby do projektów' })).toBeInTheDocument();
+    for (let step = 0; step < 3; step++) fireEvent.click(screen.getByRole('button', { name: 'Dalej' }));
+    expect(screen.getByRole('heading', { name: 'Eksperymentuj bez obaw' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Zaczynam planować' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('lets a guest skip and reopen the guide from the beginning', async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(json({}, 401)).mockResolvedValueOnce(json(session));
+    vi.stubGlobal('fetch', fetchMock);
+    setup();
+    fireEvent.click(await screen.findByRole('button', { name: 'Uruchom demo' }));
+    await screen.findByRole('dialog');
+    fireEvent.click(screen.getByRole('button', { name: 'Dalej' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pomiń przewodnik' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: 'Jak to działa?' }));
+    expect(await screen.findByRole('heading', { name: 'Przydziel osoby do projektów' })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps a returning guest on the board and offers the guide on demand', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json(session)));
+    setup('/diablo-board/guest-one');
+    await screen.findByText('Private board');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Jak to działa?' }));
+    await screen.findByRole('dialog', { name: 'Przewodnik po demo' });
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
   it('waits for explicit start and opens only the server-issued board', async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(json({}, 401)).mockResolvedValueOnce(json(session));
     vi.stubGlobal('fetch', fetchMock);
