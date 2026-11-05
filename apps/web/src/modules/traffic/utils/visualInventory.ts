@@ -183,14 +183,14 @@ export function getFrameBehavior(contractType: ContractType): FrameBehavior {
 export function getFrameTypeLabel(contractType: ContractType) {
   switch (contractType) {
     case 'hourly':
-      return 'T&M bez CAP';
+      return 'Uncapped T&M';
     case 'time_materials_capped':
-      return 'T&M z CAP';
+      return 'Capped T&M';
     case 'fixed_monthly':
-      return 'stała miesięczna';
+      return 'Monthly fixed fee';
     case 'fixed_phase':
     case 'multi_month_fixed':
-      return 'fixed price / pula';
+      return 'Fixed price / pool';
   }
 }
 
@@ -200,10 +200,10 @@ export function getFrameEmptySlotLabel(contractType: ContractType) {
       return null;
     case 'capped':
       return contractType === 'time_materials_capped'
-        ? 'wolny limit CAP'
-        : 'wolne miejsce w limicie';
+        ? 'Available cap'
+        : 'Available capacity within cap';
     case 'pooled':
-      return 'pula nieprzepalona';
+      return 'Unspent pool';
   }
 }
 
@@ -222,10 +222,10 @@ export function getProjectFrameGeometrySegments({
 }): ProjectFrameGeometrySegment[] {
   const poolRemainingValue = frameBehavior === 'pooled' ? Math.max(0, poolRemainingK || 0) : 0;
   const values = [
-    { kind: 'filled' as const, label: 'zajęte', valueK: Math.max(0, visibleRevenueK) },
-    { kind: 'empty' as const, label: frameBehavior === 'pooled' ? 'okno/pula' : 'wolne', valueK: Math.max(0, emptyRevenueK) },
-    { kind: 'poolRemaining' as const, label: 'pula dalej', valueK: poolRemainingValue },
-    { kind: 'overflow' as const, label: 'poza ramką', valueK: Math.max(0, overflowRevenueK) },
+    { kind: 'filled' as const, label: 'filled', valueK: Math.max(0, visibleRevenueK) },
+    { kind: 'empty' as const, label: frameBehavior === 'pooled' ? 'window/pool' : 'free', valueK: Math.max(0, emptyRevenueK) },
+    { kind: 'poolRemaining' as const, label: 'remaining pool', valueK: poolRemainingValue },
+    { kind: 'overflow' as const, label: 'overflow', valueK: Math.max(0, overflowRevenueK) },
   ].filter((segment) => segment.valueK > 0);
   const totalK = values.reduce((sum, segment) => sum + segment.valueK, 0);
 
@@ -441,8 +441,8 @@ export function getProjectRelationshipSignals(
         personId: person.id,
         personName: person.name,
         kind: 'fragmented',
-        label: 'w kilku miejscach',
-        detail: `${person.name} jest w ${targetCount} miejscach w tym okresie`,
+        label: 'across multiple projects',
+        detail: `${person.name} is assigned to ${targetCount} targets in this period`,
       });
     }
   });
@@ -515,38 +515,38 @@ export function getProjectInventoryPatterns({
   if (projectPersonIds.length === 0) {
     patterns.push({
       kind: 'emptyProject',
-      label: 'brak ludzi',
-      detail: 'projekt nie ma przypisanej osoby w tym miesiącu',
+      label: 'no people',
+      detail: 'no person is assigned to the project this month',
     });
   } else if (hasShortage) {
     patterns.push({
       kind: 'peopleShortage',
-      label: 'niedobór ludzi',
-      detail: `brakuje ${formatHours(requiredGapHours)}h w wymaganiach`,
+      label: 'People shortage',
+      detail: `${formatHours(requiredGapHours)}h missing from requirements`,
     });
   }
 
   if (projectPersonIds.length === 1) {
     patterns.push({
       kind: 'singlePersonProject',
-      label: 'jedna osoba',
-      detail: 'projekt jednoosobowy albo single point of failure',
+      label: 'one person',
+      detail: 'one-person project or single point of failure',
     });
   }
 
   if (fragmentedPeople.length > 0) {
     patterns.push({
       kind: 'manyProjectPeople',
-      label: 'osoby w wielu miejscach',
-      detail: `${fragmentedPeople.length} os. pracuje też poza tą ramką`,
+      label: 'people across multiple projects',
+      detail: `${fragmentedPeople.length} people also work outside this frame`,
     });
   }
 
   if (fragmentedPeople.length > 0 && stablePeople.length > 0) {
     patterns.push({
       kind: 'fragmentedCollaborators',
-      label: 'mieszany zespół',
-      detail: 'ktoś stały pracuje z osobami pociętymi po innych projektach',
+      label: 'mixed team',
+      detail: 'a dedicated person works with people split across other projects',
     });
   }
 
@@ -554,18 +554,18 @@ export function getProjectInventoryPatterns({
     patterns.push({
       kind: 'researchDevelopmentProject',
       label: 'R&D',
-      detail: 'projekt eksperymentalny albo inwestycyjny bez prostego komercyjnego domknięcia',
+      detail: 'experimental or investment project without a direct commercial return',
     });
   } else if (isWaitingRoom) {
     patterns.push({
       kind: 'waitingRoomProject',
-      label: 'poczekalnia',
-      detail: 'projekt-poczekalnia: zajmuje capacity bez jasnego deliverable albo decyzji',
+      label: 'waiting room',
+      detail: 'waiting-room project: uses capacity without a clear deliverable or decision',
     });
   } else if (isLowValue) {
     patterns.push({
       kind: 'lowValueProject',
-      label: 'niska wartość',
+      label: 'low value',
       detail: getLowValueWorkDetail(project),
     });
   }
@@ -573,7 +573,7 @@ export function getProjectInventoryPatterns({
   if (hasSourceMismatch) {
     patterns.push({
       kind: 'sourceMismatch',
-      label: 'źródło/scope',
+      label: 'source/scope',
       detail: getProjectSourceMismatchDetail(project),
     });
   }
@@ -587,8 +587,8 @@ export function getProjectInventoryPatterns({
   ) {
     patterns.push({
       kind: 'healthyTeam',
-      label: 'samodzielny zespół',
-      detail: 'kilka osób domyka ramkę bez widocznych braków i fragmentacji',
+      label: 'self-sufficient team',
+      detail: 'several people cover the frame without visible gaps or fragmentation',
     });
   }
 
@@ -681,10 +681,10 @@ export function getPeriodRelationshipOverlaySignals(
         personId: person.id,
         personName: person.name,
         kind: 'fragmented',
-        label: 'w kilku miejscach',
+        label: 'across multiple projects',
         sourceLabel: targetLabels[0],
         targetLabel: targetLabels.slice(1).join(' + '),
-        detail: `${person.name} jest rozcięty między: ${targetLabels.join(', ')}`,
+        detail: `${person.name} is split between: ${targetLabels.join(', ')}`,
       });
     }
   });
@@ -722,12 +722,12 @@ export function getPeriodRelationshipConnectorSignals(
       personId: person.id,
       personName: person.name,
       kind: 'moved',
-      label: 'ruch',
+      label: 'move',
       sourceTarget: allocation.previousTarget,
       targetTarget: allocation.target,
       sourceLabel: getTargetLabel(allocation.previousTarget, projectsById),
       targetLabel: getTargetLabel(allocation.target, projectsById),
-      detail: `${person.name}: przesunięcie ${getTargetLabel(allocation.previousTarget, projectsById)} -> ${getTargetLabel(allocation.target, projectsById)}`,
+      detail: `${person.name}: move ${getTargetLabel(allocation.previousTarget, projectsById)} -> ${getTargetLabel(allocation.target, projectsById)}`,
     });
   });
 
@@ -749,12 +749,12 @@ export function getPeriodRelationshipConnectorSignals(
         personId: person.id,
         personName: person.name,
         kind: 'fragmented',
-        label: 'w kilku miejscach',
+        label: 'across multiple projects',
         sourceTarget,
         targetTarget,
         sourceLabel: getTargetLabel(sourceTarget, projectsById),
         targetLabel: getTargetLabel(targetTarget, projectsById),
-        detail: `${person.name}: relacja między ${getTargetLabel(sourceTarget, projectsById)} i ${getTargetLabel(targetTarget, projectsById)}`,
+        detail: `${person.name}: relationship between ${getTargetLabel(sourceTarget, projectsById)} and ${getTargetLabel(targetTarget, projectsById)}`,
       });
     });
   });
@@ -1003,14 +1003,14 @@ export function isLowValueWork(project: ProjectFrame | undefined) {
 function getLowValueWorkDetail(project: ProjectFrame) {
   switch (getProjectWorkType(project)) {
     case 'research_development':
-      return 'R&D / eksperyment bez prostego komercyjnego domknięcia';
+      return 'R&D / experiment without a direct commercial return';
     case 'waiting_room':
-      return 'projekt-poczekalnia zajmuje capacity bez jasnej decyzji';
+      return 'waiting-room project uses capacity without a clear decision';
     case 'defensive_maintenance':
-      return 'defensywny maintenance: przychód teraz, możliwa blokada capacity';
+      return 'defensive maintenance: revenue now, potential capacity constraint';
     case 'commercial':
     default:
-      return 'projekt jest defensywny, ghost albo ma słabszą pewność';
+      return 'project is defensive, ghost, or has lower confidence';
   }
 }
 
@@ -1021,8 +1021,8 @@ export function isProjectSourceMismatch(project: ProjectFrame | undefined) {
 function getProjectSourceMismatchDetail(project: ProjectFrame) {
   if (project.sourceStatusNote?.trim()) return project.sourceStatusNote.trim();
   return project.sourceStatus === 'source_missing'
-    ? 'brak wpisu lub potwierdzenia w źródle/CRM'
-    : 'scope zmienił się, ale źródło/CRM nie jest aktualne';
+    ? 'missing entry or confirmation in the source/CRM'
+    : 'scope changed but the source/CRM is outdated';
 }
 
 function addExplicitRelationshipSignals(
@@ -1039,7 +1039,7 @@ function addExplicitRelationshipSignals(
       personId: person.id,
       personName: person.name,
       kind: 'moved',
-      label: 'ruch',
+      label: 'move',
       detail: `${person.name}: ${sourceLabel} -> ${targetLabel}`,
     });
   }
@@ -1049,8 +1049,8 @@ function addExplicitRelationshipSignals(
       personId: person.id,
       personName: person.name,
       kind: 'unchanged',
-      label: 'bez zmian',
-      detail: `${person.name}: przypisanie potwierdzone jako bez zmian`,
+      label: 'unchanged',
+      detail: `${person.name}: assignment confirmed as unchanged`,
     });
   }
   if (allocation.meetingState?.changedThisWeek) {
@@ -1059,8 +1059,8 @@ function addExplicitRelationshipSignals(
       personId: person.id,
       personName: person.name,
       kind: 'changed',
-      label: 'zmiana',
-      detail: `${person.name}: alokacja ustalona lub zmieniona w tym tygodniu`,
+      label: 'change',
+      detail: `${person.name}: allocation agreed or changed this week`,
     });
   }
   if (allocation.meetingState?.handoffRequired) {
@@ -1070,7 +1070,7 @@ function addExplicitRelationshipSignals(
       personName: person.name,
       kind: 'handoff',
       label: 'handoff',
-      detail: `${person.name}: trzeba przekazać informację po zmianie alokacji`,
+      detail: `${person.name}: information must be handed off after the allocation change`,
     });
   }
   if (allocation.meetingState?.planB) {
@@ -1080,7 +1080,7 @@ function addExplicitRelationshipSignals(
       personName: person.name,
       kind: 'planB',
       label: 'Plan B',
-      detail: `${person.name}: istnieje rezerwowa ścieżka dla tej alokacji`,
+      detail: `${person.name}: a fallback exists for this allocation`,
     });
   }
   if (allocation.meetingState?.mentoring) {
@@ -1090,7 +1090,7 @@ function addExplicitRelationshipSignals(
       personName: person.name,
       kind: 'mentoring',
       label: 'mentoring',
-      detail: `${person.name}: relacja mentoringowa w projekcie`,
+      detail: `${person.name}: mentoring relationship in the project`,
     });
   }
   if (allocation.meetingState?.backup) {
@@ -1100,7 +1100,7 @@ function addExplicitRelationshipSignals(
       personName: person.name,
       kind: 'backup',
       label: 'backup',
-      detail: `${person.name}: druga osoba lub ścieżka zna kontekst`,
+      detail: `${person.name}: another person or fallback has the context`,
     });
   }
 }
@@ -1132,9 +1132,9 @@ function addExplicitPeriodRelationshipSignals(
       ...base,
       id: `${person.id}:${allocation.previousTarget}->${allocation.target}:moved`,
       kind: 'moved',
-      label: 'ruch',
+      label: 'move',
       sourceLabel,
-      detail: `${person.name}: przesunięcie ${sourceLabel} -> ${targetLabel}`,
+      detail: `${person.name}: move ${sourceLabel} -> ${targetLabel}`,
     });
   }
 
@@ -1143,8 +1143,8 @@ function addExplicitPeriodRelationshipSignals(
       ...base,
       id: `${person.id}:${allocation.target}:unchanged`,
       kind: 'unchanged',
-      label: 'bez zmian',
-      detail: `${person.name}: alokacja w ${targetLabel} potwierdzona jako bez zmian`,
+      label: 'unchanged',
+      detail: `${person.name}: allocation in ${targetLabel} confirmed as unchanged`,
     });
   }
   if (allocation.meetingState?.changedThisWeek) {
@@ -1152,8 +1152,8 @@ function addExplicitPeriodRelationshipSignals(
       ...base,
       id: `${person.id}:${allocation.target}:changed`,
       kind: 'changed',
-      label: 'zmiana',
-      detail: `${person.name}: alokacja w ${targetLabel} ustalona lub zmieniona w tym tygodniu`,
+      label: 'change',
+      detail: `${person.name}: allocation in ${targetLabel} agreed or changed this week`,
     });
   }
   if (allocation.meetingState?.handoffRequired) {
@@ -1162,7 +1162,7 @@ function addExplicitPeriodRelationshipSignals(
       id: `${person.id}:${allocation.target}:handoff`,
       kind: 'handoff',
       label: 'handoff',
-      detail: `${person.name}: trzeba przekazać informację o alokacji w ${targetLabel}`,
+      detail: `${person.name}: information about the allocation in ${targetLabel} must be handed off`,
     });
   }
   if (allocation.meetingState?.planB) {
@@ -1171,7 +1171,7 @@ function addExplicitPeriodRelationshipSignals(
       id: `${person.id}:${allocation.target}:planB`,
       kind: 'planB',
       label: 'Plan B',
-      detail: `${person.name}: rezerwowa ścieżka dla alokacji w ${targetLabel}`,
+      detail: `${person.name}: fallback for the allocation in ${targetLabel}`,
     });
   }
   if (allocation.meetingState?.mentoring) {
@@ -1180,7 +1180,7 @@ function addExplicitPeriodRelationshipSignals(
       id: `${person.id}:${allocation.target}:mentoring`,
       kind: 'mentoring',
       label: 'mentoring',
-      detail: `${person.name}: relacja mentoringowa przy ${targetLabel}`,
+      detail: `${person.name}: mentoring relationship in ${targetLabel}`,
     });
   }
   if (allocation.meetingState?.backup) {
@@ -1189,7 +1189,7 @@ function addExplicitPeriodRelationshipSignals(
       id: `${person.id}:${allocation.target}:backup`,
       kind: 'backup',
       label: 'backup',
-      detail: `${person.name}: backup lub drugi owner kontekstu przy ${targetLabel}`,
+      detail: `${person.name}: backup or second context owner in ${targetLabel}`,
     });
   }
 }
@@ -1217,7 +1217,7 @@ function getRelationshipConnectorPairKey(
 }
 
 function getTargetLabel(target: AllocationTarget, projectsById: Map<string, ProjectFrame>) {
-  if (target === 'bench') return 'Ławka';
+  if (target === 'bench') return 'Bench';
   const project = projectsById.get(target);
   if (!project) return target;
   return project.client || project.name;

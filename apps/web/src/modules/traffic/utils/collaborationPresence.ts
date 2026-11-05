@@ -93,7 +93,7 @@ function createUserId() {
 
 export function sanitizeCollaborationUserName(value: string) {
   const trimmed = value.trim().replace(/\s+/g, ' ');
-  return trimmed.slice(0, 32) || 'Planista';
+  return trimmed.slice(0, 32) || 'Planner';
 }
 
 export function getCollaborationColor(seed: string) {
@@ -119,7 +119,7 @@ export function getStoredCollaborationUser(storage: Storage | undefined = typeof
   const id = createUserId();
   const user = {
     id,
-    name: 'Planista',
+    name: 'Planner',
     color: getCollaborationColor(id),
   };
   persistCollaborationUser(user, storage);
@@ -216,14 +216,14 @@ export function getCollaborationTargetLabel(target: CollaborationTarget) {
   if (target.label) return target.label;
   switch (target.type) {
     case 'project':
-      return `Projekt ${target.id}`;
+      return `Project ${target.id}`;
     case 'person':
-      return `Osoba ${target.id}`;
+      return `Person ${target.id}`;
     case 'allocation':
-      return `Alokacja ${target.id}`;
+      return `Allocation ${target.id}`;
     case 'section':
-      return `Sekcja ${target.id}`;
+      return `Section ${target.id}`;
     case 'control':
-      return `Akcja ${target.id}`;
+      return `Action ${target.id}`;
   }
 }

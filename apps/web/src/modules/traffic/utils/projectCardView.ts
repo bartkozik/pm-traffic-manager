@@ -47,11 +47,11 @@ export function formatHours(hours: number) {
 export function getFrameBehaviorLabel(frameBehavior: ReturnType<typeof getFrameBehavior>) {
   switch (frameBehavior) {
     case 'elastic':
-      return 'ramka elastyczna';
+      return 'elastic frame';
     case 'capped':
-      return 'ramka z limitem';
+      return 'capped frame';
     case 'pooled':
-      return 'ramka z pulą';
+      return 'pooled frame';
   }
 }
 
@@ -74,7 +74,7 @@ export function getProjectValidationSummaryItems({
       const skill = requirement ? skillsById.get(requirement.skillId) : undefined;
       const requirementLabel = requirement
         ? `${skill?.label || requirement.skillId}${requirement.seniority ? ` ${requirement.seniority}` : ''}`
-        : 'Bez przypisanego wymagania';
+        : 'No assigned requirement';
       const key = allocation.personId;
       const detailKey = `${validation.severity}:${validation.code}:${requirementLabel}:${validation.message}`;
       const current = result.get(key);

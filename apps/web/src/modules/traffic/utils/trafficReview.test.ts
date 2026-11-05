@@ -3,9 +3,9 @@ import { Period, Person, PersonTileAllocation, ProjectFrame } from '../models/tr
 import { generateTrafficReview } from './trafficReview';
 
 const periods = [
-  { id: '2026-06', label: 'Czerwiec 2026', granularity: 'month', startsOn: '2026-06-01', endsOn: '2026-06-30' },
-  { id: '2026-07', label: 'Lipiec 2026', granularity: 'month', startsOn: '2026-07-01', endsOn: '2026-07-31' },
-  { id: '2026-08', label: 'Sierpień 2026', granularity: 'month', startsOn: '2026-08-01', endsOn: '2026-08-31' },
+  { id: '2026-06', label: 'June 2026', granularity: 'month', startsOn: '2026-06-01', endsOn: '2026-06-30' },
+  { id: '2026-07', label: 'July 2026', granularity: 'month', startsOn: '2026-07-01', endsOn: '2026-07-31' },
+  { id: '2026-08', label: 'August 2026', granularity: 'month', startsOn: '2026-08-01', endsOn: '2026-08-31' },
 ] satisfies Period[];
 
 const person = {
@@ -30,7 +30,7 @@ const project = {
   stage: 'signed',
   budgetK: 20,
   probability: 1,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: '2026-06',
   rateConfig: { companyTargetRatePlnH: 220 },
   requirements: [],
@@ -71,7 +71,7 @@ describe('traffic review', () => {
       projects: [project, { ...project, id: 'project-2', client: 'Other', revenuePlan: [{ periodId: '2026-06', revenueK: 8 }] }],
     });
 
-    expect(review.horizonLabel).toBe('tydzień do przodu');
+    expect(review.horizonLabel).toBe('one week ahead');
     expect(review.triggers.map((trigger) => trigger.id)).toContain('short-hr-calendar-person-1');
     expect(review.triggers.map((trigger) => trigger.id)).toContain('short-person-many-projects-person-1');
     expect(review.triggers.find((trigger) => trigger.id === 'short-person-many-projects-person-1')).toMatchObject({
@@ -151,7 +151,7 @@ describe('traffic review', () => {
 
     expect(triggerIds).toContain('short-core-order-project-1');
     expect(triggerIds).toContain('short-ineffective-onboarding-person-1');
-    expect(review.triggers.find((trigger) => trigger.id === 'short-core-order-project-1')?.detail).toContain('brakuje BE');
+    expect(review.triggers.find((trigger) => trigger.id === 'short-core-order-project-1')?.detail).toContain('BE is missing');
     expect(review.checklist.some((item) => item.owner === 'TECH' && item.status === 'attention')).toBe(true);
     expect(review.checklist.some((item) => item.owner === 'HR' && item.status === 'attention')).toBe(true);
   });
@@ -160,7 +160,7 @@ describe('traffic review', () => {
     const sourceMismatchProject = {
       ...project,
       sourceStatus: 'scope_changed',
-      sourceStatusNote: 'Scope po callu wzrósł, CRM nadal pokazuje stary zakres.',
+      sourceStatusNote: 'Scope increased after the call; CRM still shows the old scope.',
     } satisfies ProjectFrame;
 
     const shortReview = generateTrafficReview({
@@ -183,14 +183,14 @@ describe('traffic review', () => {
     expect(shortReview.triggers.find((trigger) => trigger.id === 'short-source-mismatch-project-1')).toMatchObject({
       owner: 'SALES',
       projectId: 'project-1',
-      title: 'Client: źródło/scope nieaktualne',
+      title: 'Client: outdated source/scope',
     });
     expect(longReview.triggers.find((trigger) => trigger.id === 'long-source-mismatch-project-1')).toMatchObject({
       owner: 'SALES',
       projectId: 'project-1',
-      title: 'Client: source system nie domyka scope',
+      title: 'Client: source system does not reflect scope',
     });
-    expect(shortReview.triggers.find((trigger) => trigger.id === 'short-source-mismatch-project-1')?.detail).toContain('CRM nadal pokazuje stary zakres');
+    expect(shortReview.triggers.find((trigger) => trigger.id === 'short-source-mismatch-project-1')?.detail).toContain('CRM still shows the old scope');
   });
 
   it('creates long-term meeting triggers from three-month forecast patterns', () => {
@@ -207,7 +207,7 @@ describe('traffic review', () => {
       ],
     });
 
-    expect(review.horizonLabel).toBe('3 miesiące do przodu');
+    expect(review.horizonLabel).toBe('three months ahead');
     expect(review.triggers.map((trigger) => trigger.id)).toContain('long-uncertain-projects');
     expect(review.triggers.map((trigger) => trigger.id)).toContain('long-underloaded-person-1');
     expect(review.checklist.some((item) => item.owner === 'SALES' && item.status === 'attention')).toBe(true);
@@ -284,7 +284,7 @@ describe('traffic review', () => {
   it('adds long-term contract-end replacement trigger when no backup or skill replacement exists', () => {
     const leavingPerson = {
       ...person,
-      monthlyOverrides: [{ periodId: '2026-07', status: 'notice_period' as const, availableHours: 80, note: 'umowa kończy się po lipcu' }],
+      monthlyOverrides: [{ periodId: '2026-07', status: 'notice_period' as const, availableHours: 80, note: 'contract ends after July' }],
     } satisfies Person;
     const review = generateTrafficReview({
       activePeriodId: '2026-06',
@@ -307,10 +307,10 @@ describe('traffic review', () => {
     expect(trigger).toMatchObject({
       owner: 'HR',
       severity: 'high',
-      title: 'Client: brak planu zastępstwa',
+      title: 'Client: no replacement plan',
     });
-    expect(trigger?.detail).toContain('notice period / koniec współpracy');
-    expect(trigger?.detail).toContain('nie ma backupu ani osoby z kompetencją backend');
+    expect(trigger?.detail).toContain('notice period / end of engagement');
+    expect(trigger?.detail).toContain('no backup or a person with skill backend');
   });
 
   it('skips contract-end replacement trigger when backup or skill replacement exists', () => {
@@ -409,7 +409,7 @@ describe('traffic review', () => {
           requirementId: 'req-be-senior',
           periodId: '2026-06',
           hours: 16,
-          validation: [{ code: 'missing_required_skill', severity: 'invalid', message: 'Brak backend senior' }],
+          validation: [{ code: 'missing_required_skill', severity: 'invalid', message: 'Missing senior backend' }],
         }),
       ],
       mode: 'long',

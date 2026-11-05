@@ -73,7 +73,7 @@ export function generateTrafficReview({
 
   return {
     mode,
-    horizonLabel: mode === 'short' ? 'tydzień do przodu' : '3 miesiące do przodu',
+    horizonLabel: mode === 'short' ? 'one week ahead' : 'three months ahead',
     checklist: buildChecklist(mode, triggers),
     triggers: sortTriggers(triggers).slice(0, 12),
   };
@@ -95,9 +95,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
       id: `short-person-many-projects-${person.id}`,
       owner: 'PM',
       severity: isExceptionRole ? 'low' : 'medium',
-      title: `${person.name}: wiele projektów`,
-      detail: `${person.name} pracuje w ${targetCount} projektach / ${roundHours(hours)}h w aktywnym miesiącu.`,
-      action: 'Sprawdzić obciążenie, realność kontekstu i czy potrzebna jest rotacja lub odciążenie.',
+      title: `${person.name}: multiple projects`,
+      detail: `${person.name} works on ${targetCount} projects / ${roundHours(hours)}h in the active month.`,
+      action: 'Check workload, context switching, and whether rotation or workload relief is needed.',
       personId: person.id,
       periodId: activePeriodId,
     });
@@ -113,9 +113,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
         id: `short-person-no-project-${person.id}`,
         owner: 'HR',
         severity: 'medium',
-        title: `${person.name}: bez projektu`,
-        detail: `${person.name} ma ${utilization.availableHours}h dostępności i brak produktywnej alokacji.`,
-        action: 'Przypisać zadanie, zaplanować R&D/ławkę lub potwierdzić urlop/offboarding.',
+        title: `${person.name}: no project`,
+        detail: `${person.name} has ${utilization.availableHours}h available and no productive allocation.`,
+        action: 'Assign work, plan R&D/bench time, or confirm leave/offboarding.',
         personId: person.id,
         periodId: activePeriodId,
       });
@@ -128,9 +128,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
         id: `short-hr-calendar-${person.id}`,
         owner: 'HR',
         severity: 'high',
-        title: `${person.name}: konflikt z kalendarzem HR`,
-        detail: `${person.name} ma status ${overrideStatus}, ale jest zaplanowany w projektach.`,
-        action: 'Zaktualizować dostępność albo przesunąć alokacje przed planningiem.',
+        title: `${person.name}: HR calendar conflict`,
+        detail: `${person.name} has status ${overrideStatus}, but is assigned to projects.`,
+        action: 'Update availability or move allocations before planning.',
         personId: person.id,
         periodId: activePeriodId,
       });
@@ -142,9 +142,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
         id: `short-ineffective-onboarding-${person.id}`,
         owner: 'HR',
         severity: 'medium',
-        title: `${person.name}: onboarding do sprawdzenia`,
-        detail: `${person.name} ma ${roundHours(productiveHours)}h produktywnej alokacji przy ${utilization.availableHours}h dostępności i sygnale onboarding/partial.`,
-        action: 'Sprawdzić dostęp, środowisko, zrozumienie zadań i dodać mentora lub mikro-zlecenia.',
+        title: `${person.name}: onboarding needs review`,
+        detail: `${person.name} has ${roundHours(productiveHours)}h of productive allocation out of ${utilization.availableHours}h available, with an onboarding/partial signal.`,
+        action: 'Check access, environment, and task understanding; add a mentor or smaller tasks.',
         personId: person.id,
         periodId: activePeriodId,
       });
@@ -161,9 +161,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           id: `short-project-no-resources-${project.id}`,
           owner: 'PM',
           severity: 'high',
-          title: `${project.client}: bez zasobów`,
-          detail: 'Projekt jest aktywny w miesiącu, ale nie ma przypisanych kafelków.',
-          action: 'Dodać przynajmniej jedną nie-junior osobę albo zawiesić projekt.',
+          title: `${project.client}: no resources`,
+          detail: 'The project is active this month but has no assigned tiles.',
+          action: 'Add at least one person above junior level or pause the project.',
           projectId: project.id,
           periodId: activePeriodId,
         });
@@ -175,8 +175,8 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           owner: 'TECH',
           severity: 'medium',
           title: `${project.client}: single point of failure`,
-          detail: `Tylko ${person?.name || 'jedna osoba'} jest przypisana do projektu.`,
-          action: 'Zaplanować backup, shadowing albo drugą osobę znającą kontekst.',
+          detail: `Only ${person?.name || 'one person'} is assigned to the project.`,
+          action: 'Plan backup, shadowing, or a second person with context.',
           projectId: project.id,
           personId: person?.id,
           periodId: activePeriodId,
@@ -188,9 +188,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           id: `short-core-order-${project.id}`,
           owner: 'TECH',
           severity: 'medium',
-          title: `${project.client}: kolejność BE/FE/QA`,
+          title: `${project.client}: BE/FE/QA sequence`,
           detail: orderingGap,
-          action: 'Przeorganizować kolejność prac, dodać brakującą rolę albo potwierdzić, że zależność nie dotyczy tego zakresu.',
+          action: 'Reorder the work, add the missing role, or confirm the dependency does not apply to this scope.',
           projectId: project.id,
           periodId: activePeriodId,
         });
@@ -200,9 +200,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           id: `short-waiting-project-${project.id}`,
           owner: project.planningStatus === 'ghost' ? 'SALES' : 'PM',
           severity: 'medium',
-          title: `${project.client}: projekt poczekalnia / low value`,
-          detail: `${project.client} ma status ${project.planningStatus || project.stage} i spala ${sumRevenue(projectAllocations)}k.`,
-          action: 'Zweryfikować sens projektu, deal lub przenieść ludzi do komercyjnego zakresu.',
+          title: `${project.client}: waiting-room / low-value project`,
+          detail: `${project.client} has status ${project.planningStatus || project.stage} and consumes ${sumRevenue(projectAllocations)}k.`,
+          action: 'Review the project rationale or deal, or move people to commercial work.',
           projectId: project.id,
           periodId: activePeriodId,
         });
@@ -212,9 +212,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           id: `short-source-mismatch-${project.id}`,
           owner: 'SALES',
           severity: project.sourceStatus === 'source_missing' ? 'high' : 'medium',
-          title: `${project.client}: źródło/scope nieaktualne`,
+          title: `${project.client}: outdated source/scope`,
           detail: getProjectSourceMismatchDetail(project),
-          action: 'Uaktualnić CRM/brief/source, budżet i staffing przed poniedziałkowym planningiem.',
+          action: 'Update CRM/brief/source, budget, and staffing before Monday planning.',
           projectId: project.id,
           periodId: activePeriodId,
         });
@@ -226,9 +226,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           id: `short-project-team-cost-${project.id}`,
           owner: 'FINANCE',
           severity: budgetGapK >= 8 ? 'high' : 'medium',
-          title: `${project.client}: koszt zespołu ponad budżet`,
-          detail: `Alokacje przekraczają ramkę projektu o ${roundMoney(budgetGapK)}k.`,
-          action: 'Zmniejszyć obsadę, renegocjować finansowanie albo zmienić zakres.',
+          title: `${project.client}: team cost over budget`,
+          detail: `Allocations exceed the project frame by ${roundMoney(budgetGapK)}k.`,
+          action: 'Reduce staffing, renegotiate funding, or change scope.',
           projectId: project.id,
           periodId: activePeriodId,
         });
@@ -254,9 +254,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
       id: `short-low-margin-${allocation.id}`,
       owner: 'FINANCE',
       severity: gapK >= 5 ? 'high' : 'medium',
-      title: `${project?.client || allocation.target}: budżet / marża do sprawdzenia`,
-      detail: `${person?.name || allocation.personId}: luka ${roundMoney(gapK)}k względem kosztu lub targetu.`,
-      action: 'Skorygować staffing, stawkę, scope albo zaakceptować świadomy wyjątek.',
+      title: `${project?.client || allocation.target}: budget / margin needs review`,
+      detail: `${person?.name || allocation.personId}: ${roundMoney(gapK)}k gap against cost or target.`,
+      action: 'Adjust staffing, rate, or scope, or accept an explicit exception.',
       allocationId: allocation.id,
       projectId: project?.id,
       personId: person?.id || allocation.personId,
@@ -274,9 +274,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
         id: `short-missing-backup-${allocation.id}`,
         owner: 'TECH',
         severity: 'medium',
-        title: `${project?.client || allocation.target}: mentoring bez backupu`,
-        detail: `${person?.name || allocation.personId} ma mentoring, ale brak markera backup.`,
-        action: 'Dodać backup, shadowing albo potwierdzić, że mentoring nie tworzy single point of failure.',
+        title: `${project?.client || allocation.target}: mentoring without backup`,
+        detail: `${person?.name || allocation.personId} has mentoring but no backup marker.`,
+        action: 'Add backup or shadowing, or confirm mentoring does not create a single point of failure.',
         allocationId: allocation.id,
         projectId: project?.id,
         personId: person?.id || allocation.personId,
@@ -292,9 +292,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
         id: `short-mentoring-overload-${person.id}`,
         owner: 'TECH',
         severity: 'medium',
-        title: `${person.name}: przeciążenie mentoringiem`,
-        detail: `${person.name} ma ${count} kafelków oznaczonych jako mentoring.`,
-        action: 'Przekazać część obowiązków innemu seniorowi albo dodać kopilota.',
+        title: `${person.name}: mentoring overload`,
+        detail: `${person.name} has ${count} tiles marked as mentoring.`,
+        action: 'Hand some responsibilities to another senior or add a co-pilot.',
         personId: person.id,
         periodId: activePeriodId,
       });
@@ -311,9 +311,9 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
           id: `short-week-overload-${week.period.id}`,
           owner: 'PM',
           severity: 'high',
-          title: `${week.period.label}: przeciążenie tygodnia`,
-          detail: `${week.overloadedPeople} osób przekracza dostępność w tym tygodniu.`,
-          action: 'Przesunąć godziny tygodniowe, zmniejszyć zakres albo dodać zasób.',
+          title: `${week.period.label}: weekly overload`,
+          detail: `${week.overloadedPeople} people exceed availability this week.`,
+          action: 'Move weekly hours, reduce scope, or add a resource.',
           periodId: week.period.id,
         });
       });
@@ -331,8 +331,8 @@ function generateShortTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode
         owner: getValidationOwner(validation.code),
         severity: validation.severity === 'invalid' ? 'high' : 'medium',
         title: `${person?.name || allocation.personId}: ${validation.message}`,
-        detail: project ? `${project.client}: ${project.name}` : 'Ławka / nieprzypisane',
-        action: 'Poprawić mapowanie alokacji lub potwierdzić wyjątek na spotkaniu traffic.',
+        detail: project ? `${project.client}: ${project.name}` : 'Bench / unassigned',
+        action: 'Fix allocation mapping or confirm an exception in the traffic meeting.',
         allocationId: allocation.id,
         projectId: project?.id,
         personId: person?.id || allocation.personId,
@@ -362,9 +362,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
       id: 'long-uncertain-projects',
       owner: 'SALES',
       severity: uncertainProjects.length >= 4 ? 'high' : 'medium',
-      title: 'Dominują niepewne projekty',
-      detail: `${uncertainProjects.length} projektów w horyzoncie to likely/possible/ghost.`,
-      action: 'Sales dopina deal albo PM oznacza realny scenariusz pesymistyczny.',
+      title: 'Uncertain projects dominate',
+      detail: `${uncertainProjects.length} projects in the horizon are likely/possible/ghost.`,
+      action: 'Sales closes the deal or PM marks a realistic pessimistic scenario.',
     });
   }
 
@@ -377,9 +377,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
       id: 'long-too-little-green',
       owner: 'SALES',
       severity: 'medium',
-      title: 'Za mało podpisanej pracy',
-      detail: `Podpisane projekty niosą ${Math.round((signedRevenue / totalRevenue) * 100)}% alokacji w horyzoncie.`,
-      action: 'Pozyskać stabilne projekty albo ograniczyć rezerwacje o niskiej pewności.',
+      title: 'Too little signed work',
+      detail: `Signed projects carry ${Math.round((signedRevenue / totalRevenue) * 100)}% of allocations in the horizon.`,
+      action: 'Secure stable projects or reduce low-confidence reservations.',
     });
   }
 
@@ -394,9 +394,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
       id: 'long-too-much-low-value',
       owner: 'FINANCE',
       severity: lowValueRevenue / totalRevenue > 0.55 ? 'high' : 'medium',
-      title: 'Za dużo low-value / poczekalni',
-      detail: `${Math.round((lowValueRevenue / totalRevenue) * 100)}% alokacji w horyzoncie siedzi w ghost/possible/defensive/R&D/poczekalni.`,
-      action: 'Finance i Sales oceniają ROI, a PM przesuwa capacity do komercyjnych projektów.',
+      title: 'Too much low-value / waiting-room work',
+      detail: `${Math.round((lowValueRevenue / totalRevenue) * 100)}% of allocations in the horizon are in ghost/possible/defensive/R&D/waiting-room projects.`,
+      action: 'Finance and Sales assess ROI, while PM moves capacity to commercial projects.',
     });
   }
 
@@ -407,9 +407,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
         id: `long-underloaded-${person.id}`,
         owner: 'HR',
         severity: utilization.utilizationPercent === 0 ? 'high' : 'medium',
-        title: `${person.name}: za mało pracy`,
-        detail: `${utilization.utilizationPercent}% wykorzystania w aktywnym miesiącu.`,
-        action: 'Zaplanować R&D, krótkie sprinty, wsparcie ofertowe albo przesunięcie do projektu.',
+        title: `${person.name}: too little work`,
+        detail: `${utilization.utilizationPercent}% utilization in the active month.`,
+        action: 'Plan R&D, short sprints, proposal support, or a move to a project.',
         personId: person.id,
         periodId: activePeriodId,
       });
@@ -431,9 +431,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
         id: `long-recurring-underload-${person.id}`,
         owner: 'HR',
         severity: lowMonths.some((item) => item.utilization.utilizationPercent === 0) ? 'high' : 'medium',
-        title: `${person.name}: cykliczna luka obłożenia`,
-        detail: `${lowMonths.length} mies. w horyzoncie ma mniej niż 50% wykorzystania.`,
-        action: 'HR/PM planuje równomierne rotacje, R&D, sales support albo redukcję przyszłej luki.',
+        title: `${person.name}: recurring utilization gap`,
+        detail: `${lowMonths.length} months in the horizon have less than 50% utilization.`,
+        action: 'HR/PM plans balanced rotations, R&D, sales support, or a reduction of the future gap.',
         personId: person.id,
       });
     }
@@ -447,9 +447,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
         id: `long-hr-horizon-gap-${person.id}`,
         owner: 'HR',
         severity: hrConflicts.some((item) => item.override?.status === 'notice_period' || item.override?.status === 'unavailable') ? 'high' : 'medium',
-        title: `${person.name}: urlop/koniec umowy w horyzoncie`,
-        detail: `${person.name} ma ${hrConflicts.map((item) => `${item.period.label}: ${item.override?.status}`).join(', ')} mimo zaplanowanej pracy.`,
-        action: 'HR organizuje zastępstwo, PM przesuwa przydziały, a Finance koryguje budżet lub marżę jeśli luka jest kadrowa.',
+        title: `${person.name}: leave/contract end in the horizon`,
+        detail: `${person.name} has ${hrConflicts.map((item) => `${item.period.label}: ${item.override?.status}`).join(', ')} despite planned work.`,
+        action: 'HR arranges replacement, PM moves assignments, and Finance adjusts budget or margin if the gap is staffing-related.',
         personId: person.id,
       });
     }
@@ -465,9 +465,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
         id: `long-ineffective-onboarding-${person.id}`,
         owner: 'HR',
         severity: 'medium',
-        title: `${person.name}: onboarding nie skaluje pracy`,
-        detail: `${onboardingMonths.map((item) => item.period.label).join(', ')} ma sygnał onboarding/partial i mniej niż 50% produktywnej alokacji.`,
-        action: 'PM/HR dodaje mentora, mikro-zadania, dostęp do środowiska albo redefiniuje plan wdrożenia.',
+        title: `${person.name}: onboarding is not increasing productive work`,
+        detail: `${onboardingMonths.map((item) => item.period.label).join(', ')} has an onboarding/partial signal and less than 50% productive allocation.`,
+        action: 'PM/HR adds a mentor, smaller tasks, or environment access, or revises the onboarding plan.',
         personId: person.id,
       });
     }
@@ -489,9 +489,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
       id: 'long-empty-future-horizon',
       owner: 'PM',
       severity: 'high',
-      title: 'Pusty horyzont przyszły',
-      detail: `Brak widocznej pracy po ${horizonPeriods[0]?.label || activePeriodId}.`,
-      action: 'Uzupełnić backlog/pipeline albo zaplanować bench/redukcję obciążenia.',
+      title: 'Empty future horizon',
+      detail: `No visible work after ${horizonPeriods[0]?.label || activePeriodId}.`,
+      action: 'Fill the backlog/pipeline or plan bench time/workload reduction.',
     });
   }
 
@@ -511,8 +511,8 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
           owner: 'TECH',
           severity: 'medium',
           title: `${project.client}: single point of failure`,
-          detail: 'W horyzoncie projektu jest tylko jedna osoba z kontekstem.',
-          action: 'Tech Lead planuje shadowing, zastępstwo albo drugi owner techniczny.',
+          detail: 'Only one person has context in the project horizon.',
+          action: 'The Tech Lead plans shadowing, replacement, or a second technical owner.',
           projectId: project.id,
         });
       }
@@ -530,9 +530,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
           id: `long-missing-core-${project.id}`,
           owner: 'TECH',
           severity: 'medium',
-          title: `${project.client}: brak ${missingCore.join('/')}`,
-          detail: 'W horyzoncie brakuje jednej z kluczowych kompetencji wymaganych przez projekt.',
-          action: 'Dodać brakujący resource albo zmienić kolejność prac.',
+          title: `${project.client}: missing ${missingCore.join('/')}`,
+          detail: 'A core skill required by the project is missing in the horizon.',
+          action: 'Add the missing resource or change the work sequence.',
           projectId: project.id,
         });
       }
@@ -549,9 +549,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
           id: `long-scope-without-staffing-${project.id}`,
           owner: 'PM',
           severity: 'medium',
-          title: `${project.client}: scope bez staffing-u`,
-          detail: 'Projekt ma plan przychodu w horyzoncie, ale przynajmniej jeden miesiąc nie ma obsady.',
-          action: 'PM eskaluje do Sales/Finance albo uzupełnia staffing przed kolejnym long-term traffic.',
+          title: `${project.client}: scope without staffing`,
+          detail: 'The project has planned revenue in the horizon, but at least one month has no staffing.',
+          action: 'PM escalates to Sales/Finance or fills staffing before the next long-term traffic review.',
           projectId: project.id,
         });
       }
@@ -561,9 +561,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
           id: `long-source-mismatch-${project.id}`,
           owner: 'SALES',
           severity: project.sourceStatus === 'source_missing' ? 'high' : 'medium',
-          title: `${project.client}: source system nie domyka scope`,
+          title: `${project.client}: source system does not reflect scope`,
           detail: getProjectSourceMismatchDetail(project),
-          action: 'Sales/PM aktualizuje źródło prawdy i sprawdza, czy zmiana scope wymaga korekty forecastu lub obsady.',
+          action: 'Sales/PM updates the source of truth and checks whether the scope change requires forecast or staffing adjustments.',
           projectId: project.id,
         });
       }
@@ -578,9 +578,9 @@ function generateLongTermTriggers(input: Omit<GenerateTrafficReviewInput, 'mode'
           id: `long-over-promise-${project.id}`,
           owner: 'SALES',
           severity: overPromiseGapK >= 16 ? 'high' : 'medium',
-          title: `${project.client}: over-promise bez capacity`,
-          detail: `Plan/pipeline pokazuje ${roundMoney(plannedRevenueK)}k, a obsada niesie ${roundMoney(allocatedRevenueK)}k.`,
-          action: 'Sales i PM windują obietnicę do realnego planu albo robią pre-booking zasobów.',
+          title: `${project.client}: over-promising without capacity`,
+          detail: `The plan/pipeline shows ${roundMoney(plannedRevenueK)}k, while staffing carries ${roundMoney(allocatedRevenueK)}k.`,
+          action: 'Sales and PM align the commitment with a realistic plan or pre-book resources.',
           projectId: project.id,
         });
       }
@@ -599,20 +599,20 @@ function buildChecklist(mode: TrafficReviewMode, triggers: TrafficReviewTrigger[
 
   if (mode === 'short') {
     return [
-      checklistItem('short-prework', 'ALL', 'Reset i pre-work boardu', triggers.length ? 'attention' : 'ok', `${triggers.length} sygnałów do przejścia przed planningiem.`),
-      checklistItem('short-hr', 'HR', 'Obecność, urlopy, offboarding, onboarding', hasOwnerAttention('HR') ? 'attention' : 'ok', 'Sprawdź tylko jeśli HR ma sygnały na liście.'),
-      checklistItem('short-board-fill', 'PM', 'Wstępne wypełnienie tablicy i konflikty', hasOwnerAttention('PM') || hasHigh ? 'attention' : 'ok', 'Priorytety i konflikty powinny być domknięte przed poniedziałkiem.'),
-      checklistItem('short-tech', 'TECH', 'Kolejność BE/FE/QA, backup, mentoring', hasOwnerAttention('TECH') ? 'attention' : 'ok', 'Tech Lead sprawdza tylko projekty z triggerami.'),
-      checklistItem('short-actions', 'ALL', 'Akcje uzupełniające', triggers.length ? 'attention' : 'ok', 'Każdy trigger ma właściciela i oczekiwaną decyzję.'),
+      checklistItem('short-prework', 'ALL', 'Board reset and preparation', triggers.length ? 'attention' : 'ok', `${triggers.length} signals to review before planning.`),
+      checklistItem('short-hr', 'HR', 'Attendance, leave, offboarding, onboarding', hasOwnerAttention('HR') ? 'attention' : 'ok', 'Review only if HR has signals on the list.'),
+      checklistItem('short-board-fill', 'PM', 'Initial board planning and conflicts', hasOwnerAttention('PM') || hasHigh ? 'attention' : 'ok', 'Priorities and conflicts should be resolved before Monday.'),
+      checklistItem('short-tech', 'TECH', 'BE/FE/QA sequence, backup, mentoring', hasOwnerAttention('TECH') ? 'attention' : 'ok', 'The Tech Lead reviews only projects with triggers.'),
+      checklistItem('short-actions', 'ALL', 'Follow-up actions', triggers.length ? 'attention' : 'ok', 'Each trigger has an owner and an expected decision.'),
     ];
   }
 
   return [
-    checklistItem('long-pipeline', 'SALES', 'Pipeline i pewność projektów', hasOwnerAttention('SALES') ? 'attention' : 'ok', 'Sprawdź, czy 3-miesięczny horyzont ma stabilną pracę.'),
-    checklistItem('long-capacity', 'HR', 'Przyszłe przeciążenia i niedociążenia', hasOwnerAttention('HR') ? 'attention' : 'ok', 'HR sprawdza luki, urlopy i potencjalny bench.'),
-    checklistItem('long-tech', 'TECH', 'Seniorzy, backup i luki kompetencji', hasOwnerAttention('TECH') ? 'attention' : 'ok', 'Tech Lead sprawdza single point of failure i brakujące role.'),
-    checklistItem('long-finance', 'FINANCE', 'Budżet, marża, fixed-price burn', hasOwnerAttention('FINANCE') ? 'attention' : 'ok', 'Finance wchodzi tylko gdy pojawi się sygnał finansowy.'),
-    checklistItem('long-actions', 'ALL', 'Decyzje i akcje uzupełniające', triggers.length ? 'attention' : 'ok', 'Ustal ownera i deadline dla każdego triggera.'),
+    checklistItem('long-pipeline', 'SALES', 'Pipeline and project confidence', hasOwnerAttention('SALES') ? 'attention' : 'ok', 'Check whether the three-month horizon has stable work.'),
+    checklistItem('long-capacity', 'HR', 'Future overload and underload', hasOwnerAttention('HR') ? 'attention' : 'ok', 'HR reviews gaps, leave, and potential bench time.'),
+    checklistItem('long-tech', 'TECH', 'Seniors, backup, and skill gaps', hasOwnerAttention('TECH') ? 'attention' : 'ok', 'The Tech Lead checks single points of failure and missing roles.'),
+    checklistItem('long-finance', 'FINANCE', 'Budget, margin, and fixed-price burn', hasOwnerAttention('FINANCE') ? 'attention' : 'ok', 'Finance joins only when a financial signal appears.'),
+    checklistItem('long-actions', 'ALL', 'Decisions and follow-up actions', triggers.length ? 'attention' : 'ok', 'Set an owner and deadline for each trigger.'),
   ];
 }
 
@@ -699,8 +699,8 @@ function getProjectSourceMismatchDetail(project: ProjectFrame) {
   const note = project.sourceStatusNote?.trim();
   if (note) return `${project.client}: ${note}`;
   return project.sourceStatus === 'source_missing'
-    ? `${project.client}: brakuje wpisu lub potwierdzenia w CRM/źródle.`
-    : `${project.client}: scope zmienił się, ale CRM/źródło nie zostało zaktualizowane.`;
+    ? `${project.client}: entry or confirmation missing in CRM/source.`
+    : `${project.client}: scope changed but CRM/source has not been updated.`;
 }
 
 function sumRevenue(allocations: PersonTileAllocation[]) {
@@ -742,13 +742,13 @@ function getCoreSkillOrderingGap(
 
   const gaps: string[] = [];
   if (allocatedCoreSkills.has('frontend') && requiredCoreSkills.has('backend') && !allocatedCoreSkills.has('backend')) {
-    gaps.push('FE jest zaplanowany, ale brakuje BE');
+    gaps.push('FE is planned but BE is missing');
   }
   if (allocatedCoreSkills.has('qa') && requiredCoreSkills.has('frontend') && !allocatedCoreSkills.has('frontend')) {
-    gaps.push('QA jest zaplanowany, ale brakuje FE');
+    gaps.push('QA is planned but FE is missing');
   }
   if (allocatedCoreSkills.has('qa') && requiredCoreSkills.has('backend') && !allocatedCoreSkills.has('backend')) {
-    gaps.push('QA jest zaplanowany, ale brakuje BE');
+    gaps.push('QA is planned but BE is missing');
   }
 
   return gaps.length ? gaps.join('; ') : null;
@@ -775,9 +775,9 @@ function getSeniorSimpleWorkTrigger(
     id: `long-under-utilized-senior-${person.id}`,
     owner: 'HR',
     severity: 'medium',
-    title: `${person.name}: senior na prostych zadaniach`,
-    detail: `${person.name} ma ${roundHours(totalHours)}h w horyzoncie bez wymagania senior/lead.`,
-    action: 'HR/PM przenosi seniora tam, gdzie realnie potrzebny jest mentoring, architektura lub trudny zakres.',
+    title: `${person.name}: senior on simple tasks`,
+    detail: `${person.name} has ${roundHours(totalHours)}h in the horizon without a senior/lead requirement.`,
+    action: 'HR/PM moves the senior where mentoring, architecture, or complex work is needed.',
     personId: person.id,
   };
 }
@@ -798,9 +798,9 @@ function getMixedProjectRotationTrigger(
     id: `long-mixed-rotation-${person.id}`,
     owner: 'PM',
     severity: person.skillIds.includes('design') || person.skillIds.includes('qa') ? 'low' : 'medium',
-    title: `${person.name}: mieszana rotacja projektów`,
-    detail: `${person.name} pracuje w ${projectIds.size} projektach i ${categories.size} typach pracy w horyzoncie.`,
-    action: 'PM ustala priorytety komercyjne vs R&D/pipeline i redukuje przełączanie kontekstu.',
+    title: `${person.name}: mixed project rotation`,
+    detail: `${person.name} works on ${projectIds.size} projects and ${categories.size} work types in the horizon.`,
+    action: 'PM prioritizes commercial work versus R&D/pipeline and reduces context switching.',
     personId: person.id,
   };
 }
@@ -837,17 +837,17 @@ function getCompetencyMismatchTriggers(
 
     const reason = validationMismatch?.message || (
       requirement
-        ? `${requirement.skillId}${requirement.seniority ? ` ${requirement.seniority}` : ''} nie pasuje do ${person?.name || allocation.personId}`
-        : 'alokacja nie pasuje kompetencyjnie do wymagania'
+        ? `${requirement.skillId}${requirement.seniority ? ` ${requirement.seniority}` : ''} does not match ${person?.name || allocation.personId}`
+        : 'allocation skills do not match the requirement'
     );
     const key = `${project.id}:${allocation.personId}:${validationMismatch?.code || requirement?.id || allocation.id}`;
     triggers.set(key, {
       id: `long-competency-mismatch-${key}`,
       owner: 'TECH',
       severity: validationMismatch?.severity === 'invalid' ? 'high' : 'medium',
-      title: `${project.client}: mismatch kompetencji`,
+      title: `${project.client}: skill mismatch`,
       detail: `${person?.name || allocation.personId}: ${reason}.`,
-      action: 'Tech Lead organizuje skill check, szkolenie, shadowing albo zmienny przydział.',
+      action: 'The Tech Lead arranges a skill check, training, shadowing, or reassignment.',
       allocationId: allocation.id,
       projectId: project.id,
       personId: person?.id || allocation.personId,
@@ -888,19 +888,19 @@ function getContractEndReplacementTriggers(
 
     if (hasBackupMarker || hasSkillReplacement) return;
 
-    const skillDetail = atRiskSkillId ? ` ani osoby z kompetencją ${atRiskSkillId}` : ' ani drugiej osoby z kontekstem';
+    const skillDetail = atRiskSkillId ? ` or a person with skill ${atRiskSkillId}` : ' or a second person with context';
     const noteDetail = override.note?.trim() ? ` (${override.note.trim()})` : '';
     const periodLabel = period?.label || allocation.periodId;
-    const statusLabel = override.status === 'notice_period' ? 'notice period / koniec współpracy' : 'niedostępność';
+    const statusLabel = override.status === 'notice_period' ? 'notice period / end of engagement' : 'unavailability';
     const key = `${project.id}:${person.id}:${allocation.periodId}`;
 
     triggers.set(key, {
       id: `long-contract-replacement-${key}`,
       owner: 'HR',
       severity: 'high',
-      title: `${project.client}: brak planu zastępstwa`,
-      detail: `${person.name} ma ${statusLabel} w ${periodLabel}${noteDetail}, a projekt nie ma backupu${skillDetail}.`,
-      action: 'HR/PM planuje zastępstwo, shadowing albo pre-booking przed zamknięciem long-term traffic.',
+      title: `${project.client}: no replacement plan`,
+      detail: `${person.name} has ${statusLabel} in ${periodLabel}${noteDetail}, and the project has no backup${skillDetail}.`,
+      action: 'HR/PM plans replacement, shadowing, or pre-booking before completing the long-term traffic review.',
       allocationId: allocation.id,
       projectId: project.id,
       personId: person.id,
@@ -931,9 +931,9 @@ function getHorizonLoadTrend(
       id: 'long-increasing-load',
       owner: 'FINANCE',
       severity: 'medium',
-      title: 'Rosnące obciążenie w horyzoncie',
-      detail: `${roundMoney(first)}k -> ${roundMoney(second)}k -> ${roundMoney(third)}k produktywnej alokacji.`,
-      action: 'Finance i PM sprawdzają budżet, scope i ryzyko nagłego wzrostu staffing-u.',
+      title: 'Growing workload in the horizon',
+      detail: `${roundMoney(first)}k -> ${roundMoney(second)}k -> ${roundMoney(third)}k of productive allocation.`,
+      action: 'Finance and PM check budget, scope, and the risk of a sudden staffing increase.',
     };
   }
 
@@ -942,9 +942,9 @@ function getHorizonLoadTrend(
       id: 'long-decreasing-load',
       owner: 'HR',
       severity: 'medium',
-      title: 'Zmniejszające się obłożenie',
-      detail: `${roundMoney(first)}k -> ${roundMoney(second)}k -> ${roundMoney(third)}k produktywnej alokacji.`,
-      action: 'HR/PM rozważa bench plan, R&D, sales support albo redukcję przyszłego obciążenia.',
+      title: 'Declining utilization',
+      detail: `${roundMoney(first)}k -> ${roundMoney(second)}k -> ${roundMoney(third)}k of productive allocation.`,
+      action: 'HR/PM considers a bench plan, R&D, sales support, or a reduction of future workload.',
     };
   }
 

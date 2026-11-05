@@ -16,7 +16,7 @@ const project = {
   stage: 'signed',
   budgetK: 30,
   probability: 0.8,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: '2026-03',
   endPeriodId: '2026-04',
   rateConfig: { companyTargetRatePlnH: 250 },
@@ -30,7 +30,7 @@ const project = {
 } satisfies ProjectFrame;
 
 const periods = [
-  { id: '2026-03', label: 'Marzec 2026', granularity: 'month', startsOn: '2026-03-01', endsOn: '2026-03-31' },
+  { id: '2026-03', label: 'March 2026', granularity: 'month', startsOn: '2026-03-01', endsOn: '2026-03-31' },
   { id: '2026-04', label: 'Kwiecien 2026', granularity: 'month', startsOn: '2026-04-01', endsOn: '2026-04-30' },
   { id: '2026-05', label: 'Maj 2026', granularity: 'month', startsOn: '2026-05-01', endsOn: '2026-05-31' },
 ] satisfies Period[];

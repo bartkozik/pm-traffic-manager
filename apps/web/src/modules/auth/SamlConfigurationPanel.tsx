@@ -45,8 +45,8 @@ export function SamlConfigurationPanel({
     <section className="ptm-sso-configuration" aria-labelledby="ptm-saml-configuration-title">
       <header className="ptm-sso-configuration-header">
         <div>
-          <h3 id="ptm-saml-configuration-title">Uwierzytelnianie SAML</h3>
-          <p>Skonfiguruj logowanie Google Workspace dla użytkowników PTM.</p>
+          <h3 id="ptm-saml-configuration-title">SAML authentication</h3>
+          <p>Configure Google Workspace sign-in for PTM users.</p>
         </div>
         <span className="ptm-sso-summary-actions">
           <span className={`ptm-sso-overall-status ${status.className}`}>
@@ -64,10 +64,10 @@ export function SamlConfigurationPanel({
               onChange={(event) => setForm((current) => ({ ...current, samlEnabled: event.target.checked }))}
             />
             <span>
-              <strong>Włącz logowanie SAML</strong>
+              <strong>Enable SAML sign-in</strong>
               <small>
-                Wyłączenie zatrzymuje nowe logowania. Ochrona API pozostaje aktywna,
-                a istniejące sesje działają do wygaśnięcia lub wylogowania.
+                Disabling this prevents new sign-ins. API protection remains active,
+                and existing sessions remain valid until they expire or the user signs out.
               </small>
             </span>
           </label>
@@ -91,7 +91,7 @@ export function SamlConfigurationPanel({
             />
           </label>
           <label>
-            Ważność żądania
+            Request validity
             <span className="ptm-saml-number-field">
               <input
                 max={60}
@@ -108,7 +108,7 @@ export function SamlConfigurationPanel({
             </span>
           </label>
           <label className="is-wide">
-            Certyfikat(y) Google IdP (PEM)
+            Google IdP certificate(s) (PEM)
             <textarea
               required
               rows={7}
@@ -117,7 +117,7 @@ export function SamlConfigurationPanel({
               onChange={(event) => setForm((current) => ({ ...current, idpCertificate: event.target.value }))}
             />
             <small>
-              Możesz wkleić kolejne pełne certyfikaty PEM jeden pod drugim podczas rotacji klucza Google.
+              You can paste multiple complete PEM certificates one after another during Google key rotation.
             </small>
           </label>
         </div>
@@ -125,54 +125,54 @@ export function SamlConfigurationPanel({
         <div className="ptm-saml-public-urls">
           <dl>
             <PublicUrl
-              copyLabel={copiedTarget === 'metadata' ? 'Skopiowano' : 'Kopiuj'}
+              copyLabel={copiedTarget === 'metadata' ? 'Copied' : 'Copy'}
               label="Metadata URL"
               onCopy={() => void handleCopy('metadata', configuration.metadataUrl)}
               value={configuration.metadataUrl}
             />
             <PublicUrl
-              copyLabel={copiedTarget === 'acs' ? 'Skopiowano' : 'Kopiuj'}
+              copyLabel={copiedTarget === 'acs' ? 'Copied' : 'Copy'}
               label="ACS URL"
               onCopy={() => void handleCopy('acs', configuration.acsUrl)}
               value={configuration.acsUrl}
             />
           </dl>
-          {copyFailed ? <small role="alert">Nie udało się skopiować. Zaznacz adres ręcznie.</small> : null}
+          {copyFailed ? <small role="alert">Could not copy the URL. Select it manually.</small> : null}
         </div>
 
         <dl className="ptm-sso-configuration-grid">
           <ConfigItem
-            label="Ochrona aplikacji"
-            value={configuration.authEnabled ? 'Włączona przez konfigurację serwera' : 'Wyłączona'}
+            label="Application protection"
+            value={configuration.authEnabled ? 'Enabled in server configuration' : 'Disabled'}
             status={configuration.authEnabled ? 'ready' : 'warning'}
           />
-          <ConfigItem label="Domena Workspace" value={configuration.workspaceDomain} />
+          <ConfigItem label="Workspace domain" value={configuration.workspaceDomain} />
           <ConfigItem label="SP Entity ID" value={configuration.spEntityId} />
           <ConfigItem
-            label="Klucz prywatny SP"
-            value={configuration.spPrivateKeyConfigured ? 'Skonfigurowany · wartość ukryta' : 'Brak'}
+            label="SP private key"
+            value={configuration.spPrivateKeyConfigured ? 'Configured · value hidden' : 'Not configured'}
             status={configuration.spPrivateKeyConfigured ? 'ready' : 'warning'}
           />
           <ConfigItem
-            label="Certyfikat SP"
-            value={configuration.spCertificateConfigured ? 'Skonfigurowany' : 'Brak'}
+            label="SP certificate"
+            value={configuration.spCertificateConfigured ? 'Configured' : 'Not configured'}
             status={configuration.spCertificateConfigured ? 'ready' : 'warning'}
           />
           <ConfigItem
-            label="Sekret sesji"
-            value={configuration.sessionSecretConfigured ? 'Skonfigurowany · wartość ukryta' : 'Brak'}
+            label="Session secret"
+            value={configuration.sessionSecretConfigured ? 'Configured · value hidden' : 'Not configured'}
             status={configuration.sessionSecretConfigured ? 'ready' : 'warning'}
           />
-          <ConfigItem label="Czas sesji" value={`${configuration.sessionTtlHours} h`} />
+          <ConfigItem label="Session duration" value={`${configuration.sessionTtlHours} h`} />
         </dl>
 
         <div className="ptm-saml-form-actions">
           <p>
-            Klucz prywatny SP i sekret sesji pozostają w chronionej konfiguracji serwera.
-            Zapisane tutaj dane IdP są używane od następnego logowania.
+            The SP private key and session secret remain in protected server configuration.
+            IdP settings saved here apply from the next sign-in.
           </p>
           <button disabled={isSaving} type="submit">
-            {isSaving ? 'Zapisywanie…' : 'Zapisz konfigurację SAML'}
+            {isSaving ? 'Saving…' : 'Save SAML configuration'}
           </button>
         </div>
       </form>
@@ -182,15 +182,15 @@ export function SamlConfigurationPanel({
 
 function getSamlStatus(configuration: AppSamlConfiguration) {
   if (!configuration.authEnabled) {
-    return { className: 'is-warning', label: 'Ochrona serwera wyłączona' };
+    return { className: 'is-warning', label: 'Server protection disabled' };
   }
   if (!configuration.configured) {
-    return { className: 'is-warning', label: 'SAML wymaga konfiguracji' };
+    return { className: 'is-warning', label: 'SAML configuration required' };
   }
   if (!configuration.samlEnabled) {
-    return { className: 'is-warning', label: 'Nowe logowania wyłączone' };
+    return { className: 'is-warning', label: 'New sign-ins disabled' };
   }
-  return { className: 'is-ready', label: 'Logowanie aktywne' };
+  return { className: 'is-ready', label: 'Sign-in enabled' };
 }
 
 function PublicUrl({

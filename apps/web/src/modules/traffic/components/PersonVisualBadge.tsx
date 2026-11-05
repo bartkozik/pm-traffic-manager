@@ -20,14 +20,14 @@ export function PersonVisualBadge({ person, skillsById, compact = false }: Perso
   const skillLabels = person.skillIds.map((skillId) => skillsById.get(skillId)?.label || skillId);
   const label = [
     seniorityLabel ? `seniority ${seniorityLabel}` : null,
-    skillLabels.length ? `kompetencje: ${skillLabels.join(', ')}` : null,
+    skillLabels.length ? `skills: ${skillLabels.join(', ')}` : null,
   ].filter(Boolean).join(', ');
 
   return (
     <div
-      aria-label={label || `Brak opisanych kompetencji dla ${person.name}`}
+      aria-label={label || `No skills listed for ${person.name}`}
       className={`traffic-person-visual-badge ${compact ? 'is-compact' : ''}`}
-      title={label || `Brak opisanych kompetencji dla ${person.name}`}
+      title={label || `No skills listed for ${person.name}`}
     >
       {seniorityLabel ? <span className="traffic-seniority-glyph">{seniorityLabel}</span> : null}
       <div className="traffic-skill-glyphs" aria-hidden="true">

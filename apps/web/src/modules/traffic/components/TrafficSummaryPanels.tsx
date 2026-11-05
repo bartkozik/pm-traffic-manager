@@ -33,7 +33,7 @@ export function TrafficKpis({ cards }: TrafficKpisProps) {
     <section
       className="traffic-kpis"
       data-collaboration-target-id="kpis"
-      data-collaboration-target-label="KPI boardu"
+      data-collaboration-target-label="Board KPIs"
       data-collaboration-target-type="section"
     >
       {cards.map((item) => (
@@ -74,7 +74,7 @@ export function TrafficReviewPanel({
       data-collaboration-target-type="section"
       onToggle={(event) => onPublishPresenceAction(
         event.currentTarget.open ? 'open' : 'close',
-        `${event.currentTarget.open ? 'Rozwinął' : 'Zwinął'} Traffic review`,
+        `${event.currentTarget.open ? 'Expanded' : 'Collapsed'} Traffic review`,
         { type: 'section', id: 'traffic-review', label: 'Traffic review' }
       )}
     >
@@ -83,17 +83,17 @@ export function TrafficReviewPanel({
           Traffic review
           <span className="traffic-review-mode-pill">{trafficReviewModeLabels[review.mode]}</span>
           <HelpButton
-            label="Wyjasnij workflow Traffic Review"
+            label="Explain the Traffic Review workflow"
             topicId="traffic-review"
             onOpenHelp={onOpenHelp}
           />
         </span>
         <span className="traffic-secondary-summary-meta">
-          {review.horizonLabel} · {review.triggers.length} triggerów
+          {review.horizonLabel} · {review.triggers.length} triggers
         </span>
       </summary>
       <div className="traffic-secondary-body">
-        <div className="traffic-review-toolbar" role="tablist" aria-label="Tryb spotkania traffic">
+        <div className="traffic-review-toolbar" role="tablist" aria-label="Traffic meeting mode">
           {(['short', 'long'] satisfies TrafficReviewMode[]).map((item) => (
             <button
               aria-selected={mode === item}
@@ -108,7 +108,7 @@ export function TrafficReviewPanel({
           ))}
         </div>
         <div className="traffic-review-grid">
-          <div className="traffic-review-checklist" aria-label="Agenda i pytania pomocnicze">
+          <div className="traffic-review-checklist" aria-label="Agenda and guiding questions">
             {review.checklist.map((item) => (
               <div className={`traffic-review-check-item is-${item.status}`} key={item.id} title={item.detail}>
                 <span>{trafficReviewOwnerLabels[item.owner]}</span>
@@ -116,7 +116,7 @@ export function TrafficReviewPanel({
               </div>
             ))}
           </div>
-          <div className="traffic-review-trigger-list" aria-label="Triggery traffic review">
+          <div className="traffic-review-trigger-list" aria-label="Traffic review triggers">
             {review.triggers.length ? review.triggers.map((trigger) => (
               <article className={`traffic-review-trigger is-${trigger.severity}`} key={trigger.id} title={trigger.action}>
                 <div>
@@ -128,7 +128,7 @@ export function TrafficReviewPanel({
               </article>
             )) : (
               <div className="traffic-review-empty">
-                Brak triggerów dla tego trybu. Board nie pokazuje teraz krytycznych patternów spotkania.
+                No triggers for this mode. The board currently shows no critical meeting patterns.
               </div>
             )}
           </div>
@@ -158,26 +158,26 @@ export function GeneratedRisksPanel({
   return (
     <details
       className="traffic-risk-panel traffic-secondary-analysis"
-      aria-label="Ryzyka wygenerowane z boardu"
+      aria-label="Risks generated from the board"
       data-collaboration-target-id="generated-risks"
-      data-collaboration-target-label="Ryzyka wygenerowane"
+      data-collaboration-target-label="Generated risks"
       data-collaboration-target-type="section"
       onToggle={(event) => onPublishPresenceAction(
         event.currentTarget.open ? 'open' : 'close',
-        `${event.currentTarget.open ? 'Rozwinął' : 'Zwinął'} Ryzyka wygenerowane`,
-        { type: 'section', id: 'generated-risks', label: 'Ryzyka wygenerowane' }
+        `${event.currentTarget.open ? 'Expanded' : 'Collapsed'} Generated risks`,
+        { type: 'section', id: 'generated-risks', label: 'Generated risks' }
       )}
     >
       <summary>
         <span className="traffic-secondary-summary-title">
-          Ryzyka wygenerowane
+          Generated risks
           <HelpButton
-            label="Wyjasnij ryzyka wygenerowane"
+            label="Explain generated risks"
             topicId="generated-risks"
             onOpenHelp={onOpenHelp}
           />
         </span>
-        <span className="traffic-secondary-summary-meta">{risks.length} sygnałów</span>
+        <span className="traffic-secondary-summary-meta">{risks.length} signals</span>
       </summary>
       <div className="traffic-secondary-body">
         <div className="traffic-risk-list">
@@ -186,7 +186,7 @@ export function GeneratedRisksPanel({
               <div className="traffic-risk-item-header">
                 <strong>{risk.title}</strong>
                 <button
-                  aria-label={`Pokaż detale ryzyka: ${risk.title}`}
+                  aria-label={`Show risk details: ${risk.title}`}
                   className="traffic-help-button"
                   type="button"
                   onClick={() => onOpenRiskDetails(risk.id)}

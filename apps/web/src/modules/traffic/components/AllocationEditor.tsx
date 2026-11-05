@@ -108,7 +108,7 @@ export function AllocationEditor({
   const requiredRevenueK = calculateHoursToRequiredRevenueK(draft.hours, requiredRevenueRate);
   const internalMarginGapK = calculateAllocationInternalMarginGapK(draft, person);
   const targetGapK = calculateAllocationTargetGapK(draft, project, person);
-  const targetLabel = project ? `${project.client} / ${project.name}` : 'Ławka / nieprzypisany cel';
+  const targetLabel = project ? `${project.client} / ${project.name}` : 'Bench / unassigned target';
   const tileNumber = draft.tileIndex + 1;
   const weeklyProjectedTotal = monthDays > 0
     ? roundHours(weeks.reduce((sum, week) => (
@@ -122,7 +122,7 @@ export function AllocationEditor({
   const quickStatus = getQuickAllocationStatus(validation, targetGapK, internalMarginGapK);
   const previousTargetOptions = useMemo(() => {
     const options = [
-      { id: 'bench' as AllocationTarget, label: 'Ławka / bez projektu' },
+      { id: 'bench' as AllocationTarget, label: 'Bench / no project' },
       ...projects.map((item) => ({
         id: item.id as AllocationTarget,
         label: `${item.client} / ${item.name}`,
@@ -233,7 +233,7 @@ export function AllocationEditor({
 
   return (
     <form
-      aria-label="Edytor alokacji"
+      aria-label="Allocation editor"
       aria-modal="true"
       className="traffic-editor"
       ref={editorRef}
@@ -243,18 +243,18 @@ export function AllocationEditor({
     >
       <div className="traffic-editor-header">
         <div>
-          <h2>Szybka korekta kafelka</h2>
+          <h2>Quick tile adjustment</h2>
           <p>
-            {person?.name || draft.personId} · kafelek #{tileNumber}
+            {person?.name || draft.personId} · tile #{tileNumber}
           </p>
         </div>
         <div className="traffic-editor-header-actions">
           <HelpButton
-            label="Wyjasnij mapowanie kafelka do wymagania"
+            label="Explain how tiles map to requirements"
             topicId="allocation-mapping"
             onOpenHelp={onOpenHelp}
           />
-          <button aria-label="Zamknij edytor alokacji" className="traffic-icon-button" type="button" onClick={onClose}>
+          <button aria-label="Close allocation editor" className="traffic-icon-button" type="button" onClick={onClose}>
             x
           </button>
         </div>
@@ -262,20 +262,20 @@ export function AllocationEditor({
 
       <div className="traffic-allocation-context">
         <div>
-          <span>Osoba</span>
+          <span>Person</span>
           <strong>{person?.name || draft.personId}</strong>
           {person ? <PersonVisualBadge compact person={person} skillsById={skillsById} /> : null}
         </div>
         <div>
-          <span>Miejsce</span>
+          <span>Destination</span>
           <strong>{targetLabel}</strong>
         </div>
         <div>
-          <span>Ten kafelek</span>
+          <span>This tile</span>
           <strong>{draft.revenueK}k PLN · {formatHours(draft.hours)}h</strong>
         </div>
         <p>
-          Ten panel koryguje mapowanie jednego kafelka. Markery spotkania zapisują się dla całego przypisania tej osoby do tego miejsca.
+          This panel adjusts the mapping of one tile. Meeting markers apply to all allocations for this person at this destination.
         </p>
       </div>
 
@@ -285,10 +285,10 @@ export function AllocationEditor({
       </div>
 
       <section className="traffic-editor-section is-first">
-        <HelpSectionHeader title="Mapowanie" topicId="allocation-mapping" onOpenHelp={onOpenHelp} />
+        <HelpSectionHeader title="Mapping" topicId="allocation-mapping" onOpenHelp={onOpenHelp} />
         <div className="traffic-form-grid">
           <label>
-            Kompetencja
+            Skill
             <select
               value={draft.skillId || ''}
               onChange={(event) =>
@@ -298,22 +298,22 @@ export function AllocationEditor({
                 })
               }
             >
-              <option value="">bez mapowania kompetencji</option>
+              <option value="">no skill mapping</option>
               {skillOptions.map((skill) => (
                 <option key={skill.id} value={skill.id}>
-                  {skill.label}{skill.isPersonSkill ? '' : ' (spoza profilu osoby)'}
+                  {skill.label}{skill.isPersonSkill ? '' : ' (outside this person\'s profile)'}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            Wymaganie projektu
+            Project requirement
             <select
               disabled={!project}
               value={draft.requirementId || ''}
               onChange={(event) => handleRequirementChange(event.target.value)}
             >
-              <option value="">bez konkretnego wymagania</option>
+              <option value="">no specific requirement</option>
               {availableRequirements.map((requirement) => (
                 <option key={requirement.id} value={requirement.id}>
                   {requirement.skillId}
@@ -326,21 +326,21 @@ export function AllocationEditor({
         </div>
         {selectedRequirement ? (
           <p className="traffic-editor-section-note">
-            Wybrane wymaganie ustawia kompetencję alokacji na {selectedRequirement.skillId}.
+            The selected requirement sets the allocation skill to {selectedRequirement.skillId}.
           </p>
         ) : null}
       </section>
 
       <section className="traffic-editor-section">
-        <HelpSectionHeader title="Markery spotkania" topicId="allocation-validation" onOpenHelp={onOpenHelp} />
+        <HelpSectionHeader title="Meeting markers" topicId="allocation-validation" onOpenHelp={onOpenHelp} />
         <p className="traffic-editor-section-note">
-          Dotyczy przypisania {person?.name || draft.personId} do {targetLabel}: {assignmentGroupAllocations.length} kafelków.
+          Applies to the allocation of {person?.name || draft.personId} to {targetLabel}: {assignmentGroupAllocations.length} tiles.
         </p>
         <div className="traffic-meeting-marker-grid">
           <label className="traffic-meeting-marker-field">
             <span>
-              <strong>Przeniesiony z</strong>
-              <small>Ręczny marker relacji poprzednie miejsce → obecna ramka.</small>
+              <strong>Moved from</strong>
+              <small>Manual marker linking the previous destination to the current frame.</small>
             </span>
             <select
               value={groupPreviousTargetDraft || ''}
@@ -348,7 +348,7 @@ export function AllocationEditor({
                 setGroupPreviousTargetDraft(event.target.value ? event.target.value as AllocationTarget : undefined);
               }}
             >
-              <option value="">brak ruchu / nie oznaczaj</option>
+              <option value="">no move / no marker</option>
               {previousTargetOptions.map((option) => (
                 <option key={option.id} value={option.id}>
                   {option.label}
@@ -363,8 +363,8 @@ export function AllocationEditor({
               onChange={(event) => patchMeetingState('unchanged', event.target.checked)}
             />
             <span>
-              <strong>Bez zmian / zostaje</strong>
-              <small>Potwierdzone przypisanie z poprzedniego ustalenia.</small>
+              <strong>Unchanged / staying</strong>
+              <small>Confirmed allocation from the previous agreement.</small>
             </span>
           </label>
           <label>
@@ -374,8 +374,8 @@ export function AllocationEditor({
               onChange={(event) => patchMeetingState('changedThisWeek', event.target.checked)}
             />
             <span>
-              <strong>Zmienione w tym tygodniu</strong>
-              <small>Ustalenie z bieżącego trafficu.</small>
+              <strong>Changed this week</strong>
+              <small>Agreed during the current traffic review.</small>
             </span>
           </label>
           <label>
@@ -385,8 +385,8 @@ export function AllocationEditor({
               onChange={(event) => patchMeetingState('handoffRequired', event.target.checked)}
             />
             <span>
-              <strong>Wymaga przekazania info</strong>
-              <small>Ktoś musi dostać kontekst po zmianie.</small>
+              <strong>Handoff needed</strong>
+              <small>Someone needs context after the change.</small>
             </span>
           </label>
           <label>
@@ -397,7 +397,7 @@ export function AllocationEditor({
             />
             <span>
               <strong>Plan B</strong>
-              <small>Rezerwowa ścieżka przy absencji lub ryzyku.</small>
+              <small>Fallback plan for absence or risk.</small>
             </span>
           </label>
           <label>
@@ -408,7 +408,7 @@ export function AllocationEditor({
             />
             <span>
               <strong>Mentoring</strong>
-              <small>Ta osoba prowadzi lub wspiera kogoś w projekcie.</small>
+              <small>This person leads or supports someone on the project.</small>
             </span>
           </label>
           <label>
@@ -419,7 +419,7 @@ export function AllocationEditor({
             />
             <span>
               <strong>Backup</strong>
-              <small>Druga osoba zna kontekst lub kod.</small>
+              <small>Another person knows the context or code.</small>
             </span>
           </label>
         </div>
@@ -428,19 +428,19 @@ export function AllocationEditor({
       {isDetailsOpen ? (
         <div className="traffic-allocation-advanced">
           <section className="traffic-editor-section">
-            <HelpSectionHeader title="Kalkulacja" topicId="allocation-calculation" onOpenHelp={onOpenHelp} />
+            <HelpSectionHeader title="Calculation" topicId="allocation-calculation" onOpenHelp={onOpenHelp} />
             <div className="traffic-allocation-summary">
-              <span>Stawka z alokacji: {revenueToHoursRate ? `${revenueToHoursRate} PLN/h` : 'brak'}</span>
-              <span>Wymagana stawka: {requiredRevenueRate ? `${requiredRevenueRate} PLN/h` : 'brak'}</span>
-              <span>Koszt wewnętrzny: {typeof internalCostK === 'number' ? `${internalCostK}k PLN` : 'brak danych'}</span>
-              <span>Wymagany przychód: {typeof requiredRevenueK === 'number' ? `${requiredRevenueK}k PLN` : 'brak danych'}</span>
-              <span>Brak do marży: {internalMarginGapK > 0 ? `${internalMarginGapK}k PLN` : 'brak'}</span>
-              <span>Brak do celu: {targetGapK > 0 ? `${targetGapK}k PLN` : 'brak'}</span>
+              <span>Allocation rate: {revenueToHoursRate ? `${revenueToHoursRate} PLN/h` : 'none'}</span>
+              <span>Required rate: {requiredRevenueRate ? `${requiredRevenueRate} PLN/h` : 'none'}</span>
+              <span>Internal cost: {typeof internalCostK === 'number' ? `${internalCostK}k PLN` : 'no data'}</span>
+              <span>Required revenue: {typeof requiredRevenueK === 'number' ? `${requiredRevenueK}k PLN` : 'no data'}</span>
+              <span>Margin shortfall: {internalMarginGapK > 0 ? `${internalMarginGapK}k PLN` : 'none'}</span>
+              <span>Target shortfall: {targetGapK > 0 ? `${targetGapK}k PLN` : 'none'}</span>
             </div>
           </section>
 
           <section className="traffic-editor-section">
-            <HelpSectionHeader title="Dlaczego taki status" topicId="allocation-validation" onOpenHelp={onOpenHelp} />
+            <HelpSectionHeader title="Why this status" topicId="allocation-validation" onOpenHelp={onOpenHelp} />
             {validation.length ? (
               <div className="traffic-validation-list">
                 {validation.map((item) => (
@@ -450,15 +450,15 @@ export function AllocationEditor({
                 ))}
               </div>
             ) : (
-              <p className="traffic-editor-section-note">Brak ostrzeżeń dla tej alokacji.</p>
+              <p className="traffic-editor-section-note">No warnings for this allocation.</p>
             )}
           </section>
 
           {project && weeks.length ? (
             <section className="traffic-editor-section">
-              <HelpSectionHeader title="Rozkład tygodniowy" topicId="allocation-weekly-hours" onOpenHelp={onOpenHelp}>
+              <HelpSectionHeader title="Weekly breakdown" topicId="allocation-weekly-hours" onOpenHelp={onOpenHelp}>
                 <p className="traffic-editor-section-note">
-                  To techniczny drill-down. Miesiąc zostaje finansowym źródłem prawdy.
+                  This is a detailed weekly view. The month remains the financial source of truth.
                 </p>
               </HelpSectionHeader>
               <div className="traffic-weekly-editor">
@@ -486,13 +486,13 @@ export function AllocationEditor({
                 })}
               </div>
               <div className={`traffic-weekly-total ${weeklyMismatch ? 'is-warning' : ''}`}>
-                <span>Manualnie: {formatHours(explicitWeeklyHours)}h</span>
-                <span>Suma tygodni: {formatHours(weeklyProjectedTotal)}h</span>
-                <span>Alokacja miesięczna: {formatHours(draft.hours)}h</span>
+                <span>Manual: {formatHours(explicitWeeklyHours)}h</span>
+                <span>Weekly total: {formatHours(weeklyProjectedTotal)}h</span>
+                <span>Monthly allocation: {formatHours(draft.hours)}h</span>
               </div>
               {weeklyMismatch ? (
                 <p className="traffic-editor-section-note">
-                  Suma tygodni różni się od miesięcznej alokacji. Wyczyść nadmiarowe nadpisania albo zmień miesięczne godziny.
+                  The weekly total differs from the monthly allocation. Clear excess overrides or change the monthly hours.
                 </p>
               ) : null}
             </section>
@@ -507,10 +507,10 @@ export function AllocationEditor({
           type="button"
           onClick={() => setIsDetailsOpen((current) => !current)}
         >
-          {isDetailsOpen ? 'Ukryj szczegóły' : 'Pokaż szczegóły'}
+          {isDetailsOpen ? 'Hide details' : 'Show details'}
         </button>
         <button className="traffic-button" type="button" onClick={onClose}>
-          Anuluj
+          Cancel
         </button>
         <button
           className="traffic-button is-primary"
@@ -520,7 +520,7 @@ export function AllocationEditor({
             saveAllocation();
           }}
         >
-          Zapisz alokację
+          Save allocation
         </button>
       </div>
     </form>
@@ -560,7 +560,7 @@ function getGroupPreviousTarget(
 }
 
 function getAllocationTargetLabel(target: AllocationTarget, projects: ProjectFrame[]) {
-  if (target === 'bench') return 'Ławka / bez projektu';
+  if (target === 'bench') return 'Bench / no project';
   const project = projects.find((item) => item.id === target);
   return project ? `${project.client} / ${project.name}` : target;
 }
@@ -576,7 +576,7 @@ function roundHours(value: number) {
 }
 
 function formatHours(value: number) {
-  return roundHours(value).toLocaleString('pl-PL', {
+  return roundHours(value).toLocaleString('en-GB', {
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
   });
@@ -595,7 +595,7 @@ function getQuickAllocationStatus(
   if (invalid) {
     return {
       tone: 'invalid',
-      label: 'Wymaga korekty',
+      label: 'Needs adjustment',
       detail: invalid.message,
     };
   }
@@ -603,16 +603,16 @@ function getQuickAllocationStatus(
   if (targetGapK > 0) {
     return {
       tone: 'warning',
-      label: `Poniżej celu o ${targetGapK}k`,
-      detail: 'Ten kafelek nie domyka targetu dla zaplanowanych godzin.',
+      label: `Below target by ${targetGapK}k`,
+      detail: 'This tile does not meet the target for its planned hours.',
     };
   }
 
   if (internalMarginGapK > 0) {
     return {
       tone: 'warning',
-      label: `Poniżej kosztu o ${internalMarginGapK}k`,
-      detail: 'Przychód z kafelka nie pokrywa wewnętrznego kosztu pracy.',
+      label: `Below cost by ${internalMarginGapK}k`,
+      detail: 'Revenue from this tile does not cover the internal labour cost.',
     };
   }
 
@@ -620,7 +620,7 @@ function getQuickAllocationStatus(
   if (warning) {
     return {
       tone: 'warning',
-      label: 'Do sprawdzenia',
+      label: 'Needs review',
       detail: warning.message,
     };
   }
@@ -629,14 +629,14 @@ function getQuickAllocationStatus(
   if (info) {
     return {
       tone: 'ok',
-      label: 'Zdrowy sygnał',
+      label: 'Healthy signal',
       detail: info.message,
     };
   }
 
   return {
     tone: 'neutral',
-    label: 'Bez ostrzeżeń',
-    detail: 'Mapowanie tego kafelka nie generuje teraz dodatkowego sygnału.',
+    label: 'No warnings',
+    detail: 'This tile\'s mapping currently generates no additional signal.',
   };
 }

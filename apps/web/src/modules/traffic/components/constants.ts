@@ -11,9 +11,9 @@ import {
 
 export const lenses: BoardLens[] = ['management', 'finance', 'sales', 'pm', 'hr'];
 export const lensLabels: Record<BoardLens, string> = {
-  management: 'Zarząd',
-  finance: 'Finanse',
-  sales: 'Sprzedaż',
+  management: 'Management',
+  finance: 'Finance',
+  sales: 'Sales',
   pm: 'PM',
   hr: 'HR',
 };
@@ -28,9 +28,9 @@ export const projectStages: ProjectStage[] = ['signed', 'likely', 'possible', 'd
 export const projectPlanningStatuses: ProjectPlanningStatus[] = ['active', 'ghost'];
 export const projectSourceStatuses: ProjectSourceStatus[] = ['synced', 'scope_changed', 'source_missing'];
 export const projectSourceStatusLabels: Record<ProjectSourceStatus, string> = {
-  synced: 'Źródło aktualne',
-  scope_changed: 'Scope zmieniony, źródło nieaktualne',
-  source_missing: 'Brak wpisu w źródle',
+  synced: 'Source up to date',
+  scope_changed: 'Scope changed, source out of date',
+  source_missing: 'Missing source entry',
 };
 export const projectWorkTypes: ProjectWorkType[] = [
   'commercial',

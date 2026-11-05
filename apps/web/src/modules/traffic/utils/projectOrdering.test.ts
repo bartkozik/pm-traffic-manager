@@ -11,7 +11,7 @@ function project(id: string, overrides: Partial<ProjectFrame> = {}) {
     stage: 'signed',
     budgetK: 1,
     probability: 1,
-    startMonth: 'Marzec 2026',
+    startMonth: 'March 2026',
     startPeriodId: '2026-03',
     rateConfig: { companyTargetRatePlnH: 200 },
     requirements: [],

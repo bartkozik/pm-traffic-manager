@@ -28,7 +28,7 @@ const project = {
   stage: 'signed',
   budgetK: 12,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: '2026-03',
   rateConfig: {
     projectRatePlnH: 160,
@@ -76,9 +76,9 @@ describe('validateAllocation', () => {
       'insufficient_hours',
     ]));
     expect(validations.find((validation) => validation.code === 'target_revenue_gap')?.message)
-      .toContain('Ta alokacja daje');
+      .toContain('This allocation generates');
     expect(validations.find((validation) => validation.code === 'target_revenue_gap')?.message)
-      .not.toContain('Revenue kafelka');
+      .not.toContain('Tile revenue');
   });
 
   it('adds a positive signal when allocation revenue is above target', () => {
@@ -91,7 +91,7 @@ describe('validateAllocation', () => {
     const positiveSignal = validations.find((validation) => validation.code === 'target_revenue_surplus');
 
     expect(positiveSignal?.severity).toBe('info');
-    expect(positiveSignal?.message).toContain('powyżej celu');
+    expect(positiveSignal?.message).toContain('exceeding it by');
   });
 
   it('flags missing skill mapping when a project has required skills', () => {

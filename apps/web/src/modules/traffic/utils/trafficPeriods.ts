@@ -1,8 +1,9 @@
 import type { Period } from '../models/traffic.model';
 
-const monthFormatter = new Intl.DateTimeFormat('pl-PL', {
+const monthFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'long',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 
 export function toDateInputValue(date: Date) {
@@ -16,6 +17,16 @@ export function getMonthPeriodId(date: Date) {
 export function getMonthLabel(date: Date) {
   const label = monthFormatter.format(date);
   return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+export function getPeriodDisplayLabel(period: Period) {
+  const legacyLabel = period.label.match(/^(styczeń|luty|marzec|kwiecień|maj|czerwiec|lipiec|sierpień|wrzesień|październik|listopad|grudzień)(?: (\d{4}))?(?: W([1-6]))?$/i);
+  if (!legacyLabel) return period.label;
+  const date = new Date(`${period.startsOn}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) return period.label;
+  const month = getMonthLabel(date);
+  const label = legacyLabel[2] ? month : month.replace(/ \d{4}$/, '');
+  return legacyLabel[3] ? `${label} W${legacyLabel[3]}` : label;
 }
 
 export function getMonthEnd(date: Date) {

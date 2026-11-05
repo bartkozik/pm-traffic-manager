@@ -39,20 +39,20 @@ export function HelpModal({ activeTopicId, onClose, onSelectTopic }: HelpModalPr
       >
         <header className="traffic-help-header">
           <div>
-            <span>Pomoc kontekstowa</span>
+            <span>Contextual help</span>
             <h2 id="traffic-help-title">{activeTopic.title}</h2>
           </div>
           <button className="traffic-icon-button" type="button" onClick={onClose}>
-            Zamknij
+            Close
           </button>
         </header>
 
         <div className="traffic-help-search">
           <label>
-            Szukaj w pomocy
+            Search help
             <input
               autoFocus
-              placeholder="np. alokacja, ryzyka, lawka"
+              placeholder="e.g. allocation, risks, bench"
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -61,7 +61,7 @@ export function HelpModal({ activeTopicId, onClose, onSelectTopic }: HelpModalPr
         </div>
 
         <div className="traffic-help-layout">
-          <nav className="traffic-help-nav" aria-label="Tematy pomocy">
+          <nav className="traffic-help-nav" aria-label="Help topics">
             {filteredTopics.map((topic) => (
               <button
                 className={`traffic-help-topic ${topic.id === activeTopic.id ? 'is-active' : ''}`}
@@ -74,7 +74,7 @@ export function HelpModal({ activeTopicId, onClose, onSelectTopic }: HelpModalPr
               </button>
             ))}
             {!filteredTopics.length ? (
-              <div className="traffic-help-empty">Brak tematow dla tej frazy.</div>
+              <div className="traffic-help-empty">No topics match this search.</div>
             ) : null}
           </nav>
 

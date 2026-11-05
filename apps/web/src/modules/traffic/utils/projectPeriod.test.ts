@@ -11,7 +11,7 @@ const baseProject: ProjectFrame = {
   planningStatus: 'active',
   budgetK: 20,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: '2026-03',
   endPeriodId: '2026-03',
   rateConfig: {

@@ -33,14 +33,14 @@ const allocation = {
 
 const timeOffProject = {
   id: 'time-off',
-  name: 'Urlopy',
+  name: 'Leavey',
   client: 'URLOP',
   contractType: 'fixed_monthly',
   stage: 'signed',
   workType: 'time_off',
   budgetK: 4,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: '2026-03',
   rateConfig: { companyTargetRatePlnH: 200 },
   requirements: [],

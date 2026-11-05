@@ -38,49 +38,49 @@ const lensValidationCodes: Record<BoardLens, AllocationValidation['code'][]> = {
 };
 
 const validationLabels: Record<AllocationValidation['code'], string> = {
-  internal_margin_gap: 'Przychód poniżej kosztu',
-  insufficient_hours: 'Brak wymaganych godzin',
-  insufficient_seniority: 'Zbyt niski poziom seniority',
-  missing_required_skill: 'Brak wymaganej kompetencji',
-  over_allocated: 'Przeciążenie osoby',
-  role_mismatch: 'Niedopasowanie roli',
-  blocked_person: 'Zablokowana osoba',
-  not_preferred_person: 'Poza preferowanym zespołem',
-  person_collaboration_conflict: 'Konflikt współpracy osób',
-  target_revenue_gap: 'Stawka poniżej celu',
-  target_revenue_surplus: 'Stawka powyżej celu',
+  internal_margin_gap: 'Revenue below cost',
+  insufficient_hours: 'Missing required hours',
+  insufficient_seniority: 'Insufficient seniority',
+  missing_required_skill: 'Missing required skill',
+  over_allocated: 'Person overload',
+  role_mismatch: 'Role mismatch',
+  blocked_person: 'Blocked person',
+  not_preferred_person: 'Outside preferred team',
+  person_collaboration_conflict: 'People collaboration conflict',
+  target_revenue_gap: 'Rate below target',
+  target_revenue_surplus: 'Rate above target',
 };
 
 function getCompactValidationMessage(validation: AllocationValidation) {
   switch (validation.code) {
     case 'target_revenue_gap': {
-      const match = validation.message.match(/brakuje ([0-9.]+k) PLN do celu/);
-      return match ? `brakuje ${match[1]} do celu` : 'poniżej celu';
+      const match = validation.message.match(/shortfall of ([0-9.]+k) PLN/) || validation.message.match(/brakuje ([0-9.]+k) PLN do celu/);
+      return match ? `${match[1]} short of target` : 'below target';
     }
     case 'internal_margin_gap': {
-      const match = validation.message.match(/brakuje ([0-9.]+k) PLN do pokrycia kosztu/);
-      return match ? `brakuje ${match[1]} do kosztu` : 'poniżej kosztu';
+      const match = validation.message.match(/leaving ([0-9.]+k) PLN uncovered/) || validation.message.match(/brakuje ([0-9.]+k) PLN do pokrycia kosztu/);
+      return match ? `${match[1]} short of cost coverage` : 'below cost';
     }
     case 'insufficient_hours': {
-      return validation.message.replace(' pokrycia.', '').toLowerCase();
+      return validation.message.replace(/ (?:covered|pokrycia)\./, '').toLowerCase();
     }
     case 'missing_required_skill':
-      return 'niejednoznaczna kompetencja';
+      return 'ambiguous skill';
     case 'insufficient_seniority':
-      return 'seniority poniżej wymagań';
+      return 'seniority below requirements';
     case 'role_mismatch':
-      return 'kompetencja poza profilem osoby';
+      return 'skill outside person profile';
     case 'blocked_person':
-      return 'osoba zablokowana w projekcie';
+      return 'person blocked in project';
     case 'not_preferred_person':
-      return 'poza preferowanym zespołem';
+      return 'outside preferred team';
     case 'person_collaboration_conflict':
-      return 'konflikt współpracy';
+      return 'collaboration conflict';
     case 'over_allocated':
-      return 'przeciążenie osoby';
+      return 'person overload';
     case 'target_revenue_surplus': {
-      const match = validation.message.match(/jest ([0-9.]+k) PLN powyżej celu/);
-      return match ? `${match[1]} powyżej celu` : 'powyżej celu';
+      const match = validation.message.match(/exceeding it by ([0-9.]+k) PLN/) || validation.message.match(/jest ([0-9.]+k) PLN powyżej celu/);
+      return match ? `${match[1]} above target` : 'above target';
     }
   }
 }
@@ -117,7 +117,7 @@ export function generatePerspectiveSummary({
         const person = peopleById.get(allocation.personId);
         const project = projectsById.get(allocation.target);
         const owner = person?.name || allocation.personId;
-        const target = project ? project.client : 'ławka';
+        const target = project ? project.client : 'bench';
         const compactMessage = getCompactValidationMessage(validation);
         const key = `${owner}:${target}:${compactMessage}`;
         const current = result.get(key);
@@ -135,12 +135,12 @@ export function generatePerspectiveSummary({
       .map((example) => `${example.label}: ${example.count}x ${example.message}`);
     const shownCount = groupedExamples.slice(0, 2).reduce((sum, example) => sum + example.count, 0);
     const remaining = total - shownCount;
-    const exampleDetail = examples.length ? examples.join(' · ') : `${total} zapisanych ostrzeżeń w aktywnym miesiącu.`;
+    const exampleDetail = examples.length ? examples.join(' · ') : `${total} saved warnings in the active month.`;
     return {
       id: code,
       severity: counts.invalid > 0 ? 'high' : counts.warning > 0 ? 'medium' : 'low',
       title: validationLabels[code],
-      detail: remaining > 0 ? `${exampleDetail} · +${remaining} podobne` : exampleDetail,
+      detail: remaining > 0 ? `${exampleDetail} · +${remaining} similar` : exampleDetail,
     } satisfies PerspectiveSummaryItem;
   });
 
@@ -164,8 +164,8 @@ export function generatePerspectiveSummary({
   return [{
     id: `${lens}-no-validation-warnings`,
     severity: 'low',
-    title: 'Brak zapisanych ostrzeżeń',
-    detail: 'Brak zapisanych ostrzeżeń alokacji dla tej soczewki w aktywnym miesiącu.',
+    title: 'No saved warnings',
+    detail: 'No saved allocation warnings for this lens in the active month.',
   }];
 }
 
@@ -210,8 +210,8 @@ function generateGhostPipelineItems({
   return [{
     id: 'ghost-pipeline-capacity',
     severity: reserveGapK >= 10 ? 'medium' : 'low',
-    title: 'Rezerwacja pod pipeline',
-    detail: `${ghostProjects.length} szans sprzedażowych: ${Math.round(plannedK * 10) / 10}k w planie, ${Math.round(expectedK * 10) / 10}k w prognozie, ${reservedK}k zarezerwowane. Brakuje: ${reserveGapK}k.`,
+    title: 'Pipeline reservation',
+    detail: `${ghostProjects.length} sales opportunities: ${Math.round(plannedK * 10) / 10}k planned, ${Math.round(expectedK * 10) / 10}k expected, ${reservedK}k reserved. Gap: ${reserveGapK}k.`,
   }];
 }
 
@@ -254,15 +254,15 @@ function generateWeeklyPerspectiveItems({
     return [{
       id: 'weekly-delivery-overload',
       severity: 'high',
-      title: 'Tygodniowe przeciążenie realizacji',
-      detail: `${overloadedWeeks.length} tyg. z przeciążeniem. Najwięcej: ${peakWeek.period.label}, ${peakWeek.overloadedPeople} os.${peakProject ? ` Największe obciążenie: ${peakProject.client} ${peakProject.hours}h.` : ''}`,
+      title: 'Weekly delivery overload',
+      detail: `${overloadedWeeks.length} overloaded weeks. Peak: ${peakWeek.period.label}, ${peakWeek.overloadedPeople} people.${peakProject ? ` Highest workload: ${peakProject.client} ${peakProject.hours}h.` : ''}`,
     }];
   }
 
   return [{
     id: 'weekly-people-overload',
     severity: 'high',
-    title: 'Tygodniowe przeciążenie ludzi',
-    detail: `${overloadedPersonIds.size} os. ma przeciążenie tygodniowe${namesLabel}. Najwięcej: ${peakWeek.period.label}, ${peakWeek.overloadedPeople} os.`,
+    title: 'Weekly people overload',
+    detail: `${overloadedPersonIds.size} people have weekly overload${namesLabel}. Peak: ${peakWeek.period.label}, ${peakWeek.overloadedPeople} people.`,
   }];
 }

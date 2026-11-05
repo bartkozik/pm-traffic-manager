@@ -21,11 +21,11 @@ export function RiskDetailsModal({ risk, onClose }: RiskDetailsModalProps) {
       >
         <header className="traffic-help-header">
           <div>
-            <span>Detale ryzyka</span>
+            <span>Risk details</span>
             <h2 id="traffic-risk-details-title">{risk.title}</h2>
           </div>
           <button className="traffic-icon-button" type="button" onClick={onClose}>
-            Zamknij
+            Close
           </button>
         </header>
 
@@ -48,7 +48,7 @@ export function RiskDetailsModal({ risk, onClose }: RiskDetailsModalProps) {
               ))}
             </div>
           ) : (
-            <p className="traffic-help-empty">Brak dodatkowych detali dla tego ryzyka.</p>
+            <p className="traffic-help-empty">No additional details for this risk.</p>
           )}
         </article>
       </section>

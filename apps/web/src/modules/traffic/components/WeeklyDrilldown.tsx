@@ -41,7 +41,7 @@ export function WeeklyDrilldown({
   if (!selectedWeek) return null;
 
   return (
-    <section className="traffic-weekly-drilldown" aria-label={`${period.label} - podział tygodniowy`}>
+    <section className="traffic-weekly-drilldown" aria-label={`${period.label} - weekly breakdown`}>
       <div className="traffic-week-tabs">
         {weeks.map((week) => (
           <button
@@ -60,8 +60,8 @@ export function WeeklyDrilldown({
       <div className="traffic-week-detail">
         <div className="traffic-week-people">
           <div className="traffic-section-title">
-            <span>Obciążenie ludzi</span>
-            <span>{selectedWeek.overloadedPeople} przeciążeń</span>
+            <span>People's workload</span>
+            <span>{selectedWeek.overloadedPeople} overloads</span>
           </div>
           <div className="traffic-week-people-list">
             {selectedWeek.people.map((load) => {
@@ -73,10 +73,10 @@ export function WeeklyDrilldown({
                   <span className="traffic-person-dot" style={{ background: person.color }} />
                   <strong>{person.name}</strong>
                   <span>{load.allocatedHours}/{load.availableHours}h</span>
-                  <div className="traffic-utilization-meter" aria-label={`${load.utilizationPercent}% wykorzystania tygodniowego`}>
+                  <div className="traffic-utilization-meter" aria-label={`${load.utilizationPercent}% weekly utilisation`}>
                     <span style={{ width: `${Math.min(100, load.utilizationPercent)}%` }} />
                   </div>
-                  <small>{load.utilizationPercent}% tygodniowo</small>
+                  <small>{load.utilizationPercent}% weekly</small>
                 </div>
               );
             })}
@@ -85,7 +85,7 @@ export function WeeklyDrilldown({
 
         <div className="traffic-week-projects">
           <div className="traffic-section-title">
-            <span>Praca na projektach</span>
+            <span>Project work</span>
             <span>{selectedWeek.projectWorkloads.length}</span>
           </div>
           <div className="traffic-week-project-list">
@@ -96,11 +96,11 @@ export function WeeklyDrilldown({
                 <div className="traffic-week-project" key={`${workload.projectId}-${workload.skillId || 'unassigned'}`}>
                   <strong>{workload.client}</strong>
                   <span>{workload.projectName}</span>
-                  <em>{skill?.label || 'Bez kompetencji'} · {workload.hours}h · {workload.revenueK}k</em>
+                  <em>{skill?.label || 'No skill'} · {workload.hours}h · {workload.revenueK}k</em>
                 </div>
               );
             }) : (
-              <div className="traffic-week-empty">Brak produktywnych alokacji w tym tygodniu.</div>
+              <div className="traffic-week-empty">No productive allocations this week.</div>
             )}
           </div>
         </div>

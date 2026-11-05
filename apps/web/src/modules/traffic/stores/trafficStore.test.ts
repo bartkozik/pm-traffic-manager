@@ -424,7 +424,7 @@ describe('trafficStore durable persistence', () => {
       ...snapshot.projects[0],
       id: 'draft-project',
       client: 'Nowy klient',
-      name: 'Nowy projekt',
+      name: 'New project',
     };
     useTrafficStore.getState().updateProject(draftProject);
     await flushPromises();
@@ -478,7 +478,7 @@ describe('trafficStore durable persistence', () => {
       periodId: snapshot.activePeriodId,
       personAId: snapshot.people[0].id,
       personBId: snapshot.people[1].id,
-      reason: 'Testowa reguła',
+      reason: 'Test rule',
       now: '2026-06-11T09:00:00.000Z',
     });
 

@@ -5,7 +5,7 @@ describe('getPersonInitialsFromName', () => {
   it('uses the first and last visible name parts', () => {
     expect(getPersonInitialsFromName('Jan Kowalski')).toBe('JK');
     expect(getPersonInitialsFromName("Avery-Maria Nowak Kowalska")).toBe("AK");
-    expect(getPersonInitialsFromName('Nowa osoba 5')).toBe('N5');
+    expect(getPersonInitialsFromName('New person 5')).toBe('N5');
   });
 
   it('supports Polish letters and a fallback for empty names', () => {

@@ -47,8 +47,8 @@ function getTypeSortValue(a: ProjectFrame, b: ProjectFrame) {
     getPlanningStatusRank(a) - getPlanningStatusRank(b) ||
     stageRank[a.stage] - stageRank[b.stage] ||
     b.probability - a.probability ||
-    a.client.localeCompare(b.client, 'pl') ||
-    a.name.localeCompare(b.name, 'pl');
+    a.client.localeCompare(b.client, 'en-GB') ||
+    a.name.localeCompare(b.name, 'en-GB');
 }
 
 export function getProjectProfitPotentialK(

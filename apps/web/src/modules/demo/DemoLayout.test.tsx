@@ -25,16 +25,16 @@ describe('guest demo', () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(json({}, 401)).mockResolvedValueOnce(json(session));
     vi.stubGlobal('fetch', fetchMock);
     setup();
-    fireEvent.click(await screen.findByRole('button', { name: 'Uruchom demo' }));
-    await screen.findByRole('dialog', { name: 'Przewodnik po demo' });
-    expect(screen.getByRole('heading', { name: 'Przydziel osoby do projektów' })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Dalej' }));
-    expect(screen.getByRole('heading', { name: 'Zmieniaj perspektywę czasu' })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Wstecz' }));
-    expect(screen.getByRole('heading', { name: 'Przydziel osoby do projektów' })).toBeInTheDocument();
-    for (let step = 0; step < 3; step++) fireEvent.click(screen.getByRole('button', { name: 'Dalej' }));
-    expect(screen.getByRole('heading', { name: 'Eksperymentuj bez obaw' })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Zaczynam planować' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Open demo' }));
+    await screen.findByRole('dialog', { name: 'Demo guide' });
+    expect(screen.getByRole('heading', { name: 'Assign people to projects' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByRole('heading', { name: 'Explore different time periods' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(screen.getByRole('heading', { name: 'Assign people to projects' })).toBeInTheDocument();
+    for (let step = 0; step < 3; step++) fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByRole('heading', { name: 'Experiment freely' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Start planning' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
@@ -43,13 +43,13 @@ describe('guest demo', () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(json({}, 401)).mockResolvedValueOnce(json(session));
     vi.stubGlobal('fetch', fetchMock);
     setup();
-    fireEvent.click(await screen.findByRole('button', { name: 'Uruchom demo' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Open demo' }));
     await screen.findByRole('dialog');
-    fireEvent.click(screen.getByRole('button', { name: 'Dalej' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Pomiń przewodnik' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Skip guide' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
-    fireEvent.click(screen.getByRole('button', { name: 'Jak to działa?' }));
-    expect(await screen.findByRole('heading', { name: 'Przydziel osoby do projektów' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Quick guide' }));
+    expect(await screen.findByRole('heading', { name: 'Assign people to projects' })).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
@@ -58,8 +58,8 @@ describe('guest demo', () => {
     setup('/diablo-board/guest-one');
     await screen.findByText('Private board');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Jak to działa?' }));
-    await screen.findByRole('dialog', { name: 'Przewodnik po demo' });
+    fireEvent.click(screen.getByRole('button', { name: 'Quick guide' }));
+    await screen.findByRole('dialog', { name: 'Demo guide' });
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
@@ -68,7 +68,7 @@ describe('guest demo', () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(json({}, 401)).mockResolvedValueOnce(json(session));
     vi.stubGlobal('fetch', fetchMock);
     const router = setup();
-    fireEvent.click(await screen.findByRole('button', { name: 'Uruchom demo' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Open demo' }));
     await screen.findByText('Private board');
     expect(router.state.location.pathname).toBe('/diablo-board/guest-one');
     expect(fetchMock.mock.calls[1][1]).toMatchObject({ method: 'POST', credentials: 'include' });
@@ -87,16 +87,16 @@ describe('guest demo', () => {
     const router = setup('/diablo-board/guest-one');
     fireEvent.click(await screen.findByRole('button', { name: 'Reset demo' }));
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    fireEvent.click(screen.getByRole('button', { name: 'Przywróć dane startowe' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Restore sample data' }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/diablo-board/guest-two'));
-    expect(await screen.findByText(/Pozostałe analizy AI: 1/)).toBeInTheDocument();
+    expect(await screen.findByText(/AI analyses remaining: 1/)).toBeInTheDocument();
   });
 
   it('does not create a guest on a failed initial request', async () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error('offline'));
     vi.stubGlobal('fetch', fetchMock);
     setup();
-    expect(await screen.findByRole('alert')).toHaveTextContent('Nie udało się połączyć');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Could not connect');
     expect(screen.queryByText('Private board')).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });

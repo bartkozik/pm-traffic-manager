@@ -156,8 +156,8 @@ function ProjectCardComponent({
           ? 'healthy'
           : 'neutral';
   const frameCapacityLabel = frameBehavior === 'elastic'
-    ? `${visibleRevenueK}k zaplanowane`
-    : `${visibleRevenueK}/${frameCapacityK}k zajęte`;
+    ? `${visibleRevenueK}k planned`
+    : `${visibleRevenueK}/${frameCapacityK}k allocated`;
   const allocatedHoursBySkill = allocations.reduce<Record<string, number>>((result, allocation) => {
     const skillId = getEffectiveAllocationSkillId(allocation, project, peopleById.get(allocation.personId));
     if (!skillId) return result;
@@ -173,14 +173,14 @@ function ProjectCardComponent({
     pressure || project.requirements.length || validationItems.length || project.notes
   );
   const frameDetailsSummary = [
-    project.requirements.length ? `${project.requirements.length} wym.` : null,
-    validationItems.length ? `${validationItems.length} sygnałów` : null,
-    project.notes ? 'notatka' : null,
+    project.requirements.length ? `${project.requirements.length} req.` : null,
+    validationItems.length ? `${validationItems.length} signals` : null,
+    project.notes ? 'note' : null,
   ].filter(Boolean).join(' · ');
   const uniquePersonCount = new Set(visible.map((allocation) => allocation.personId)).size;
   const projectFrameInventoryLabel = frameBehavior === 'elastic'
-    ? `${uniquePersonCount} osób, ${visibleRevenueK}k zaplanowane`
-    : `${uniquePersonCount} osób, ${emptySlots}k wolne, ${overflowRevenueK}k poza ramką`;
+    ? `${uniquePersonCount} people, ${visibleRevenueK}k planned`
+    : `${uniquePersonCount} people, ${emptySlots}k available, ${overflowRevenueK}k beyond the frame`;
   const poolRemainingK = frameBehavior === 'pooled' && pressure ? Math.max(0, pressure.totalGapK) : 0;
   const frameGeometrySegments = useMemo(() => getProjectFrameGeometrySegments({
     frameBehavior,
@@ -241,9 +241,9 @@ function ProjectCardComponent({
               {Math.round(project.probability * 100)}%
             </span>
             <span
-              aria-label={`Zachowanie ramki projektu: ${frameBehaviorLabel}. Typ kontraktu: ${frameTypeLabel}`}
+              aria-label={`Project frame behaviour: ${frameBehaviorLabel}. Contract type: ${frameTypeLabel}`}
               className={`traffic-project-frame-chip is-${frameBehavior}`}
-              title={`Zachowanie ramki projektu: ${frameBehaviorLabel}. Typ kontraktu: ${frameTypeLabel}`}
+              title={`Project frame behaviour: ${frameBehaviorLabel}. Contract type: ${frameTypeLabel}`}
             >
               <i aria-hidden="true" />
               {frameBehaviorLabel}
@@ -253,20 +253,20 @@ function ProjectCardComponent({
         <div className="traffic-project-actions">
           <div className="traffic-project-budget">{periodBudgetK}k</div>
           <button
-            aria-label={`Edytuj projekt: ${project.client} - ${project.name}`}
+            aria-label={`Edit project: ${project.client} - ${project.name}`}
             className="traffic-icon-button"
             type="button"
             onClick={() => onEdit(project.id)}
           >
-            Edytuj
+            Edit
           </button>
           <button
-            aria-label={`${isArchivePending ? 'Potwierdź ukrycie projektu' : 'Ukryj projekt w miesiącu'}: ${project.client} - ${project.name}`}
+            aria-label={`${isArchivePending ? 'Confirm hiding project' : 'Hide project this month'}: ${project.client} - ${project.name}`}
             className={`traffic-icon-button ${isArchivePending ? 'is-danger' : ''}`}
             type="button"
             onClick={() => onArchive(project.id)}
           >
-            {isArchivePending ? 'Potwierdź' : 'Ukryj'}
+            {isArchivePending ? 'Confirm' : 'Hide'}
           </button>
         </div>
       </div>
@@ -274,8 +274,8 @@ function ProjectCardComponent({
       <div className="traffic-project-frame-summary">
         <div
           aria-label={frameBehavior === 'elastic'
-            ? `Projekt T&M bez CAP ma ${visibleRevenueK}k zaplanowanej pracy w tym miesiącu`
-            : `Zapełnienie ramki projektu: ${visibleRevenueK} z ${frameCapacityK}k`}
+            ? `Uncapped T&M project has ${visibleRevenueK}k of work planned this month`
+            : `Project frame usage: ${visibleRevenueK} of ${frameCapacityK}k`}
           className={`traffic-project-frame-meter is-${frameStatus}`}
           style={{ '--traffic-frame-fill': `${frameFillPercent}%` } as CSSProperties}
         >
@@ -285,52 +285,52 @@ function ProjectCardComponent({
           <div
             className="traffic-project-badge"
             title={frameBehavior === 'elastic'
-              ? 'Projekt godzinowy bez CAP: pokazujemy zaplanowaną pracę, bez pustych slotów limitu'
+              ? 'Uncapped hourly project: shows planned work without empty capacity slots'
               : frameBehavior === 'capped'
-                ? `T&M z CAP / stały limit: praca wypełnia maksymalną pojemność ${frameCapacityK}k`
-                : `Fixed price: praca zużywa wspólną pulę, w tym miesiącu dostępne ${frameCapacityK}k`}
+                ? `Capped T&M / fixed limit: work fills the maximum capacity ${frameCapacityK}k`
+                : `Fixed price: work uses a shared budget; available this month ${frameCapacityK}k`}
           >
             {frameCapacityLabel}
           </div>
           {emptySlots > 0 ? (
-            <div className="traffic-project-warning" title={emptySlotLabel || 'Puste miejsce w ramce projektu'}>
-              {emptySlotLabel ? `${emptySlotLabel} ${emptySlots}k` : `luka ${emptySlots}k`}
+            <div className="traffic-project-warning" title={emptySlotLabel || 'Empty space in project frame'}>
+              {emptySlotLabel ? `${emptySlotLabel} ${emptySlots}k` : `gap ${emptySlots}k`}
             </div>
           ) : null}
           {overflow.length ? (
-            <div className="traffic-project-warning" title="Alokacje wystają poza finansowanie projektu">
-              poza ramką +{formatRevenueK(overflowRevenueK)}
+            <div className="traffic-project-warning" title="Allocations exceed project funding">
+              beyond frame +{formatRevenueK(overflowRevenueK)}
             </div>
           ) : null}
           {frameBehavior === 'pooled' && pressure ? (
             <div
               className={pressure.totalGapK >= 0 ? 'traffic-project-positive' : 'traffic-project-warning'}
-              title="Pozostała część wspólnej puli fixed price po alokacjach projektu"
+              title="Remaining shared fixed-price budget after project allocations"
             >
-              pula {pressure.totalGapK >= 0 ? `zostaje ${formatRevenueK(pressure.totalGapK)}` : `przepalona ${formatRevenueK(Math.abs(pressure.totalGapK))}`}
+              budget {pressure.totalGapK >= 0 ? `remaining ${formatRevenueK(pressure.totalGapK)}` : `overspent ${formatRevenueK(Math.abs(pressure.totalGapK))}`}
             </div>
           ) : null}
           {isGhostProject ? (
-            <div className="traffic-project-badge" title={`Prognoza w tym miesiącu: ${expectedPeriodRevenueK}k PLN`}>
+            <div className="traffic-project-badge" title={`Forecast this month: ${expectedPeriodRevenueK}k PLN`}>
               {getProjectPlanningStatusLabel(project.planningStatus)}
             </div>
           ) : null}
           {riskCount ? (
             <div className="traffic-project-risk-summary">
-              <div className="traffic-project-warning">{riskCount} ryzyk</div>
+              <div className="traffic-project-warning">{riskCount} risks</div>
               <HelpButton
-                label={`Wyjasnij ryzyka projektu: ${project.client}`}
+                label={`Explain project risks: ${project.client}`}
                 topicId="project-risks"
                 onOpenHelp={onOpenHelp}
               />
             </div>
           ) : null}
           {positiveSignalCount ? (
-            <div className="traffic-project-positive">{positiveSignalCount} dobrych sygnałów</div>
+            <div className="traffic-project-positive">{positiveSignalCount} positive signals</div>
           ) : null}
         </div>
         {projectInventoryPatterns.length ? (
-          <div className="traffic-project-inventory-rail" aria-label={`Wizualne patterny projektu: ${project.client}`}>
+          <div className="traffic-project-inventory-rail" aria-label={`Project visual patterns: ${project.client}`}>
             {visibleProjectInventoryPatterns.map((pattern) => (
               <span
                 aria-label={`${pattern.label}: ${pattern.detail}`}
@@ -345,19 +345,19 @@ function ProjectCardComponent({
             ))}
             {hiddenProjectInventoryPatternCount ? (
               <span
-                aria-label={`${hiddenProjectInventoryPatternCount} dodatkowe patterny projektu: ${projectInventoryPatterns.slice(MAX_VISIBLE_PROJECT_INVENTORY_PATTERNS).map((pattern) => pattern.label).join(', ')}`}
+                aria-label={`${hiddenProjectInventoryPatternCount} additional project patterns: ${projectInventoryPatterns.slice(MAX_VISIBLE_PROJECT_INVENTORY_PATTERNS).map((pattern) => pattern.label).join(', ')}`}
                 className="is-more"
-                title={`${hiddenProjectInventoryPatternCount} kolejne patterny są dostępne w legendzie i panelach szczegółów`}
+                title={`${hiddenProjectInventoryPatternCount} more patterns are available in the legend and detail panels`}
               >
                 <i aria-hidden="true">+{hiddenProjectInventoryPatternCount}</i>
-                <b>więcej</b>
-                <small>pozostałe patterny w szczegółach</small>
+                <b>more</b>
+                <small>remaining patterns in details</small>
               </span>
             ) : null}
           </div>
         ) : null}
         <ReviewTriggerPulses
-          ariaLabel={`Triggery Traffic Review projektu: ${project.client}`}
+          ariaLabel={`Traffic Review triggers for project: ${project.client}`}
           className="traffic-project-review-pulse"
           maxVisible={MAX_VISIBLE_PROJECT_REVIEW_TRIGGERS}
           triggers={reviewTriggers}
@@ -367,14 +367,14 @@ function ProjectCardComponent({
       {hasProjectCanvas ? (
         <div className="traffic-project-section-slot is-body">
           <div className="traffic-project-canvas-label">
-            <span>Rama alokacji</span>
+            <span>Allocation frame</span>
             <strong>
               {projectFrameInventoryLabel}
-              {visualFocusMode === 'changes' ? ` · ${focusSignalCount} zm./info` : ''}
+              {visualFocusMode === 'changes' ? ` · ${focusSignalCount} changes/handoffs` : ''}
             </strong>
           </div>
           {frameGeometrySegments.length ? (
-            <div className="traffic-project-frame-geometry" aria-label={`Geometria ramki: ${frameGeometrySegments.map((segment) => `${segment.label} ${formatRevenueK(segment.valueK)}`).join(', ')}`}>
+            <div className="traffic-project-frame-geometry" aria-label={`Frame geometry: ${frameGeometrySegments.map((segment) => `${segment.label} ${formatRevenueK(segment.valueK)}`).join(', ')}`}>
               <div className="traffic-project-frame-geometry-bar">
                 {frameGeometrySegments.map((segment) => (
                   <span
@@ -395,13 +395,13 @@ function ProjectCardComponent({
               </div>
               <div
                 className="traffic-project-frame-map"
-                aria-label={`Mapa slotów ramki: ${frameGeometrySegments.map((segment) => `${segment.label} ${formatRevenueK(segment.valueK)}`).join(', ')}${frameGeometryCells[0]?.unitK && frameGeometryCells[0].unitK > 1 ? `. Jeden kwadrat oznacza około ${formatRevenueK(frameGeometryCells[0].unitK)}` : ''}`}
+                aria-label={`Frame slot map: ${frameGeometrySegments.map((segment) => `${segment.label} ${formatRevenueK(segment.valueK)}`).join(', ')}${frameGeometryCells[0]?.unitK && frameGeometryCells[0].unitK > 1 ? `. Each square represents approximately ${formatRevenueK(frameGeometryCells[0].unitK)}` : ''}`}
               >
                 {frameGeometryCells.map((cell) => (
                   <span
                     className={`is-${cell.kind}`}
                     key={cell.id}
-                    title={`${cell.label}: ${formatRevenueK(cell.segmentValueK)}${cell.unitK > 1 ? `, jeden kwadrat ~${formatRevenueK(cell.unitK)}` : ''}`}
+                    title={`${cell.label}: ${formatRevenueK(cell.segmentValueK)}${cell.unitK > 1 ? `, each square ~${formatRevenueK(cell.unitK)}` : ''}`}
                   />
                 ))}
               </div>
@@ -409,7 +409,7 @@ function ProjectCardComponent({
           ) : null}
           {relationshipSignals.length ? (
             <>
-              <div className="traffic-project-relationship-summary" aria-label={`Podsumowanie relacji i zmian alokacji: ${project.client}`}>
+              <div className="traffic-project-relationship-summary" aria-label={`Allocation relationships and changes summary: ${project.client}`}>
                 {relationshipSummaries.map((summary) => (
                   <span
                     className={getRelationshipSignalClassName(summary.kind)}
@@ -421,7 +421,7 @@ function ProjectCardComponent({
                   </span>
                 ))}
               </div>
-              <div className="traffic-project-relationship-rail" aria-label={`Relacje i zmiany alokacji: ${project.client}`}>
+              <div className="traffic-project-relationship-rail" aria-label={`Allocation relationships and changes: ${project.client}`}>
               {visibleRelationshipSignals.map((signal) => (
                 <span className={getRelationshipSignalClassName(signal.kind)} key={signal.id} title={signal.detail}>
                   <b>{signal.label}</b>
@@ -429,8 +429,8 @@ function ProjectCardComponent({
                 </span>
               ))}
                 {hiddenRelationshipSignalCount ? (
-                  <span className="is-more" title={`${hiddenRelationshipSignalCount} kolejnych relacji widocznych w overlayu miesiąca`}>
-                    <b>więcej</b>
+                  <span className="is-more" title={`${hiddenRelationshipSignalCount} more relationships visible in the monthly overlay`}>
+                    <b>more</b>
                     <small>+{hiddenRelationshipSignalCount}</small>
                   </span>
                 ) : null}
@@ -439,7 +439,7 @@ function ProjectCardComponent({
           ) : null}
           <div className="traffic-project-body">
             {skillZones.length ? (
-              <div className="traffic-project-skill-zone-map" aria-label={`Strefy skillowe projektu ${project.client}`}>
+              <div className="traffic-project-skill-zone-map" aria-label={`Project skill zones ${project.client}`}>
                 {skillZones.map((zone) => (
                   <DropZone
                     className={`traffic-project-skill-zone is-${zone.isCovered ? 'covered' : 'open'}`}
@@ -477,7 +477,7 @@ function ProjectCardComponent({
               onTileDragStart={onTileDragStart}
             />
             {missingRequirementPlaceholders.length ? (
-              <div className="traffic-missing-person-slots" aria-label={`Brakujace wymagania bez alokacji: ${project.client}`}>
+              <div className="traffic-missing-person-slots" aria-label={`Missing requirements without allocations: ${project.client}`}>
                 {missingRequirementPlaceholders.map((placeholder) => (
                   <section
                     className="traffic-person-tile-group is-missing is-unassigned"
@@ -489,19 +489,19 @@ function ProjectCardComponent({
                     </div>
                     <div className="traffic-person-tile-group-body">
                       <div className="traffic-person-tile-group-meta">
-                        <strong>Nieprzypisane wymaganie</strong>
-                        <span>brakuje {formatHours(placeholder.missingHours)}h</span>
+                        <strong>Unassigned requirement</strong>
+                        <span>missing {formatHours(placeholder.missingHours)}h</span>
                       </div>
                       <div className="traffic-person-tile-group-signals">
                         <span className="is-missing">{placeholder.skillLabel}</span>
-                        <span className="is-missing">{placeholder.slotCount} pustych kafelków</span>
+                        <span className="is-missing">{placeholder.slotCount} empty tiles</span>
                       </div>
                       <div className="traffic-person-tile-group-tiles">
                         {Array.from({ length: placeholder.slotCount }, (_, index) => (
                           <div
                             className="traffic-person-missing-tile"
                             key={`${placeholder.id}-${index}`}
-                            title={`Brak alokacji: ${placeholder.skillLabel}`}
+                            title={`No allocations: ${placeholder.skillLabel}`}
                           />
                         ))}
                       </div>
@@ -513,7 +513,7 @@ function ProjectCardComponent({
             {overflow.length ? (
               <div className="traffic-overflow">
                 <div className="traffic-overflow-title">
-                  <span>Poza ramką</span>
+                  <span>Beyond frame</span>
                   <strong>+{formatRevenueK(overflowRevenueK)}</strong>
                 </div>
                 <ScaledTileGrid
@@ -539,8 +539,8 @@ function ProjectCardComponent({
       ) : (
         <div className="traffic-project-section-slot is-empty">
           <div className="traffic-project-empty-state">
-            <strong>Brak przypisanych kafelków</strong>
-            <span>Przeciągnij tu kafelki osoby albo użyj sugestii alokacji.</span>
+            <strong>No allocated tiles</strong>
+            <span>Drag a person's tiles here or use allocation suggestions.</span>
           </div>
         </div>
       )}
@@ -548,31 +548,31 @@ function ProjectCardComponent({
       {hasFrameDetails ? (
         <details className="traffic-project-details">
           <summary>
-            <span>Podsumowanie projektu</span>
+            <span>Project summary</span>
             {frameDetailsSummary ? <small>{frameDetailsSummary}</small> : null}
           </summary>
           {pressure ? (
             <div className="traffic-project-pressure">
               <span className={pressure.monthlyGapK > 0 ? 'is-warning' : 'is-ok'}>
-                Miesiąc: {pressure.monthlyAllocatedK}/{pressure.monthlyPlannedK}k
-                {pressure.monthlyGapK > 0 ? ` · brakuje ${pressure.monthlyGapK}k` : ''}
+                Month: {pressure.monthlyAllocatedK}/{pressure.monthlyPlannedK}k
+                {pressure.monthlyGapK > 0 ? ` · shortfall ${pressure.monthlyGapK}k` : ''}
               </span>
               <span className={pressure.totalGapK > 0 ? 'is-warning' : 'is-ok'}>
-                Całość: {pressure.totalAllocatedK}/{pressure.totalPlannedK}k
-                {pressure.totalGapK > 0 ? ` · brakuje ${pressure.totalGapK}k` : ''}
+                Total: {pressure.totalAllocatedK}/{pressure.totalPlannedK}k
+                {pressure.totalGapK > 0 ? ` · shortfall ${pressure.totalGapK}k` : ''}
               </span>
             </div>
           ) : null}
           {project.requirements.length ? (
             <details className="traffic-project-detail-panel">
               <summary>
-                <span>Wymagania</span>
+                <span>Requirements</span>
                 <strong>{project.requirements.length}</strong>
               </summary>
               <div className="traffic-project-mini-title">
-                <span>Pokrycie wymaganych godzin</span>
+                <span>Required hours coverage</span>
                 <HelpButton
-                  label={`Wyjasnij wymagania projektu: ${project.client}`}
+                  label={`Explain project requirements: ${project.client}`}
                   topicId="project-requirements"
                   onOpenHelp={onOpenHelp}
                 />
@@ -587,7 +587,7 @@ function ProjectCardComponent({
                     <span
                       className={`traffic-requirement ${isCovered ? 'is-covered' : 'is-invalid'}`}
                       key={requirement.id}
-                      title={`${coveredHours}/${requirement.estimatedHours}h zaplanowane`}
+                      title={`${coveredHours}/${requirement.estimatedHours}h planned`}
                     >
                       {skill?.label || requirement.skillId}
                       {requirement.seniority ? ` ${requirement.seniority}` : ''}: {coveredHours}/
@@ -602,10 +602,10 @@ function ProjectCardComponent({
           {validationItems.length ? (
             <details className="traffic-project-detail-panel">
               <summary>
-                <span>Sygnały alokacji</span>
+                <span>Allocation signals</span>
                 <strong>{validationItems.length}</strong>
               </summary>
-              <div className="traffic-project-risk-list" aria-label={`Sygnały projektu: ${project.client}`}>
+              <div className="traffic-project-risk-list" aria-label={`Project signals: ${project.client}`}>
                 {visibleValidationItems.map((item) => (
                   <div className={`traffic-project-risk-item is-${item.severity}`} key={item.id}>
                     <strong>
@@ -613,8 +613,8 @@ function ProjectCardComponent({
                       {item.count > 1 ? (
                         <em>
                           {item.details.length > 1
-                            ? `${item.details.length} typy · ${item.count} wystąpień`
-                            : `${item.severity === 'info' ? 'Ten sygnał' : 'To ryzyko'} występuje ${item.count} razy`}
+                            ? `${item.details.length} types · ${item.count} occurrences`
+                            : `${item.severity === 'info' ? 'This signal' : 'This risk'} occurs ${item.count} times`}
                         </em>
                       ) : null}
                     </strong>
@@ -635,7 +635,7 @@ function ProjectCardComponent({
                     type="button"
                     onClick={() => setAreRisksExpanded((current) => !current)}
                   >
-                    {areRisksExpanded ? 'Pokaż mniej sygnałów' : `Pokaż wszystkie sygnały (${validationItems.length})`}
+                    {areRisksExpanded ? 'Show fewer signals' : `Show all signals (${validationItems.length})`}
                   </button>
                 ) : null}
               </div>
@@ -644,7 +644,7 @@ function ProjectCardComponent({
           {project.notes ? (
             <details className="traffic-project-detail-panel">
               <summary>
-                <span>Notatka</span>
+                <span>Note</span>
                 <strong>1</strong>
               </summary>
               <div className="traffic-project-note">{project.notes}</div>

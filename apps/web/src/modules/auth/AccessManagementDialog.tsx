@@ -140,23 +140,23 @@ export function AccessManagementDialog({ onClose }: AccessManagementDialogProps)
       >
         <header className="ptm-access-header">
           <div>
-            <span>Panel administratora</span>
-            <h2 id="ptm-team-settings-title">Dostęp i logowanie</h2>
-            <p>Zarządzaj użytkownikami i logowaniem Google Workspace.</p>
+            <span>Administrator panel</span>
+            <h2 id="ptm-team-settings-title">Access and sign-in</h2>
+            <p>Manage users and Google Workspace sign-in.</p>
           </div>
-          <button aria-label="Zamknij panel administratora" type="button" onClick={onClose}>×</button>
+          <button aria-label="Close administrator panel" type="button" onClick={onClose}>×</button>
         </header>
 
-        <div aria-label="Sekcje panelu administratora" className="ptm-team-settings-tabs" role="tablist">
+        <div aria-label="Administrator panel sections" className="ptm-team-settings-tabs" role="tablist">
           <SettingsTab
             activeTab={activeTab}
-            label="Użytkownicy"
+            label="Users"
             tab="members"
             onSelect={setActiveTab}
           />
           <SettingsTab
             activeTab={activeTab}
-            label="Uwierzytelnianie"
+            label="Authentication"
             tab="authentication"
             onSelect={setActiveTab}
           />
@@ -173,17 +173,17 @@ export function AccessManagementDialog({ onClose }: AccessManagementDialogProps)
         >
           <div className="ptm-settings-section-header">
             <div>
-              <h3>Użytkownicy</h3>
-              <p>{activeCount} aktywnych kont · Google Workspace {workspaceDomain}</p>
+              <h3>Users</h3>
+              <p>{activeCount} active accounts · Google Workspace {workspaceDomain}</p>
             </div>
           </div>
 
           <form className="ptm-access-add-form" onSubmit={handleCreate}>
             <label>
-              Adres e-mail
+              Email address
               <input
                 inputMode="email"
-                placeholder={`osoba@${workspaceDomain || 'firma.pl'}`}
+                placeholder={`person@${workspaceDomain || 'example.com'}`}
                 required
                 type="email"
                 disabled={isLoading || hasPendingMutation}
@@ -192,23 +192,23 @@ export function AccessManagementDialog({ onClose }: AccessManagementDialogProps)
               />
             </label>
             <label>
-              Rola
+              Role
               <select
                 disabled={isLoading || hasPendingMutation}
                 value={newRole}
                 onChange={(event) => setNewRole(event.target.value as AppAccessRole)}
               >
-                <option value="member">Użytkownik</option>
+                <option value="member">Member</option>
                 <option value="admin">Administrator</option>
               </select>
             </label>
-            <button disabled={isLoading || hasPendingMutation} type="submit">Dodaj dostęp</button>
+            <button disabled={isLoading || hasPendingMutation} type="submit">Grant access</button>
           </form>
 
           <div className="ptm-access-list" aria-busy={isLoading}>
-            {isLoading ? <p className="ptm-access-empty">Ładowanie użytkowników…</p> : null}
+            {isLoading ? <p className="ptm-access-empty">Loading users…</p> : null}
             {!isLoading && users.length === 0 ? (
-              <p className="ptm-access-empty">Nie ma jeszcze żadnych kont.</p>
+              <p className="ptm-access-empty">No accounts yet.</p>
             ) : null}
             {users.map((accessUser) => {
               const isSelf = accessUser.email === currentUser?.email;
@@ -226,22 +226,22 @@ export function AccessManagementDialog({ onClose }: AccessManagementDialogProps)
                     <span>{accessUser.email}</span>
                     <small>
                       {accessUser.lastLoginAt
-                        ? `Ostatnie logowanie: ${formatDate(accessUser.lastLoginAt)}`
-                        : 'Jeszcze się nie logował'}
+                        ? `Last sign-in: ${formatDate(accessUser.lastLoginAt)}`
+                        : 'Has not signed in yet'}
                     </small>
                   </span>
                   <span className={`ptm-access-status is-${accessUser.status}`}>
-                    {accessUser.status === 'active' ? 'Aktywny' : 'Zablokowany'}
+                    {accessUser.status === 'active' ? 'Active' : 'Disabled'}
                   </span>
                   <select
-                    aria-label={`Rola ${accessUser.email}`}
+                    aria-label={`Role ${accessUser.email}`}
                     disabled={isSelf || hasPendingMutation}
                     value={accessUser.role}
                     onChange={(event) => void handleUpdate(accessUser, {
                       role: event.target.value as AppAccessRole,
                     })}
                   >
-                    <option value="member">Użytkownik</option>
+                    <option value="member">Member</option>
                     <option value="admin">Administrator</option>
                   </select>
                   <button
@@ -253,10 +253,10 @@ export function AccessManagementDialog({ onClose }: AccessManagementDialogProps)
                     })}
                   >
                     {isPending
-                      ? 'Zapisywanie…'
-                      : accessUser.status === 'active' ? 'Zablokuj' : 'Odblokuj'}
+                      ? 'Saving…'
+                      : accessUser.status === 'active' ? 'Disable' : 'Enable'}
                   </button>
-                  {isSelf ? <small className="ptm-access-self">Twoje konto</small> : null}
+                  {isSelf ? <small className="ptm-access-self">Your account</small> : null}
                 </article>
               );
             })}
@@ -270,7 +270,7 @@ export function AccessManagementDialog({ onClose }: AccessManagementDialogProps)
           id="ptm-team-settings-authentication-panel"
           role="tabpanel"
         >
-          {isLoading ? <p className="ptm-access-empty">Ładowanie konfiguracji…</p> : null}
+          {isLoading ? <p className="ptm-access-empty">Loading configuration…</p> : null}
           {!isLoading && samlConfiguration ? (
             <SamlConfigurationPanel
               configuration={samlConfiguration}
@@ -334,16 +334,16 @@ function sortUsers(users: AppAccessUser[]) {
 
 function getAccessErrorMessage(error: unknown) {
   if (error instanceof AccessApiError) {
-    if (error.code === 'ACCESS_ALREADY_EXISTS') return 'Ten użytkownik ma już skonfigurowany dostęp.';
-    if (error.code === 'EMAIL_OUTSIDE_WORKSPACE') return 'Adres musi należeć do skonfigurowanej domeny Workspace.';
-    if (error.code === 'LAST_ACTIVE_ADMIN') return 'Nie można zablokować ostatniego aktywnego administratora.';
-    if (error.code === 'CANNOT_MODIFY_SELF') return 'Nie możesz odebrać dostępu własnemu kontu.';
-    if (error.code === 'INVALID_ACCESS_REQUEST') return 'Sprawdź poprawność danych konfiguracji SAML.';
+    if (error.code === 'ACCESS_ALREADY_EXISTS') return 'This user already has access configured.';
+    if (error.code === 'EMAIL_OUTSIDE_WORKSPACE') return 'The email address must belong to the configured Workspace domain.';
+    if (error.code === 'LAST_ACTIVE_ADMIN') return 'The last active administrator cannot be disabled.';
+    if (error.code === 'CANNOT_MODIFY_SELF') return 'You cannot revoke access to your own account.';
+    if (error.code === 'INVALID_ACCESS_REQUEST') return 'Check the SAML configuration values.';
     if (error.code === 'INVALID_SAML_CONFIGURATION') {
-      return 'URL logowania musi używać HTTPS, a certyfikat IdP musi być pełnym certyfikatem X.509 w formacie PEM.';
+      return 'The sign-in URL must use HTTPS, and the IdP certificate must be a complete X.509 certificate in PEM format.';
     }
   }
-  return 'Nie udało się zapisać zmian. Spróbuj ponownie.';
+  return 'Could not save changes. Please try again.';
 }
 
 function getInitials(value: string) {
@@ -356,7 +356,7 @@ function getInitials(value: string) {
 }
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat('pl-PL', {
+  return new Intl.DateTimeFormat('en-GB', {
     dateStyle: 'short',
     timeStyle: 'short',
   }).format(new Date(value));

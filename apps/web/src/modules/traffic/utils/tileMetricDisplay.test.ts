@@ -45,22 +45,22 @@ const allocation: PersonTileAllocation = {
 describe('tileMetricDisplay', () => {
   it('formats the same allocation as hours or internal cost', () => {
     expect(getAllocationMetricDisplay(allocation, person, 'hours')).toMatchObject({
-      ariaDetail: '8h pracy',
+      ariaDetail: '8h of work',
       shortLabel: '8h',
       titleLabel: '8h',
     });
     expect(getAllocationMetricDisplay(allocation, person, 'hours', { hoursOverride: 8.9 })).toMatchObject({
-      ariaDetail: '8.9h pracy',
+      ariaDetail: '8.9h of work',
       shortLabel: '8.9h',
       titleLabel: '8.9h',
     });
     expect(getAllocationMetricDisplay(allocation, person, 'cost')).toMatchObject({
       shortLabel: '0.9k',
-      titleLabel: '0.9k kosztu',
+      titleLabel: '0.9k cost',
     });
     expect(getAllocationMetricDisplay(allocation, person, 'cost', { costBasis: 'cost-capacity' })).toMatchObject({
       shortLabel: '2k',
-      titleLabel: '2k kosztu',
+      titleLabel: '2k cost',
     });
   });
 
@@ -70,10 +70,10 @@ describe('tileMetricDisplay', () => {
       { ...allocation, id: 'allocation-b', tileIndex: 1 },
     ];
 
-    expect(getPersonFreeMetricLabel({ allocations, isWeekly: true, mode: 'hours', person })).toBe('16h wolne · 2 dni');
-    expect(getPersonFreeMetricLabel({ allocations, isWeekly: false, mode: 'hours', person, totalHoursOverride: 160 })).toBe('160h wolne');
-    expect(getPersonFreeMetricLabel({ allocations, isWeekly: false, mode: 'cost', person })).toBe('1.8k koszt wolny');
-    expect(getPersonFreeMetricLabel({ allocations, costBasis: 'cost-capacity', isWeekly: false, mode: 'cost', person })).toBe('4k koszt wolny');
+    expect(getPersonFreeMetricLabel({ allocations, isWeekly: true, mode: 'hours', person })).toBe('16h free · 2 days');
+    expect(getPersonFreeMetricLabel({ allocations, isWeekly: false, mode: 'hours', person, totalHoursOverride: 160 })).toBe('160h free');
+    expect(getPersonFreeMetricLabel({ allocations, isWeekly: false, mode: 'cost', person })).toBe('1.8k unallocated cost');
+    expect(getPersonFreeMetricLabel({ allocations, costBasis: 'cost-capacity', isWeekly: false, mode: 'cost', person })).toBe('4k unallocated cost');
   });
 
   it('summarizes project revenue, internal cost, and margin', () => {
@@ -85,7 +85,7 @@ describe('tileMetricDisplay', () => {
       marginK: 1.1,
       revenueK: 2,
     });
-    expect(formatProjectCostMetricLabel(summary)).toBe('koszt 0.9k · marża +1.1k');
+    expect(formatProjectCostMetricLabel(summary)).toBe('cost 0.9k · margin +1.1k');
 
     const costCapacitySummary = getProjectFinancialMetricSummary([allocation], new Map([[person.id, person]]), {
       costBasis: 'cost-capacity',

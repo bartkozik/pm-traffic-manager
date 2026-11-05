@@ -124,9 +124,9 @@ import {
 import './DiabloTrafficBoard.css';
 
 const roomPresets = [
-  { id: 'ptm-mvp', label: 'Plan bazowy' },
-  { id: 'ptm-sales-scenario', label: 'Scenariusz sprzedaży' },
-  { id: 'ptm-delivery-risk', label: 'Ryzyko realizacji' },
+  { id: 'ptm-mvp', label: 'Baseline plan' },
+  { id: 'ptm-sales-scenario', label: 'Sales scenario' },
+  { id: 'ptm-delivery-risk', label: 'Delivery risk' },
 ];
 const emptyPersonIdSet = new Set<string>();
 
@@ -387,7 +387,7 @@ export default function DiabloTrafficBoard() {
       .filter((project) => !project.archivedAt)
       .filter((project) => (project.archivedPeriodIds || []).includes(activePeriod.id))
       .filter((project) => isProjectRelevantInPeriod(project, activePeriod.id, allocationsByTarget))
-      .sort((first, second) => `${first.client} ${first.name}`.localeCompare(`${second.client} ${second.name}`, 'pl'));
+      .sort((first, second) => `${first.client} ${first.name}`.localeCompare(`${second.client} ${second.name}`, 'en-GB'));
   }, [activePeriod, allocationsByTarget, projects]);
   const benchAllocations = allocationsByTarget.get('bench') || emptyBenchAllocations;
   const activeProjects = visibleProjects;
@@ -705,7 +705,7 @@ export default function DiabloTrafficBoard() {
       lens,
       lensLabel: lensLabels[lens],
       revenueView,
-      revenueViewLabel: revenueView === 'expected' ? 'Prognoza' : 'Tylko podpisane',
+      revenueViewLabel: revenueView === 'expected' ? 'Forecast' : 'Committed only',
       focusMode: 'diablo',
       focusModeLabel: 'Diablo canvas',
     };
@@ -767,7 +767,7 @@ export default function DiabloTrafficBoard() {
       return {
         type: 'allocation',
         id: editingAllocation.id,
-        label: person ? `alokacja ${person.name}` : `alokacja ${editingAllocation.id}`,
+        label: person ? `allocation ${person.name}` : `allocation ${editingAllocation.id}`,
       };
     }
     if (editingProject) {
@@ -787,11 +787,11 @@ export default function DiabloTrafficBoard() {
     return null;
   }, [editingAllocation, editingPerson, editingProject, peopleById]);
   const canOpenCustomRoom = sanitizeRoomName(customRoomName) !== '' && sanitizeRoomName(customRoomName) !== roomName;
-  const headerSyncLabel = isConnected && isSynced ? 'Online' : isConnected ? 'Łączenie' : 'Offline';
-  const headerSyncDetail = isConnected && isSynced ? 'współpraca' : isConnected ? 'sync' : 'lokalnie';
+  const headerSyncLabel = isConnected && isSynced ? 'Online' : isConnected ? 'Connecting' : 'Offline';
+  const headerSyncDetail = isConnected && isSynced ? 'collaboration' : isConnected ? 'sync' : 'local';
   const syncDetail = isConnected && isSynced
-    ? 'Współpraca online działa. Diablo korzysta z tego samego pokoju i danych co Analytic Board.'
-    : 'Możesz planować lokalnie; dane zostaną zsynchronizowane, gdy połączenie wróci.';
+    ? 'Online collaboration is connected. Diablo uses the same room and data as Analytic Board.'
+    : 'You can plan locally; data will sync when the connection returns.';
   const isBackendBusy = durableLoadStatus === 'loading' || durableSaveStatus === 'saving';
   const shouldShowBackendPanel = isBackendBusy || durableLoadStatus === 'failed' || durableSaveStatus === 'failed';
   const classicBoardPath = host && wsPort
@@ -813,15 +813,15 @@ export default function DiabloTrafficBoard() {
   }, [diabloBoardPath, isWeekPerspective, navigate]);
   const weekViewLink = isWeekPerspective
     ? {
-        label: 'Widok miesiąca',
+        label: 'Month view',
         onClick: handleWeekViewSwitch,
-        title: 'Wróć do miesięcznego widoku Diablo Board',
+        title: 'Return to the monthly Diablo Board view',
         to: monthViewPath,
       }
     : {
-        label: 'Plan tygodnia',
+        label: 'Weekly plan',
         onClick: handleWeekViewSwitch,
-        title: 'Zarządzaj pracą tygodniowo (Pn–Pt), z tygodniami na styku miesięcy',
+        title: 'Manage work by week (Mon–Fri), including weeks spanning two months',
         to: weekViewPath,
       };
   const sameBoardCollaborationPeers = useMemo(
@@ -846,7 +846,7 @@ export default function DiabloTrafficBoard() {
 
     setCollaborationEditingTarget(localEditingTarget);
     if (localEditingTarget) {
-      publishPresenceAction('edit', `Otworzył edycję: ${getCollaborationTargetLabel(localEditingTarget)}`, localEditingTarget);
+      publishPresenceAction('edit', `Opened editor: ${getCollaborationTargetLabel(localEditingTarget)}`, localEditingTarget);
     }
   }, [collaborationTrackingEnabled, localEditingTarget, publishPresenceAction, setCollaborationEditingTarget]);
 
@@ -1403,7 +1403,7 @@ export default function DiabloTrafficBoard() {
     return (
       <div className={`traffic-app diablo-app is-${theme}`}>
         <Helmet><title>Diablo Traffic Board</title></Helmet>
-        <div className="diablo-empty-state">Ładuję miesiąc planowania...</div>
+        <div className="diablo-empty-state">Loading planning month...</div>
       </div>
     );
   }
@@ -1423,13 +1423,13 @@ export default function DiabloTrafficBoard() {
         activeTileMetricMode={tileMetricMode}
         weekViewLink={weekViewLink}
         aiPlanningLink={{
-          label: 'Asystent planowania',
-          title: 'Otwórz asystenta planowania jako osobny moduł (poza planszą)',
+          label: 'AI planning assistant',
+          title: 'Open the AI planning assistant in a separate view',
           to: aiPlanningPath,
         }}
         boardViewLink={{
           label: 'Analytic Board',
-          title: 'Przejdź do tabelarycznego Analytic Board dla tej samej tablicy',
+          title: 'Open the tabular Analytic Board view for this board',
           to: classicBoardPath,
         }}
         canOpenCustomRoom={canOpenCustomRoom}
@@ -1478,31 +1478,31 @@ export default function DiabloTrafficBoard() {
             <div>
               <strong>
                 {durableLoadStatus === 'loading'
-                  ? 'Ładuję dane z backendu'
+                  ? 'Loading data from the server'
                   : durableSaveStatus === 'saving'
-                    ? 'Zapisuję zmiany'
-                    : 'Backend wymaga uwagi'}
+                    ? 'Saving changes'
+                    : 'Server needs attention'}
               </strong>
               <span>{durableError || syncDetail}</span>
-              {durableUpdatedAt ? <span>Ostatni zapis: {new Date(durableUpdatedAt).toLocaleTimeString('pl-PL')}</span> : null}
+              {durableUpdatedAt ? <span>Last saved: {new Date(durableUpdatedAt).toLocaleTimeString('en-GB')}</span> : null}
             </div>
           </div>
           <button className="traffic-button" type="button" onClick={() => initializeBoard(roomName, serverConfig)}>
-            Odśwież
+            Refresh
           </button>
         </section>
       ) : null}
 
       <main className="diablo-main">
-        <section className="diablo-topbar" aria-label="Zakres planowania Diablo">
+        <section className="diablo-topbar" aria-label="Diablo planning range">
           <PeriodTimelineNavigator
             activePeriodId={activePeriodId}
-            addAction={{ label: '+ Miesiąc', onClick: handleCreateNextMonth }}
-            ariaLabel="Zakres czasu Diablo Board"
+            addAction={{ label: '+ Month', onClick: handleCreateNextMonth }}
+            ariaLabel="Diablo Board time range"
             className="diablo-period-timeline"
             collapsible
             defaultOpen
-            heading="Zakres planowania"
+            heading="Planning range"
             monthPeriods={monthPeriods}
             rangeMonths={1}
             rangeStartPeriodId={periodRangeStartId}
@@ -1512,7 +1512,7 @@ export default function DiabloTrafficBoard() {
         </section>
 
         {isWeekPerspective ? (
-          <section className="diablo-week-strip" aria-label="Wybór tygodnia">
+          <section className="diablo-week-strip" aria-label="Week selection">
             <div className="diablo-week-strip-chips">
               {businessWeeks.map((week) => (
                 <button
@@ -1522,16 +1522,16 @@ export default function DiabloTrafficBoard() {
                   onClick={() => setActiveWeekId(week.id)}
                 >
                   <strong>{week.label}</strong>
-                  <small>{week.workingDays} dni{week.workingDays < 5 ? ' · styk mies.' : ''}</small>
+                  <small>{week.workingDays} days{week.workingDays < 5 ? ' · spans months' : ''}</small>
                 </button>
               ))}
-              {businessWeeks.length === 0 ? <span className="diablo-week-strip-empty">Brak tygodni dla tego miesiąca.</span> : null}
+              {businessWeeks.length === 0 ? <span className="diablo-week-strip-empty">No weeks for this month.</span> : null}
             </div>
             {activeWeek ? (
               <div className="diablo-week-strip-summary">
                 <strong>{activeWeek.label}</strong>
-                <span>~{activeWeekAllocatedHours}h pracy · {Math.round(activeWeekShare * 100)}% miesiąca</span>
-                {activeWeek.workingDays < 5 ? <span className="is-cross">tydzień na styku miesięcy — reszta dni w sąsiednim miesiącu</span> : null}
+                <span>~{activeWeekAllocatedHours}h of work · {Math.round(activeWeekShare * 100)}% of month</span>
+                {activeWeek.workingDays < 5 ? <span className="is-cross">week spans months — remaining days are in the adjacent month</span> : null}
               </div>
             ) : null}
           </section>

@@ -13,27 +13,27 @@ describe('PlanningRulesManager', () => {
   it('adds a rule and shows it in active rules immediately', () => {
     render(<PlanningRulesManagerHarness initialRules={[]} />);
 
-    expect(screen.getByRole('radiogroup', { name: 'Osoba A' })).toBeInTheDocument();
-    expect(screen.queryByText('Brak reguł dla wybranych filtrów.')).toBeInTheDocument();
-    const emptyActiveRules = screen.getByRole('region', { name: 'Aktywne reguły' });
-    expect(within(emptyActiveRules).getByLabelText('Miesiąc aktywnych reguł')).toBeDisabled();
-    expect(within(emptyActiveRules).getByLabelText('Osoba w regule')).toBeDisabled();
-    expect(within(emptyActiveRules).getByLabelText('Projekt reguły')).toBeDisabled();
-    expect(within(emptyActiveRules).getByLabelText('Szukaj w regułach')).toBeDisabled();
+    expect(screen.getByRole('radiogroup', { name: 'Person A' })).toBeInTheDocument();
+    expect(screen.queryByText('No rules match the selected filters.')).toBeInTheDocument();
+    const emptyActiveRules = screen.getByRole('region', { name: 'Active rules' });
+    expect(within(emptyActiveRules).getByLabelText('Active rules month')).toBeDisabled();
+    expect(within(emptyActiveRules).getByLabelText('Person in rule')).toBeDisabled();
+    expect(within(emptyActiveRules).getByLabelText('Rule project')).toBeDisabled();
+    expect(within(emptyActiveRules).getByLabelText('Search rules')).toBeDisabled();
 
     fireEvent.click(screen.getByRole('checkbox', { name: "Morgan Project Manager" }));
-    fireEvent.change(screen.getByLabelText('Powód / notatka'), {
-      target: { value: 'Nie łączyć bez wyjątków' },
+    fireEvent.change(screen.getByLabelText('Reason / note'), {
+      target: { value: 'Keep apart without exceptions' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Dodaj regułę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add rule' }));
 
-    const activeRules = screen.getByRole('region', { name: 'Aktywne reguły' });
+    const activeRules = screen.getByRole('region', { name: 'Active rules' });
     expect(within(activeRules).getByText("Morgan + Taylor")).toBeInTheDocument();
-    expect(within(activeRules).getByText('Stała')).toBeInTheDocument();
-    expect(within(activeRules).getByText(/Obowiązuje stale/)).toBeInTheDocument();
-    expect(within(activeRules).getByText('Nie łączyć bez wyjątków')).toBeInTheDocument();
-    expect(within(activeRules).getByLabelText('Osoba w regule')).toBeEnabled();
-    expect(within(activeRules).getByLabelText('Szukaj w regułach')).toBeEnabled();
+    expect(within(activeRules).getByText('Permanent')).toBeInTheDocument();
+    expect(within(activeRules).getByText(/Always applies/)).toBeInTheDocument();
+    expect(within(activeRules).getByText('Keep apart without exceptions')).toBeInTheDocument();
+    expect(within(activeRules).getByLabelText('Person in rule')).toBeEnabled();
+    expect(within(activeRules).getByLabelText('Search rules')).toBeEnabled();
     expect(within(activeRules).getByText('1 / 1')).toBeInTheDocument();
   });
 
@@ -55,19 +55,19 @@ describe('PlanningRulesManager', () => {
       />
     );
 
-    expect(screen.getByRole('dialog', { name: 'Zarządzanie regułami planowania' })).toHaveAttribute('aria-modal', 'true');
+    expect(screen.getByRole('dialog', { name: 'Manage planning rules' })).toHaveAttribute('aria-modal', 'true');
 
     fireEvent.click(screen.getByRole('checkbox', { name: "Morgan Project Manager" }));
-    fireEvent.change(screen.getByLabelText('Powód / notatka'), {
-      target: { value: 'Reguła z klawiatury' },
+    fireEvent.change(screen.getByLabelText('Reason / note'), {
+      target: { value: 'Rule added with keyboard' },
     });
-    fireEvent.submit(screen.getByRole('form', { name: 'Formularz dodawania reguły' }));
+    fireEvent.submit(screen.getByRole('form', { name: 'Add rule form' }));
 
     expect(onSave).toHaveBeenCalledWith([
       expect.objectContaining({
         personAId: 'marek',
         personBId: 'tomasz',
-        reason: 'Reguła z klawiatury',
+        reason: 'Rule added with keyboard',
       }),
     ]);
 
@@ -79,14 +79,14 @@ describe('PlanningRulesManager', () => {
   it('shows the month selector only for time-bound rule creation', () => {
     render(<PlanningRulesManagerHarness initialRules={[]} />);
 
-    const addRuleRegion = screen.getByRole('region', { name: 'Dodaj regułę' });
-    expect(within(addRuleRegion).queryByLabelText('Miesiąc reguły')).not.toBeInTheDocument();
+    const addRuleRegion = screen.getByRole('region', { name: 'Add rule' });
+    expect(within(addRuleRegion).queryByLabelText('Rule month')).not.toBeInTheDocument();
 
-    fireEvent.change(within(addRuleRegion).getByLabelText('Zakres reguły'), {
+    fireEvent.change(within(addRuleRegion).getByLabelText('Rule scope'), {
       target: { value: 'period' },
     });
 
-    expect(within(addRuleRegion).getByLabelText('Miesiąc reguły')).toBeInTheDocument();
+    expect(within(addRuleRegion).getByLabelText('Rule month')).toBeInTheDocument();
   });
 
   it('keeps month-wide rules visible when a concrete project filter is selected', () => {
@@ -95,7 +95,7 @@ describe('PlanningRulesManager', () => {
 
     render(<PlanningRulesManagerHarness initialProjectId={project.id} initialRules={snapshot.planningRules || []} />);
 
-    const activeRules = screen.getByRole('region', { name: 'Aktywne reguły' });
+    const activeRules = screen.getByRole('region', { name: 'Active rules' });
     expect(within(activeRules).getByText("Avery + Taylor")).toBeInTheDocument();
     expect(within(activeRules).getByText('1 / 1')).toBeInTheDocument();
   });
@@ -113,10 +113,10 @@ describe('PlanningRulesManager', () => {
 
     render(<PlanningRulesManagerHarness initialProjectId={project.id} initialRules={[permanentRule, ...(snapshot.planningRules || [])]} />);
 
-    const activeRules = screen.getByRole('region', { name: 'Aktywne reguły' });
+    const activeRules = screen.getByRole('region', { name: 'Active rules' });
     expect(within(activeRules).getAllByText("Avery + Taylor")).toHaveLength(2);
-    expect(within(activeRules).getByText('Stała')).toBeInTheDocument();
-    expect(within(activeRules).getByText('Czasowa')).toBeInTheDocument();
+    expect(within(activeRules).getByText('Permanent')).toBeInTheDocument();
+    expect(within(activeRules).getByText('Temporary')).toBeInTheDocument();
     expect(within(activeRules).getByText('2 / 2')).toBeInTheDocument();
   });
 });

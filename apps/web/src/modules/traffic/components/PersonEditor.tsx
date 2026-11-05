@@ -23,17 +23,17 @@ interface PersonEditorProps {
 }
 
 const costModelLabels: Record<PersonCostModel['type'], string> = {
-  fixed_monthly: 'Stały koszt miesięczny',
-  hourly: 'Koszt godzinowy',
-  monthly_override: 'Zmienny miesięcznie',
+  fixed_monthly: 'Fixed monthly cost',
+  hourly: 'Hourly cost',
+  monthly_override: 'Monthly override',
 };
 
 const benchAlertSeverityLabels: Record<BenchAlertSeverity, string> = {
   auto: 'Auto',
-  none: 'Nie alarmuj',
-  watch: 'Obserwuj',
-  warning: 'Wysoki alert',
-  critical: 'Krytyczny alert',
+  none: 'No alerts',
+  watch: 'Watch',
+  warning: 'High alert',
+  critical: 'Critical alert',
 };
 
 export function PersonEditor({
@@ -132,7 +132,7 @@ export function PersonEditor({
 
   return (
     <form
-      aria-label="Edytor osoby"
+      aria-label="Person editor"
       aria-modal="true"
       className="traffic-editor"
       ref={editorRef}
@@ -142,23 +142,23 @@ export function PersonEditor({
     >
       <div className="traffic-editor-header">
         <div>
-          <h2>Osoba</h2>
-          <p>Podstawowe dane osoby i koszt miesięczny.</p>
+          <h2>Person</h2>
+          <p>Basic personal details and monthly cost.</p>
         </div>
-        <button aria-label="Zamknij edytor osoby" className="traffic-icon-button" type="button" onClick={onClose}>
+        <button aria-label="Close person editor" className="traffic-icon-button" type="button" onClick={onClose}>
           x
         </button>
       </div>
 
       <section className="traffic-editor-section is-first">
-        <HelpSectionHeader title="Dane i koszt bazowy" topicId="person-basic" onOpenHelp={onOpenHelp} />
+        <HelpSectionHeader title="Details and base cost" topicId="person-basic" onOpenHelp={onOpenHelp} />
         <div className="traffic-form-grid">
           <label>
-            Imię i nazwisko
+            Full name
             <input value={draft.name} onChange={(event) => patchName(event.target.value)} />
           </label>
           <label>
-            Koszt miesięczny (k PLN / kafelki)
+            Monthly cost (k PLN / tiles)
             <input
               aria-describedby="person-base-cost-summary"
               min={0}
@@ -169,7 +169,7 @@ export function PersonEditor({
           </label>
         </div>
         <p className="traffic-editor-section-note" id="person-base-cost-summary">
-          {baseTileCount} kafelków w inventory.
+          {baseTileCount} tiles in inventory.
         </p>
       </section>
 
@@ -181,34 +181,34 @@ export function PersonEditor({
           type="button"
           onClick={() => setIsDetailsOpen((current) => !current)}
         >
-          {isDetailsOpen ? 'Ukryj szczegóły' : 'Więcej szczegółów'}
+          {isDetailsOpen ? 'Hide details' : 'More details'}
         </button>
       </div>
 
       {isDetailsOpen ? (
         <div className="traffic-editor-advanced" id="person-advanced-details">
           <section className="traffic-editor-section">
-            <HelpSectionHeader title="Profil i model" topicId="person-basic" onOpenHelp={onOpenHelp} />
+            <HelpSectionHeader title="Profile and model" topicId="person-basic" onOpenHelp={onOpenHelp} />
             <div className="traffic-form-grid">
               <label>
-                Rola
+                Role
                 <input value={draft.role} onChange={(event) => patchDraft({ role: event.target.value })} />
               </label>
               <label>
-                Inicjały
+                Initials
                 <input value={draft.initials} onChange={(event) => patchInitials(event.target.value)} />
               </label>
               <label>
-                Kolor
+                Colour
                 <input type="color" value={draft.color} onChange={(event) => patchDraft({ color: event.target.value })} />
               </label>
               <label>
-                Poziom
+                Level
                 <select
                   value={draft.seniority || ''}
                   onChange={(event) => patchDraft({ seniority: event.target.value ? (event.target.value as Seniority) : undefined })}
                 >
-                  <option value="">Bez preferencji</option>
+                  <option value="">No preference</option>
                   {seniorityOptions.map((seniority) => (
                     <option key={seniority} value={seniority}>
                       {seniorityLabels[seniority]}
@@ -217,7 +217,7 @@ export function PersonEditor({
                 </select>
               </label>
               <label>
-                Model kosztu
+                Cost model
                 <select
                   value={draft.costModel.type}
                   onChange={(event) => patchCostModel({ type: event.target.value as PersonCostModel['type'] })}
@@ -230,7 +230,7 @@ export function PersonEditor({
                 </select>
               </label>
               <label>
-                Alert ławki
+                Bench alert
                 <select
                   value={draft.benchAlertSeverity || 'auto'}
                   onChange={(event) => patchDraft({ benchAlertSeverity: event.target.value as BenchAlertSeverity })}
@@ -243,7 +243,7 @@ export function PersonEditor({
                 </select>
               </label>
               <label>
-                Domyślne godziny miesięczne
+                Default monthly hours
                 <input
                   min={0}
                   type="number"
@@ -252,7 +252,7 @@ export function PersonEditor({
                 />
               </label>
               <label>
-                Koszt wewnętrzny PLN/h
+                Internal cost PLN/h
                 <input
                   min={0}
                   type="number"
@@ -263,7 +263,7 @@ export function PersonEditor({
                 />
               </label>
               <label>
-                Godziny pracy na 1k PLN
+                Working hours per 1k PLN
                 <input
                   min={1}
                   type="number"
@@ -284,7 +284,7 @@ export function PersonEditor({
           />
 
           <section className="traffic-editor-section">
-            <HelpSectionHeader title="Kompetencje" topicId="person-skills" onOpenHelp={onOpenHelp} />
+            <HelpSectionHeader title="Skills" topicId="person-skills" onOpenHelp={onOpenHelp} />
             <div className="traffic-skill-picker">
               {skills.map((skill) => {
                 const isSelected = draftSkillIds.includes(skill.id);
@@ -306,10 +306,10 @@ export function PersonEditor({
           </section>
 
           <section className="traffic-editor-section">
-            <HelpSectionHeader title="Warstwy kosztu / celu" topicId="person-cost-layers" onOpenHelp={onOpenHelp} />
+            <HelpSectionHeader title="Cost / target layers" topicId="person-cost-layers" onOpenHelp={onOpenHelp} />
             <div className="traffic-form-grid">
               <label>
-                Koszt pracy (k)
+                Labour cost (k)
                 <input
                   min={0}
                   type="number"
@@ -318,7 +318,7 @@ export function PersonEditor({
                 />
               </label>
               <label>
-                Admin/biuro (k)
+                Admin/office (k)
                 <input
                   min={0}
                   type="number"
@@ -327,7 +327,7 @@ export function PersonEditor({
                 />
               </label>
               <label>
-                Sprzedaż/marketing (k)
+                Sales/marketing (k)
                 <input
                   min={0}
                   type="number"
@@ -336,7 +336,7 @@ export function PersonEditor({
                 />
               </label>
               <label>
-                Cel przychodu (k)
+                Revenue target (k)
                 <input
                   min={0}
                   type="number"
@@ -348,7 +348,7 @@ export function PersonEditor({
           </section>
 
           <label className="traffic-field-block">
-            Preferencje / ryzyka HR
+            HR preferences / risks
             <textarea
               value={(draft.preferences || []).join('\n')}
               onChange={(event) =>
@@ -368,7 +368,7 @@ export function PersonEditor({
         {canArchive ? (
           <div className="traffic-editor-action-group">
             <button
-              aria-label={`${isArchivePending ? 'Potwierdź archiwizację osoby' : 'Archiwizuj osobę'}: ${draft.name}`}
+              aria-label={`${isArchivePending ? 'Confirm archiving person' : 'Archive person'}: ${draft.name}`}
               className={`traffic-button ${isArchivePending ? 'is-danger' : ''}`}
               type="button"
               onClick={() => {
@@ -380,13 +380,13 @@ export function PersonEditor({
                 setIsArchivePending(true);
               }}
             >
-              {isArchivePending ? 'Potwierdź archiwizację' : 'Archiwizuj osobę'}
+              {isArchivePending ? 'Confirm archiving' : 'Archive person'}
             </button>
           </div>
         ) : null}
         <div className="traffic-editor-action-group">
           <button className="traffic-button" type="button" onClick={onClose}>
-            Anuluj
+            Cancel
           </button>
           <button
             className="traffic-button is-primary"
@@ -396,7 +396,7 @@ export function PersonEditor({
               savePerson();
             }}
           >
-            Zapisz osobę
+            Save person
           </button>
         </div>
       </div>

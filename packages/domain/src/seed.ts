@@ -23,14 +23,14 @@ export const SEED_SKILLS: Skill[] = [
 export const SEED_PERIODS: Period[] = [
   {
     id: DEFAULT_ACTIVE_PERIOD_ID,
-    label: 'Czerwiec 2026',
+    label: 'June 2026',
     granularity: 'month',
     startsOn: '2026-06-01',
     endsOn: '2026-06-30',
   },
   {
     id: '2026-06-w1',
-    label: 'Czerwiec W1',
+    label: 'June W1',
     granularity: 'week',
     startsOn: '2026-06-01',
     endsOn: '2026-06-07',
@@ -38,7 +38,7 @@ export const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w2',
-    label: 'Czerwiec W2',
+    label: 'June W2',
     granularity: 'week',
     startsOn: '2026-06-08',
     endsOn: '2026-06-14',
@@ -46,7 +46,7 @@ export const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w3',
-    label: 'Czerwiec W3',
+    label: 'June W3',
     granularity: 'week',
     startsOn: '2026-06-15',
     endsOn: '2026-06-21',
@@ -54,7 +54,7 @@ export const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w4',
-    label: 'Czerwiec W4',
+    label: 'June W4',
     granularity: 'week',
     startsOn: '2026-06-22',
     endsOn: '2026-06-28',
@@ -62,7 +62,7 @@ export const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w5',
-    label: 'Czerwiec W5',
+    label: 'June W5',
     granularity: 'week',
     startsOn: '2026-06-29',
     endsOn: '2026-06-30',
@@ -70,7 +70,7 @@ export const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-07',
-    label: 'Lipiec 2026',
+    label: 'July 2026',
     granularity: 'month',
     startsOn: '2026-07-01',
     endsOn: '2026-07-31',
@@ -176,7 +176,7 @@ export const SEED_PROJECTS: ProjectFrame[] = [
     },
     budgetK: 240,
     probability: 1,
-    startMonth: 'Czerwiec 2026',
+    startMonth: 'June 2026',
     startPeriodId: DEFAULT_ACTIVE_PERIOD_ID,
     rateConfig: {
       projectRatePlnH: 200,
@@ -230,7 +230,7 @@ export const SEED_PROJECTS: ProjectFrame[] = [
     },
     budgetK: 360,
     probability: 0.65,
-    startMonth: 'Czerwiec 2026',
+    startMonth: 'June 2026',
     startPeriodId: DEFAULT_ACTIVE_PERIOD_ID,
     endPeriodId: '2026-07',
     rateConfig: {
@@ -277,7 +277,7 @@ export const SEED_PROJECTS: ProjectFrame[] = [
     },
     budgetK: 480,
     probability: 0.9,
-    startMonth: 'Czerwiec 2026',
+    startMonth: 'June 2026',
     startPeriodId: DEFAULT_ACTIVE_PERIOD_ID,
     rateConfig: {
       projectRatePlnH: 240,

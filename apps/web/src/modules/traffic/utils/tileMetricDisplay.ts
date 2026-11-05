@@ -39,9 +39,9 @@ export function getAllocationMetricDisplay(
     const label = `${formatMetricNumber(internalCostK)}k`;
 
     return {
-      ariaDetail: `koszt wewnętrzny ${label}`,
+      ariaDetail: `internal cost ${label}`,
       shortLabel: label,
-      titleLabel: `${label} kosztu`,
+      titleLabel: `${label} cost`,
     };
   }
 
@@ -49,7 +49,7 @@ export function getAllocationMetricDisplay(
   const label = formatHoursMetricLabel(displayHours);
 
   return {
-    ariaDetail: `${label} pracy`,
+    ariaDetail: `${label} of work`,
     shortLabel: label,
     titleLabel: label,
   };
@@ -70,7 +70,7 @@ export function getPersonFreeMetricLabel({
   person: Person;
   totalHoursOverride?: number;
 }) {
-  if (!allocations.length) return isWeekly ? 'brak wolnych dni' : 'brak wolnych kafelków';
+  if (!allocations.length) return isWeekly ? 'no free days' : 'no free tiles';
 
   const totalHours = roundMetric(totalHoursOverride ?? allocations.reduce((sum, allocation) => sum + allocation.hours, 0));
   const daySuffix = isWeekly ? ` · ${allocations.length} ${getDayCountLabel(allocations.length)}` : '';
@@ -80,10 +80,10 @@ export function getPersonFreeMetricLabel({
       sum + getAllocationCostMetricK(allocation, person, costBasis)
     ), 0));
 
-    return `${formatMetricNumber(totalCostK)}k koszt wolny${daySuffix}`;
+    return `${formatMetricNumber(totalCostK)}k unallocated cost${daySuffix}`;
   }
 
-  return `${formatHoursMetricLabel(totalHours)} wolne${daySuffix}`;
+  return `${formatHoursMetricLabel(totalHours)} free${daySuffix}`;
 }
 
 export function getProjectFinancialMetricSummary(
@@ -111,10 +111,10 @@ export function getProjectFinancialMetricSummary(
 
 export function formatProjectCostMetricLabel(summary: Pick<ProjectFinancialMetricSummary, 'internalCostK' | 'marginK'>) {
   const marginLabel = summary.marginK >= 0
-    ? `marża +${formatMetricNumber(summary.marginK)}k`
+    ? `margin +${formatMetricNumber(summary.marginK)}k`
     : `gap ${formatMetricNumber(Math.abs(summary.marginK))}k`;
 
-  return `koszt ${formatMetricNumber(summary.internalCostK)}k · ${marginLabel}`;
+  return `cost ${formatMetricNumber(summary.internalCostK)}k · ${marginLabel}`;
 }
 
 export function formatMetricNumber(value: number) {
@@ -191,5 +191,5 @@ function roundMetric(value: number) {
 }
 
 function getDayCountLabel(dayCount: number) {
-  return dayCount === 1 ? 'dzień' : 'dni';
+  return dayCount === 1 ? 'day' : 'days';
 }

@@ -4,29 +4,29 @@ import { Period } from '../models/traffic.model';
 import { PeriodTimelineNavigator } from './PeriodTimelineNavigator';
 
 const monthPeriods: Period[] = [
-  month('2026-06', 'Czerwiec 2026', '2026-06-30'),
-  month('2026-07', 'Lipiec 2026', '2026-07-31'),
-  month('2026-08', 'Sierpien 2026', '2026-08-31'),
-  month('2026-09', 'Wrzesien 2026', '2026-09-30'),
-  month('2026-10', 'Pazdziernik 2026', '2026-10-31'),
-  month('2026-11', 'Listopad 2026', '2026-11-30'),
+  month('2026-06', 'June 2026', '2026-06-30'),
+  month('2026-07', 'July 2026', '2026-07-31'),
+  month('2026-08', 'August 2026', '2026-08-31'),
+  month('2026-09', 'September 2026', '2026-09-30'),
+  month('2026-10', 'October 2026', '2026-10-31'),
+  month('2026-11', 'November 2026', '2026-11-30'),
 ];
 
 const extendedMonthPeriods: Period[] = [
-  month('2026-01', 'Styczen 2026', '2026-01-31'),
-  month('2026-02', 'Luty 2026', '2026-02-28'),
-  month('2026-03', 'Marzec 2026', '2026-03-31'),
-  month('2026-04', 'Kwiecien 2026', '2026-04-30'),
-  month('2026-05', 'Maj 2026', '2026-05-31'),
-  month('2026-06', 'Czerwiec 2026', '2026-06-30'),
-  month('2026-07', 'Lipiec 2026', '2026-07-31'),
-  month('2026-08', 'Sierpien 2026', '2026-08-31'),
-  month('2026-09', 'Wrzesien 2026', '2026-09-30'),
-  month('2026-10', 'Pazdziernik 2026', '2026-10-31'),
-  month('2026-11', 'Listopad 2026', '2026-11-30'),
-  month('2026-12', 'Grudzien 2026', '2026-12-31'),
-  month('2027-01', 'Styczen 2027', '2027-01-31'),
-  month('2027-02', 'Luty 2027', '2027-02-28'),
+  month('2026-01', 'January 2026', '2026-01-31'),
+  month('2026-02', 'February 2026', '2026-02-28'),
+  month('2026-03', 'March 2026', '2026-03-31'),
+  month('2026-04', 'April 2026', '2026-04-30'),
+  month('2026-05', 'May 2026', '2026-05-31'),
+  month('2026-06', 'June 2026', '2026-06-30'),
+  month('2026-07', 'July 2026', '2026-07-31'),
+  month('2026-08', 'August 2026', '2026-08-31'),
+  month('2026-09', 'September 2026', '2026-09-30'),
+  month('2026-10', 'October 2026', '2026-10-31'),
+  month('2026-11', 'November 2026', '2026-11-30'),
+  month('2026-12', 'December 2026', '2026-12-31'),
+  month('2027-01', 'January 2027', '2027-01-31'),
+  month('2027-02', 'February 2027', '2027-02-28'),
 ];
 
 function month(id: string, label: string, endsOn: string): Period {
@@ -48,12 +48,12 @@ describe('PeriodTimelineNavigator', () => {
     render(
       <PeriodTimelineNavigator
         activePeriodId="2026-09"
-        ariaLabel="Zakres testowy"
+        ariaLabel="Test range"
         monthPeriods={monthPeriods}
         rangeMonths={3}
         rangeOptions={[
-          { label: 'Miesiąc', value: 1 },
-          { label: 'Kwartał', value: 3 },
+          { label: 'Month', value: 1 },
+          { label: 'Quarter', value: 3 },
         ]}
         rangeStartPeriodId="2026-09"
         onActivePeriodChange={onActivePeriodChange}
@@ -62,7 +62,7 @@ describe('PeriodTimelineNavigator', () => {
       />
     );
 
-    const contextMonth = screen.getByTitle('Sierpien 2026');
+    const contextMonth = screen.getByTitle('August 2026');
 
     expect(contextMonth).toBeEnabled();
     fireEvent.click(contextMonth);
@@ -78,12 +78,12 @@ describe('PeriodTimelineNavigator', () => {
     render(
       <PeriodTimelineNavigator
         activePeriodId="2026-09"
-        ariaLabel="Zakres testowy"
+        ariaLabel="Test range"
         monthPeriods={monthPeriods}
         rangeMonths={3}
         rangeOptions={[
-          { label: 'Miesiąc', value: 1 },
-          { label: 'Kwartał', value: 3 },
+          { label: 'Month', value: 1 },
+          { label: 'Quarter', value: 3 },
         ]}
         rangeStartPeriodId="2026-09"
         onActivePeriodChange={onActivePeriodChange}
@@ -92,7 +92,7 @@ describe('PeriodTimelineNavigator', () => {
       />
     );
 
-    fireEvent.click(screen.getByTitle('Pazdziernik 2026'));
+    fireEvent.click(screen.getByTitle('October 2026'));
 
     expect(onActivePeriodChange).toHaveBeenCalledWith('2026-10');
     expect(onRangeStartChange).not.toHaveBeenCalled();
@@ -102,7 +102,7 @@ describe('PeriodTimelineNavigator', () => {
     const { container } = render(
       <PeriodTimelineNavigator
         activePeriodId="2026-08"
-        ariaLabel="Zakres testowy"
+        ariaLabel="Test range"
         monthPeriods={extendedMonthPeriods}
         rangeMonths={1}
         rangeStartPeriodId="2026-08"
@@ -111,22 +111,22 @@ describe('PeriodTimelineNavigator', () => {
       />
     );
 
-    expect(screen.queryByRole('group', { name: 'Jednostka zakresu czasu' })).not.toBeInTheDocument();
-    expect(screen.getByLabelText('Pokaż wcześniejszy zakres')).toBeInTheDocument();
-    expect(screen.getByLabelText('Pokaż późniejszy zakres')).toBeInTheDocument();
+    expect(screen.queryByRole('group', { name: 'Time range unit' })).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Show earlier range')).toBeInTheDocument();
+    expect(screen.getByLabelText('Show later range')).toBeInTheDocument();
     expect(container.querySelectorAll('.period-timeline-month')).toHaveLength(12);
     expect(container.querySelectorAll('.period-timeline-month.is-mobile-hidden')).toHaveLength(9);
-    expect(screen.getByTitle('Sierpien 2026')).not.toHaveClass('is-mobile-hidden');
+    expect(screen.getByTitle('August 2026')).not.toHaveClass('is-mobile-hidden');
   });
 
   it('can collapse the optional timeline while keeping the range label visible', () => {
     render(
       <PeriodTimelineNavigator
         activePeriodId="2026-08"
-        ariaLabel="Zakres testowy"
+        ariaLabel="Test range"
         collapsible
         defaultOpen
-        heading="Zakres planowania"
+        heading="Planning range"
         monthPeriods={extendedMonthPeriods}
         rangeMonths={1}
         rangeStartPeriodId="2026-08"
@@ -135,15 +135,15 @@ describe('PeriodTimelineNavigator', () => {
       />
     );
 
-    const collapseButton = screen.getByRole('button', { name: 'Zwiń zakres planowania' });
+    const collapseButton = screen.getByRole('button', { name: 'Collapse planning range' });
 
     expect(collapseButton).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByLabelText('Pokaż wcześniejszy zakres')).toBeInTheDocument();
+    expect(screen.getByLabelText('Show earlier range')).toBeInTheDocument();
 
     fireEvent.click(collapseButton);
 
-    expect(screen.getByRole('button', { name: 'Rozwiń zakres planowania' })).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByText('Sierpien 2026')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Pokaż wcześniejszy zakres')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Expand planning range' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByText('August 2026')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Show earlier range')).not.toBeInTheDocument();
   });
 });

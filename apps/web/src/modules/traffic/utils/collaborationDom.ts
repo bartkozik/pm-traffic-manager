@@ -54,7 +54,7 @@ export function getCollaborationCursorFromPointer(
 
 export function getPresenceClickActionLabel(target: EventTarget | null, collaborationTarget: CollaborationTarget | null) {
   if (!(target instanceof Element)) {
-    return collaborationTarget ? `Klik: ${getCollaborationTargetLabel(collaborationTarget)}` : '';
+    return collaborationTarget ? `Click: ${getCollaborationTargetLabel(collaborationTarget)}` : '';
   }
 
   const actionElement = target.closest<HTMLElement>(
@@ -70,18 +70,18 @@ export function getPresenceClickActionLabel(target: EventTarget | null, collabor
   const actionLabel = sanitizePresenceLabel(rawLabel || '');
 
   if (actionLabel && collaborationTarget) {
-    return `Klik: ${actionLabel} (${getCollaborationTargetLabel(collaborationTarget)})`;
+    return `Click: ${actionLabel} (${getCollaborationTargetLabel(collaborationTarget)})`;
   }
-  if (actionLabel) return `Klik: ${actionLabel}`;
-  return collaborationTarget ? `Klik: ${getCollaborationTargetLabel(collaborationTarget)}` : '';
+  if (actionLabel) return `Click: ${actionLabel}`;
+  return collaborationTarget ? `Click: ${getCollaborationTargetLabel(collaborationTarget)}` : '';
 }
 
 function getFormControlLabel(element: HTMLElement) {
   if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-    return element.placeholder || element.name || 'pole tekstowe';
+    return element.placeholder || element.name || 'text field';
   }
   if (element instanceof HTMLSelectElement) {
-    return element.getAttribute('aria-label') || element.name || 'lista wyboru';
+    return element.getAttribute('aria-label') || element.name || 'select list';
   }
   return '';
 }

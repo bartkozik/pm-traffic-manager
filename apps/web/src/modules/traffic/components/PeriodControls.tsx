@@ -20,13 +20,13 @@ interface PeriodControlsProps {
 }
 
 const rangeOptions: Array<{ label: string; value: PeriodRangeMonths }> = [
-  { label: '1 mies.', value: 1 },
-  { label: 'Kwartał', value: 3 },
-  { label: '6 mies.', value: 6 },
-  { label: 'Rok', value: 12 },
+  { label: '1 month', value: 1 },
+  { label: 'Quarter', value: 3 },
+  { label: '6 months', value: 6 },
+  { label: 'Year', value: 12 },
 ];
 
-const monthFormatter = new Intl.DateTimeFormat('pl-PL', {
+const monthFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'long',
   year: 'numeric',
 });
@@ -119,32 +119,32 @@ export function PeriodControls({
       <div className="traffic-period-summary">
         <div>
           <div className="traffic-period-eyebrow">
-            Zakres planowania
+            Planning range
             <HelpButton
-              label="Wyjasnij zakres planowania miesiecy"
+              label="Explain the monthly planning range"
               topicId="period-planning"
               onOpenHelp={onOpenHelp}
             />
           </div>
-          <strong>{activePeriod?.label || 'Brak aktywnego miesiąca'}</strong>
+          <strong>{activePeriod?.label || 'No active month'}</strong>
           <span>
-            Widok: {rangeOptions.find((option) => option.value === viewRangeMonths)?.label || 'Kwartał'}
+            View: {rangeOptions.find((option) => option.value === viewRangeMonths)?.label || 'Quarter'}
           </span>
         </div>
         <button
-          aria-label={isCollapsed ? 'Rozwiń zakres planowania' : 'Zwiń zakres planowania'}
+          aria-label={isCollapsed ? 'Expand planning range' : 'Collapse planning range'}
           className="traffic-period-toggle"
           type="button"
           onClick={onToggleCollapsed}
         >
-          {isCollapsed ? 'Rozwiń' : 'Zwiń'}
+          {isCollapsed ? 'Expand' : 'Collapse'}
         </button>
       </div>
 
       {!isCollapsed ? (
         <>
           <div className="traffic-period-controls">
-            <div className="traffic-range-tabs" aria-label="Zakres osi miesięcy">
+            <div className="traffic-range-tabs" aria-label="Monthly timeline range">
               {rangeOptions.map((option) => (
                 <button
                   aria-pressed={viewRangeMonths === option.value}
@@ -159,7 +159,7 @@ export function PeriodControls({
             </div>
             <div className="traffic-period-primary-actions">
               <label className="traffic-inline-select">
-                Dodaj miesiąc
+                Add month
                 <select
                   value={selectedNewMonthId}
                   onChange={(event) => setSelectedNewMonthId(event.target.value)}
@@ -177,20 +177,20 @@ export function PeriodControls({
                 disabled={!selectedNewMonthId}
                 onClick={() => onAddMonth(selectedNewMonthId)}
               >
-                Dodaj
+                Add
               </button>
             </div>
           </div>
 
-          <div className="traffic-month-timeline" aria-label="Lista miesięcy w wybranym zakresie">
+          <div className="traffic-month-timeline" aria-label="Months in the selected range">
             <button
-              aria-label="Pokaż wcześniejsze miesiące"
+              aria-label="Show earlier months"
               className="traffic-icon-button"
               type="button"
               disabled={!hasPreviousRange}
               onClick={goToPreviousRange}
             >
-              Wcześniej
+              Earlier
             </button>
             <div className="traffic-month-list">
               {visibleMonths.map((period) => {
@@ -205,19 +205,19 @@ export function PeriodControls({
                     <span>
                       {formatShortDate(period.startsOn)} - {formatShortDate(period.endsOn)}
                     </span>
-                    {period.id === activePeriodId ? <em>Aktywny miesiąc</em> : null}
+                    {period.id === activePeriodId ? <em>Active month</em> : null}
                   </button>
                 );
               })}
             </div>
             <button
-              aria-label="Pokaż późniejsze miesiące"
+              aria-label="Show later months"
               className="traffic-icon-button"
               type="button"
               disabled={!hasNextRange}
               onClick={goToNextRange}
             >
-              Później
+              Later
             </button>
           </div>
 

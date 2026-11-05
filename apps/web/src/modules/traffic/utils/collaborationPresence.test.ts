@@ -41,7 +41,7 @@ class MemoryStorage implements Storage {
 describe('collaborationPresence', () => {
   it('sanitizes user names for compact presence chips', () => {
     expect(sanitizeCollaborationUserName('  Ala   PM  ')).toBe('Ala PM');
-    expect(sanitizeCollaborationUserName('')).toBe('Planista');
+    expect(sanitizeCollaborationUserName('')).toBe('Planner');
     expect(sanitizeCollaborationUserName('x'.repeat(40))).toHaveLength(32);
   });
 
@@ -55,7 +55,7 @@ describe('collaborationPresence', () => {
   });
 
   it('updates only the visible collaboration user name', () => {
-    const user = { id: 'u1', name: 'Planista', color: '#2563eb' };
+    const user = { id: 'u1', name: 'Planner', color: '#2563eb' };
 
     expect(updateCollaborationUserName(user, '  Kasia  ')).toEqual({
       ...user,

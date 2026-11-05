@@ -83,7 +83,7 @@
 }
 
 .traffic-secondary-analysis summary::after {
-  content: "Rozwiń";
+  content: "Expand";
   grid-area: toggle;
   align-self: center;
   justify-self: end;
@@ -101,7 +101,7 @@
 }
 
 .traffic-secondary-analysis[open] summary::after {
-  content: "Zwiń";
+  content: "Collapse";
 }
 
 .traffic-secondary-analysis summary:hover::after {

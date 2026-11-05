@@ -9,7 +9,7 @@ import {
 
 const month: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -17,7 +17,7 @@ const month: Period = {
 
 const weekPeriod: Period = {
   id: '2026-06-w1',
-  label: '1-5 cze',
+  label: '1-5 Jun',
   granularity: 'week',
   startsOn: '2026-06-01',
   endsOn: '2026-06-05',

@@ -46,9 +46,9 @@ describe('PeopleSidebar', () => {
             id: 'short-person-no-project-person-1',
             owner: 'HR',
             severity: 'medium',
-            title: "Avery: bez projektu",
-            detail: "Avery ma dostępność i brak produktywnej alokacji.",
-            action: 'Przypisać zadanie albo potwierdzić ławkę.',
+            title: "Avery: no project",
+            detail: "Avery has capacity but no productive allocation.",
+            action: 'Assign work or confirm bench time.',
             personId: person.id,
           }]],
         ])}
@@ -64,11 +64,11 @@ describe('PeopleSidebar', () => {
       />
     );
 
-    const pulse = screen.getByLabelText("Triggery Traffic Review osoby: Avery");
-    const trigger = within(pulse).getByLabelText("HR: Avery: bez projektu. Avery ma dostępność i brak produktywnej alokacji. Przypisać zadanie albo potwierdzić ławkę.");
+    const pulse = screen.getByLabelText("Traffic Review triggers for person: Avery");
+    const trigger = within(pulse).getByLabelText("HR: Avery: no project. Avery has capacity but no productive allocation. Assign work or confirm bench time.");
 
     expect(trigger).toHaveTextContent('HR');
-    expect(trigger).toHaveTextContent('bez projektu');
+    expect(trigger).toHaveTextContent('no project');
   });
 
   it('groups repeated person Traffic Review triggers and expands hidden trigger groups inline', () => {
@@ -84,18 +84,18 @@ describe('PeopleSidebar', () => {
               id: 'trigger-pm-1',
               owner: 'PM',
               severity: 'medium',
-              title: "Avery: pm: 0/24h pokrycia.",
-              detail: 'Brakuje pokrycia PM.',
-              action: 'Poprawić mapowanie alokacji lub potwierdzić brak PM.',
+              title: "Avery: pm: 0/24h coverage.",
+              detail: 'Missing PM coverage.',
+              action: 'Fix allocation mapping or confirm the absence of a PM.',
               personId: person.id,
             },
             {
               id: 'trigger-pm-2',
               owner: 'PM',
               severity: 'medium',
-              title: "Avery: pm: 0/24h pokrycia.",
-              detail: 'Brakuje pokrycia PM.',
-              action: 'Poprawić mapowanie alokacji lub potwierdzić brak PM.',
+              title: "Avery: pm: 0/24h coverage.",
+              detail: 'Missing PM coverage.',
+              action: 'Fix allocation mapping or confirm the absence of a PM.',
               personId: person.id,
             },
             {
@@ -103,26 +103,26 @@ describe('PeopleSidebar', () => {
               owner: 'TECH',
               severity: 'medium',
               title: "Client 1: single point of failure",
-              detail: "Tylko Avery jest przypisana do projektu.",
-              action: 'Zaplanować backup albo shadowing.',
+              detail: "Only Avery is allocated to the project.",
+              action: 'Plan backup or shadowing.',
               personId: person.id,
             },
             {
               id: 'trigger-hr',
               owner: 'HR',
               severity: 'high',
-              title: "Avery: konflikt z kalendarzem HR",
-              detail: "Avery ma urlop, ale jest zaplanowana.",
-              action: 'Zaktualizować dostępność albo przesunąć alokacje.',
+              title: "Avery: HR calendar conflict",
+              detail: "Avery is on leave but has planned work.",
+              action: 'Update availability or move allocations.',
               personId: person.id,
             },
             {
               id: 'trigger-finance',
               owner: 'FINANCE',
               severity: 'high',
-              title: "Client 1: koszt zespołu ponad budżet",
-              detail: 'Alokacje przekraczają ramkę.',
-              action: 'Zmniejszyć obsadę albo renegocjować finansowanie.',
+              title: "Client 1: team cost exceeds budget",
+              detail: 'Allocations exceed the frame.',
+              action: 'Reduce staffing or renegotiate funding.',
               personId: person.id,
             },
           ]],
@@ -139,15 +139,15 @@ describe('PeopleSidebar', () => {
       />
     );
 
-    const pulse = screen.getByLabelText("Triggery Traffic Review osoby: Avery");
+    const pulse = screen.getByLabelText("Traffic Review triggers for person: Avery");
 
     expect(within(pulse).getByText('2x')).toBeInTheDocument();
-    expect(within(pulse).getAllByText("Avery: pm: 0/24h pokrycia.")).toHaveLength(1);
-    expect(within(pulse).queryByText("Client 1: koszt zespołu ponad budżet")).not.toBeInTheDocument();
+    expect(within(pulse).getAllByText("Avery: pm: 0/24h coverage.")).toHaveLength(1);
+    expect(within(pulse).queryByText("Client 1: team cost exceeds budget")).not.toBeInTheDocument();
 
-    fireEvent.click(within(pulse).getByRole('button', { name: 'Pokaż 1 ukryte triggery Traffic Review' }));
+    fireEvent.click(within(pulse).getByRole('button', { name: 'Show 1 hidden Traffic Review triggers' }));
 
-    expect(within(pulse).getByText("Client 1: koszt zespołu ponad budżet")).toBeInTheDocument();
-    expect(within(pulse).getByRole('button', { name: 'Zwiń dodatkowe triggery Traffic Review (1)' })).toBeInTheDocument();
+    expect(within(pulse).getByText("Client 1: team cost exceeds budget")).toBeInTheDocument();
+    expect(within(pulse).getByRole('button', { name: 'Collapse additional Traffic Review triggers (1)' })).toBeInTheDocument();
   });
 });

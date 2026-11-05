@@ -23,12 +23,12 @@ describe('AuthProvider', () => {
 
     render(
       <AuthProvider>
-        <AuthGate><span>Treść tablicy</span></AuthGate>
+        <AuthGate><span>Board content</span></AuthGate>
       </AuthProvider>
     );
 
-    expect(await screen.findByRole('heading', { name: 'Zaloguj się do PTM' })).toBeInTheDocument();
-    expect(screen.queryByText('Treść tablicy')).not.toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Sign in to PTM' })).toBeInTheDocument();
+    expect(screen.queryByText('Board content')).not.toBeInTheDocument();
   });
 
   it('preserves the local fallback when auth is not expected and the API is unavailable', async () => {
@@ -36,11 +36,11 @@ describe('AuthProvider', () => {
 
     render(
       <AuthProvider>
-        <AuthGate><span>Treść tablicy</span></AuthGate>
+        <AuthGate><span>Board content</span></AuthGate>
       </AuthProvider>
     );
 
-    expect(await screen.findByText('Treść tablicy')).toBeInTheDocument();
+    expect(await screen.findByText('Board content')).toBeInTheDocument();
   });
 
   it('returns to the login screen when background verification sees revoked access', async () => {
@@ -65,12 +65,12 @@ describe('AuthProvider', () => {
 
     render(
       <AuthProvider>
-        <AuthGate><span>Treść tablicy</span></AuthGate>
+        <AuthGate><span>Board content</span></AuthGate>
       </AuthProvider>
     );
 
-    expect(await screen.findByText('Treść tablicy')).toBeInTheDocument();
+    expect(await screen.findByText('Board content')).toBeInTheDocument();
     document.dispatchEvent(new Event('visibilitychange'));
-    expect(await screen.findByRole('heading', { name: 'Zaloguj się do PTM' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Sign in to PTM' })).toBeInTheDocument();
   });
 });

@@ -62,7 +62,7 @@ export function validateAllocation(
     validations.push({
       code: 'internal_margin_gap',
       severity: 'invalid',
-      message: `Ta alokacja daje ${formatMoneyK(allocation.revenueK)} PLN przychodu. Koszt osoby dla ${allocation.hours}h to ${formatMoneyK(internalCostK)} PLN, więc brakuje ${formatMoneyK(internalMarginGapK)} PLN do pokrycia kosztu.`,
+      message: `This allocation generates ${formatMoneyK(allocation.revenueK)} PLN in revenue. The person’s cost for ${allocation.hours}h is ${formatMoneyK(internalCostK)} PLN, leaving ${formatMoneyK(internalMarginGapK)} PLN uncovered.`,
     });
   }
 
@@ -70,13 +70,13 @@ export function validateAllocation(
     validations.push({
       code: 'target_revenue_gap',
       severity: 'warning',
-      message: `Ta alokacja daje ${formatMoneyK(allocation.revenueK)} PLN przychodu. Cel dla ${allocation.hours}h to ${formatMoneyK(requiredRevenueK)} PLN, więc brakuje ${formatMoneyK(targetGapK)} PLN do celu.`,
+      message: `This allocation generates ${formatMoneyK(allocation.revenueK)} PLN in revenue. The target for ${allocation.hours}h is ${formatMoneyK(requiredRevenueK)} PLN, leaving a shortfall of ${formatMoneyK(targetGapK)} PLN.`,
     });
   } else if (targetSurplusK > 0) {
     validations.push({
       code: 'target_revenue_surplus',
       severity: 'info',
-      message: `Ta alokacja daje ${formatMoneyK(allocation.revenueK)} PLN przychodu. Cel dla ${allocation.hours}h to ${formatMoneyK(requiredRevenueK)} PLN, więc jest ${formatMoneyK(targetSurplusK)} PLN powyżej celu.`,
+      message: `This allocation generates ${formatMoneyK(allocation.revenueK)} PLN in revenue. The target for ${allocation.hours}h is ${formatMoneyK(requiredRevenueK)} PLN, exceeding it by ${formatMoneyK(targetSurplusK)} PLN.`,
     });
   }
 
@@ -84,7 +84,7 @@ export function validateAllocation(
     validations.push({
       code: 'blocked_person',
       severity: 'invalid',
-      message: `${person.name} jest oznaczony jako zablokowany dla tego projektu.`,
+      message: `${person.name} is blocked from this project.`,
     });
   }
 
@@ -96,7 +96,7 @@ export function validateAllocation(
     validations.push({
       code: 'not_preferred_person',
       severity: 'warning',
-      message: `${person.name} nie jest na liscie preferowanych osob dla tego projektu.`,
+      message: `${person.name} is not on the preferred people list for this project.`,
     });
   }
 
@@ -116,7 +116,7 @@ export function validateAllocation(
     validations.push({
       code: 'missing_required_skill',
       severity: 'invalid',
-      message: 'Nie da się jednoznacznie dopasować kafelka do wymaganej kompetencji projektu.',
+      message: 'This tile cannot be matched unambiguously to a required project skill.',
     });
   }
 
@@ -124,7 +124,7 @@ export function validateAllocation(
     validations.push({
       code: 'role_mismatch',
       severity: 'warning',
-      message: `${person.name} nie ma kompetencji ${effectiveSkillId} w profilu.`,
+      message: `${person.name} does not have ${effectiveSkillId} in their skill profile.`,
     });
   }
 
@@ -132,7 +132,7 @@ export function validateAllocation(
     validations.push({
       code: 'insufficient_seniority',
       severity: 'invalid',
-      message: `Wymagane seniority: ${effectiveRequirement.seniority}; osoba ma ${person?.seniority || 'brak'}.`,
+      message: `Required seniority: ${effectiveRequirement.seniority}; the person has ${person?.seniority || 'none'}.`,
     });
   }
 
@@ -145,7 +145,7 @@ export function validateAllocation(
       validations.push({
         code: 'insufficient_hours',
         severity: 'warning',
-        message: `${requirement.skillId}: ${coveredHours}/${requirement.estimatedHours}h pokrycia.`,
+        message: `${requirement.skillId}: ${coveredHours}/${requirement.estimatedHours}h covered.`,
       });
     }
   });

@@ -22,7 +22,7 @@ import {
 
 const period: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -38,7 +38,7 @@ const project: ProjectFrame = {
   workType: 'commercial',
   budgetK: 8,
   probability: 1,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: period.id,
   endPeriodId: period.id,
   rateConfig: { companyTargetRatePlnH: 240 },
@@ -143,8 +143,8 @@ const researchProject: ProjectFrame = {
 const timeOffProject: ProjectFrame = {
   ...project,
   id: 'project-time-off',
-  name: 'Urlopy',
-  client: 'URLOP',
+  name: 'Leave',
+  client: 'TIME OFF',
   workType: 'time_off',
   budgetK: 4,
   revenuePlan: [{ periodId: period.id, revenueK: 4, probability: 1 }],
@@ -334,7 +334,7 @@ describe('DiabloMonthCanvas', () => {
     });
     const tileMetric = container.querySelector('.diablo-person-bench-tile .diablo-tile-metric-value');
 
-    expect(screen.getByText('8.9h wolne')).toBeInTheDocument();
+    expect(screen.getByText('8.9h free')).toBeInTheDocument();
     expect(tileMetric).toHaveTextContent('8.9h');
     expect(container.querySelector('.diablo-weekly-slot-value')).toBeNull();
   });
@@ -349,8 +349,8 @@ describe('DiabloMonthCanvas', () => {
     });
     const tileMetric = container.querySelector('.diablo-person-bench-tile .diablo-tile-metric-value');
 
-    expect(screen.getByLabelText(/Taylor, 0\/18k koszt, 1k koszt wolny/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Taylor: wolny kafelek, koszt wewnętrzny 1k, 8h, 1k capacity/ })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Taylor, 0\/18k cost, 1k unallocated cost/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Taylor: available tile, internal cost 1k, 8h, 1k capacity/ })).toBeInTheDocument();
     expect(tileMetric).toHaveTextContent('1k');
   });
 
@@ -380,7 +380,7 @@ describe('DiabloMonthCanvas', () => {
     });
     const tileMetric = container.querySelector('.diablo-person-bench-tile .diablo-tile-metric-value');
 
-    expect(screen.getByText('8h wolne · 1 dzień')).toBeInTheDocument();
+    expect(screen.getByText('8h free · 1 day')).toBeInTheDocument();
     expect(tileMetric).toHaveTextContent('8h');
   });
 
@@ -574,20 +574,20 @@ describe('DiabloMonthCanvas', () => {
 
   it('renders the full Diablo inventory legend in tabs', () => {
     renderCanvas();
-    const legendTabs = within(screen.getByLabelText('Sekcje legendy Diablo'));
+    const legendTabs = within(screen.getByLabelText('Diablo legend sections'));
 
-    expect(legendTabs.getByRole('button', { name: 'Kolory' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByText('Patterny')).toBeInTheDocument();
-    expect(screen.getByText('Czerwony nacisk')).toBeInTheDocument();
+    expect(legendTabs.getByRole('button', { name: 'Colours' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('Patterns')).toBeInTheDocument();
+    expect(screen.getByText('Red pressure')).toBeInTheDocument();
 
-    fireEvent.click(legendTabs.getByRole('button', { name: 'Kafelki' }));
+    fireEvent.click(legendTabs.getByRole('button', { name: 'Tiles' }));
     expect(screen.getByText('Skill / seniority')).toBeInTheDocument();
     expect(screen.getByText('Backend')).toBeInTheDocument();
 
-    fireEvent.click(legendTabs.getByRole('button', { name: 'Projekt' }));
-    expect(screen.getByText('Stan projektu')).toBeInTheDocument();
-    expect(screen.getByText('Tygodnie')).toBeInTheDocument();
-    expect(screen.getAllByText('klasyczny').length).toBeGreaterThan(0);
+    fireEvent.click(legendTabs.getByRole('button', { name: 'Project' }));
+    expect(screen.getByText('Project status')).toBeInTheDocument();
+    expect(screen.getByText('Weeks')).toBeInTheDocument();
+    expect(screen.getAllByText('classic').length).toBeGreaterThan(0);
   });
 
   it('renders bench people as Diablo frames on the shared canvas people zone', () => {
@@ -598,8 +598,8 @@ describe('DiabloMonthCanvas', () => {
     });
     const peopleZoneBackdrop = container.querySelector('.diablo-people-zone-backdrop');
     const projectZoneBackdrop = container.querySelector('.diablo-project-zone-backdrop');
-    const controlPanel = screen.getByLabelText('Panel ludzi na canvasie');
-    const projectControlPanel = screen.getByLabelText('Panel projektów na canvasie');
+    const controlPanel = screen.getByLabelText('People panel on canvas');
+    const projectControlPanel = screen.getByLabelText('Projects panel on canvas');
     const viewport = container.querySelector('.diablo-canvas-viewport') as HTMLElement;
     const scaleShell = container.querySelector('.diablo-canvas-scale-shell') as HTMLElement;
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
@@ -607,7 +607,7 @@ describe('DiabloMonthCanvas', () => {
     const projectFrame = container.querySelector('.diablo-project-frame:not(.diablo-person-frame)') as HTMLElement;
     const personFrameMeta = personFrame.querySelector('.diablo-person-frame-meta') as HTMLElement;
     const personSkillBadgeFooter = personFrame.querySelector('.diablo-person-skill-badge-footer') as HTMLElement;
-    const benchTile = screen.getByRole('button', { name: /Taylor: wolny kafelek, 8\.9h pracy, 1k capacity/ });
+    const benchTile = screen.getByRole('button', { name: /Taylor: available tile, 8\.9h of work, 1k capacity/ });
 
     expect(container.querySelector('.diablo-canvas-left-column')).not.toBeInTheDocument();
     expect(container.querySelector('.diablo-bench-dropzone')).not.toBeInTheDocument();
@@ -616,7 +616,7 @@ describe('DiabloMonthCanvas', () => {
     });
     expect((peopleZoneBackdrop as HTMLElement).style.gridColumn).toBe('');
     expect((peopleZoneBackdrop as HTMLElement).style.gridRow).toBe('');
-    expect(screen.getByRole('region', { name: 'Zoomowalny canvas planowania Diablo' })).toBe(viewport);
+    expect(screen.getByRole('region', { name: 'Zoomable Diablo planning canvas' })).toBe(viewport);
     expect(viewport).toHaveAttribute('tabindex', '0');
     expect(viewport).toContainElement(peopleZoneBackdrop as HTMLElement);
     expect(viewport).toContainElement(projectZoneBackdrop as HTMLElement);
@@ -631,13 +631,13 @@ describe('DiabloMonthCanvas', () => {
     expect(scaleShell).not.toContainElement(projectControlPanel);
     expect(grid).not.toContainElement(controlPanel);
     expect(grid).not.toContainElement(projectControlPanel);
-    expect(within(controlPanel).getByText('Ludzie')).toBeInTheDocument();
-    expect(within(projectControlPanel).getByText('Projekty')).toBeInTheDocument();
-    expect(within(projectControlPanel).getByText('1 ramka')).toBeInTheDocument();
+    expect(within(controlPanel).getByText('People')).toBeInTheDocument();
+    expect(within(projectControlPanel).getByText('Projects')).toBeInTheDocument();
+    expect(within(projectControlPanel).getByText('1 frame')).toBeInTheDocument();
     expect(within(projectControlPanel).getByText('8k plan')).toBeInTheDocument();
-    expect(within(projectControlPanel).getByText('0k alok.')).toBeInTheDocument();
-    expect(within(projectControlPanel).getByText('8k luka')).toHaveClass('is-warning');
-    expect(within(projectControlPanel).getByText('0k poza')).not.toHaveClass('is-danger');
+    expect(within(projectControlPanel).getByText('0k allocated')).toBeInTheDocument();
+    expect(within(projectControlPanel).getByText('8k gap')).toHaveClass('is-warning');
+    expect(within(projectControlPanel).getByText('0k uncovered')).not.toHaveClass('is-danger');
     expect(personFrame).toBeInTheDocument();
     expect(personFrame).toHaveStyle({
       gridColumn: `2 / span ${DIABLO_PERSON_FRAME_WIDTH}`,
@@ -650,9 +650,9 @@ describe('DiabloMonthCanvas', () => {
     expect(benchTile).toHaveClass('diablo-person-bench-tile');
     expect(benchTile).toHaveAttribute('tabindex', '-1');
     expect(personFrameMeta.querySelector('.traffic-person-visual-badge')).not.toBeInTheDocument();
-    expect(personSkillBadgeFooter).toHaveAccessibleName("Kompetencje osoby Taylor");
+    expect(personSkillBadgeFooter).toHaveAccessibleName("Person's skills Taylor");
     expect(
-      within(personSkillBadgeFooter).getByLabelText('seniority Sr, kompetencje: Backend')
+      within(personSkillBadgeFooter).getByLabelText('seniority Sr, skills: Backend')
     ).toBeInTheDocument();
 
     fireEvent.dragStart(benchTile);
@@ -823,13 +823,13 @@ describe('DiabloMonthCanvas', () => {
       ]),
     });
 
-    const projectControlPanel = within(screen.getByLabelText('Panel projektów na canvasie'));
+    const projectControlPanel = within(screen.getByLabelText('Projects panel on canvas'));
 
-    expect(projectControlPanel.getByText('2 ramki')).toBeInTheDocument();
+    expect(projectControlPanel.getByText('2 frames')).toBeInTheDocument();
     expect(projectControlPanel.getByText('12k plan')).toBeInTheDocument();
-    expect(projectControlPanel.getByText('7k alok.')).toBeInTheDocument();
-    expect(projectControlPanel.getByText('7k luka')).toHaveClass('is-warning');
-    expect(projectControlPanel.getByText('+2k poza')).toHaveClass('is-danger');
+    expect(projectControlPanel.getByText('7k allocated')).toBeInTheDocument();
+    expect(projectControlPanel.getByText('7k gap')).toHaveClass('is-warning');
+    expect(projectControlPanel.getByText('+2k uncovered')).toHaveClass('is-danger');
   });
 
   it('requires confirmation before resetting active-month project allocations from the project toolbar', () => {
@@ -841,24 +841,24 @@ describe('DiabloMonthCanvas', () => {
     });
 
     const resetButton = screen.getByRole('button', {
-      name: 'Resetuj przydziały do projektów w tym miesiącu',
+      name: 'Reset project allocations this month',
     });
 
     expect(resetButton).toBeEnabled();
-    expect(resetButton).toHaveTextContent('Reset alok.');
+    expect(resetButton).toHaveTextContent('Reset allocations');
 
     fireEvent.click(resetButton);
     expect(onResetProjectAllocations).not.toHaveBeenCalled();
     expect(screen.getByRole('button', {
-      name: 'Potwierdź reset przydziałów do projektów w tym miesiącu',
-    })).toHaveTextContent('Potwierdź');
+      name: 'Confirm resetting project allocations this month',
+    })).toHaveTextContent('Confirm');
 
     fireEvent.click(screen.getByRole('button', {
-      name: 'Potwierdź reset przydziałów do projektów w tym miesiącu',
+      name: 'Confirm resetting project allocations this month',
     }));
 
     expect(onResetProjectAllocations).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole('status')).toHaveTextContent('Cofnięto przydziały');
+    expect(screen.getByRole('status')).toHaveTextContent('Allocations undone');
   });
 
   it('uses active-week reset copy when the project toolbar is scoped to a week', () => {
@@ -871,23 +871,23 @@ describe('DiabloMonthCanvas', () => {
     });
 
     const resetButton = screen.getByRole('button', {
-      name: 'Resetuj przydziały do projektów w tym tygodniu',
+      name: 'Reset project allocations this week',
     });
 
     fireEvent.click(resetButton);
     fireEvent.click(screen.getByRole('button', {
-      name: 'Potwierdź reset przydziałów do projektów w tym tygodniu',
+      name: 'Confirm resetting project allocations this week',
     }));
 
     expect(onResetProjectAllocations).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole('status')).toHaveTextContent('Cofnięto przydziały tygodnia');
+    expect(screen.getByRole('status')).toHaveTextContent('Weekly allocations undone');
   });
 
   it('disables project allocation reset when the active month has no project allocations', () => {
     renderCanvas();
 
     expect(screen.getByRole('button', {
-      name: 'Resetuj przydziały do projektów w tym miesiącu',
+      name: 'Reset project allocations this month',
     })).toBeDisabled();
   });
 
@@ -901,7 +901,7 @@ describe('DiabloMonthCanvas', () => {
       monthClipboard: {
         mode: 'people_with_allocations',
         sourcePeriodId: '2026-05',
-        sourcePeriodLabel: 'Maj 2026',
+        sourcePeriodLabel: 'May 2026',
       },
       onCopyPeopleWithAllocations,
       onCopyPeopleWithoutAllocations,
@@ -910,9 +910,9 @@ describe('DiabloMonthCanvas', () => {
     });
     const copyMenu = container.querySelector('.diablo-control-menu') as HTMLDetailsElement;
 
-    expect(screen.getByText('z: Maj 2026')).toHaveClass('diablo-clipboard-source');
-    expect(screen.getByRole('button', { name: 'Wklej skopiowane projekty bez alokacji' })).toBeDisabled();
-    expect(screen.getAllByText('z: Maj 2026')).toHaveLength(1);
+    expect(screen.getByText('from: May 2026')).toHaveClass('diablo-clipboard-source');
+    expect(screen.getByRole('button', { name: 'Paste copied projects without allocations' })).toBeDisabled();
+    expect(screen.getAllByText('from: May 2026')).toHaveLength(1);
 
     copyMenu.setAttribute('open', '');
     expect(copyMenu).toHaveAttribute('open');
@@ -921,24 +921,24 @@ describe('DiabloMonthCanvas', () => {
     expect(copyMenu).not.toHaveAttribute('open');
 
     copyMenu.setAttribute('open', '');
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Z alokacją' }));
-    expect(screen.getByRole('status')).toHaveTextContent('Skopiowano ludzi z alokacją');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'With allocations' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Copied people with allocations');
     expect(copyMenu).not.toHaveAttribute('open');
 
     copyMenu.setAttribute('open', '');
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Bez alokacji' }));
-    expect(screen.getByRole('status')).toHaveTextContent('Skopiowano ludzi bez alokacji');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Without allocations' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Copied people without allocations');
     expect(copyMenu).not.toHaveAttribute('open');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Wklej skopiowaną sekcję ludzi' }));
-    expect(screen.getByRole('status')).toHaveTextContent('Wklejono ludzi');
+    fireEvent.click(screen.getByRole('button', { name: 'Paste copied people section' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Pasted people');
 
     expect(onCopyPeopleWithAllocations).toHaveBeenCalledTimes(1);
     expect(onCopyPeopleWithoutAllocations).toHaveBeenCalledTimes(1);
     expect(onPastePeopleClipboard).toHaveBeenCalledTimes(1);
     expect(onPastePeopleClipboard).toHaveBeenCalledWith(period.id);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Wklej skopiowane projekty bez alokacji' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Paste copied projects without allocations' }));
     expect(onPasteProjectsClipboard).not.toHaveBeenCalled();
   });
 
@@ -951,28 +951,28 @@ describe('DiabloMonthCanvas', () => {
       monthClipboard: {
         mode: 'projects_without_allocations',
         sourcePeriodId: '2026-05',
-        sourcePeriodLabel: 'Maj 2026',
+        sourcePeriodLabel: 'May 2026',
       },
       onCopyProjectsWithoutAllocations,
       onPastePeopleClipboard,
       onPasteProjectsClipboard,
     });
 
-    expect(screen.getByText('z: Maj 2026')).toHaveClass('diablo-clipboard-source');
-    expect(screen.getByRole('button', { name: 'Wklej skopiowaną sekcję ludzi' })).toBeDisabled();
-    expect(screen.getAllByText('z: Maj 2026')).toHaveLength(1);
+    expect(screen.getByText('from: May 2026')).toHaveClass('diablo-clipboard-source');
+    expect(screen.getByRole('button', { name: 'Paste copied people section' })).toBeDisabled();
+    expect(screen.getAllByText('from: May 2026')).toHaveLength(1);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Kopiuj projekty bez alokacji' }));
-    expect(screen.getByRole('status')).toHaveTextContent('Skopiowano projekty');
+    fireEvent.click(screen.getByRole('button', { name: 'Copy projects without allocations' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Copied projects');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Wklej skopiowane projekty bez alokacji' }));
-    expect(screen.getByRole('status')).toHaveTextContent('Wklejono projekty');
+    fireEvent.click(screen.getByRole('button', { name: 'Paste copied projects without allocations' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Pasted projects');
 
     expect(onCopyProjectsWithoutAllocations).toHaveBeenCalledTimes(1);
     expect(onPasteProjectsClipboard).toHaveBeenCalledTimes(1);
     expect(onPasteProjectsClipboard).toHaveBeenCalledWith(period.id);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Wklej skopiowaną sekcję ludzi' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Paste copied people section' }));
     expect(onPastePeopleClipboard).not.toHaveBeenCalled();
   });
 
@@ -985,8 +985,8 @@ describe('DiabloMonthCanvas', () => {
       },
     });
 
-    expect(screen.getByRole('button', { name: 'Wklej skopiowaną sekcję ludzi' })).toBeDisabled();
-    expect(screen.queryByText(`z: ${period.label}`)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Paste copied people section' })).toBeDisabled();
+    expect(screen.queryByText(`from: ${period.label}`)).not.toBeInTheDocument();
 
     rerender(
       <DiabloMonthCanvas
@@ -999,8 +999,8 @@ describe('DiabloMonthCanvas', () => {
       />
     );
 
-    expect(screen.getByRole('button', { name: 'Wklej skopiowane projekty bez alokacji' })).toBeDisabled();
-    expect(screen.queryByText(`z: ${period.label}`)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Paste copied projects without allocations' })).toBeDisabled();
+    expect(screen.queryByText(`from: ${period.label}`)).not.toBeInTheDocument();
   });
 
   it('renders person frames directly from canvas layouts instead of sorting a separate people list', () => {
@@ -1042,7 +1042,7 @@ describe('DiabloMonthCanvas', () => {
 
     expect(getDiabloPersonFrameNames(container)).toEqual(["Taylor", 'Adam', 'Julia', 'Bartek']);
     expect(container.querySelectorAll('.diablo-person-frame')).toHaveLength(4);
-    expect(screen.getByRole('button', { name: 'Sortuj osoby po skillach i nazwie' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sort people by skills and name' })).toBeInTheDocument();
   });
 
   it('sorts person frames into a skill-grouped people-zone grid when requested', () => {
@@ -1094,7 +1094,7 @@ describe('DiabloMonthCanvas', () => {
       ]),
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sortuj osoby po skillach i nazwie' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Sort people by skills and name' }));
 
     expect(onLayoutChange).toHaveBeenCalledTimes(1);
     const nextLayout = onLayoutChange.mock.calls[0][0] as DiabloBoardLayout;
@@ -1149,7 +1149,7 @@ describe('DiabloMonthCanvas', () => {
       ]),
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sortuj osoby po skillach i nazwie' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Sort people by skills and name' }));
 
     const nextLayout = onLayoutChange.mock.calls[0][0] as DiabloBoardLayout;
     const people = nextLayout.people || {};
@@ -1194,7 +1194,7 @@ describe('DiabloMonthCanvas', () => {
       ]),
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sortuj projekty w siatce po kliencie i nazwie' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Sort projects in a grid by client and name' }));
 
     expect(onLayoutChange).toHaveBeenCalledTimes(1);
     const nextLayout = onLayoutChange.mock.calls[0][0] as DiabloBoardLayout;
@@ -1254,7 +1254,7 @@ describe('DiabloMonthCanvas', () => {
       ]),
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sortuj projekty per ludzie' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Sort projects by people' }));
 
     expect(onLayoutChange).toHaveBeenCalledTimes(1);
     const nextLayout = onLayoutChange.mock.calls[0][0] as DiabloBoardLayout;
@@ -1294,7 +1294,7 @@ describe('DiabloMonthCanvas', () => {
       gridRow: `2 / span ${DIABLO_PERSON_FRAME_HEADER_ROWS}`,
     });
     expect(container.querySelector('.diablo-person-frame-grid')).not.toBeInTheDocument();
-    expect(screen.getByText('brak wolnych kafelków do alokacji')).toBeInTheDocument();
+    expect(screen.getByText('no available tiles to allocate')).toBeInTheDocument();
   });
 
   it('creates people from selections in the people zone and projects from selections in the project zone', () => {
@@ -1339,7 +1339,7 @@ describe('DiabloMonthCanvas', () => {
     });
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
     const projectFrame = screen.getByLabelText(/Client 1 - Discovery/);
-    const personFrame = screen.getByLabelText(/Taylor, 0\/18k koszt/);
+    const personFrame = screen.getByLabelText(/Taylor, 0\/18k cost/);
     const cellPitch = 54;
     grid.getBoundingClientRect = () => ({
       bottom: 1512,
@@ -1638,7 +1638,7 @@ describe('DiabloMonthCanvas', () => {
       peopleById: new Map([[person.id, person]]),
       periodAllocations: [benchAllocation, projectAllocation],
     });
-    const benchTile = screen.getByRole('button', { name: /Taylor: wolny kafelek, 8\.9h pracy, 1k capacity/ });
+    const benchTile = screen.getByRole('button', { name: /Taylor: available tile, 8\.9h of work, 1k capacity/ });
     const projectTile = container.querySelector('.diablo-project-frame:not(.diablo-person-frame) .diablo-inventory-person-tile') as HTMLButtonElement;
     const personFrame = container.querySelector('.diablo-person-frame') as HTMLElement;
 
@@ -1664,7 +1664,7 @@ describe('DiabloMonthCanvas', () => {
     });
     expect(personFrame).toHaveClass('is-drop-candidate');
     expect(setDragImage).toHaveBeenCalledOnce();
-    expect((setDragImage.mock.calls[0][0] as HTMLElement).textContent).toContain('2 kaf.');
+    expect((setDragImage.mock.calls[0][0] as HTMLElement).textContent).toContain('2 tiles');
 
     onTileDragStart.mockClear();
     fireEvent.click(benchTile, { shiftKey: true });
@@ -1687,11 +1687,11 @@ describe('DiabloMonthCanvas', () => {
       peopleById: new Map([[person.id, person]]),
       periodAllocations: [projectAllocation],
     });
-    const highlightButton = screen.getByRole('button', { name: "Pokaż kafelki Taylor na canvasie" });
+    const highlightButton = screen.getByRole('button', { name: "Show tiles for Taylor on canvas" });
     const projectTile = container.querySelector('.diablo-project-frame:not(.diablo-person-frame) .diablo-inventory-person-tile') as HTMLButtonElement;
     const canvasGrid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
 
-    expect(highlightButton).toHaveTextContent('Pokaż');
+    expect(highlightButton).toHaveTextContent('Show');
     expect(highlightButton).toBeEnabled();
     expect(highlightButton).toHaveAttribute('aria-pressed', 'false');
     expect(projectTile).not.toHaveClass('is-person-highlighted');
@@ -1735,7 +1735,7 @@ describe('DiabloMonthCanvas', () => {
       projectsById: new Map([[project.id, projectWithRequirement]]),
     });
 
-    const zoneMap = screen.getByLabelText("Strefy skillowe projektu Client 1");
+    const zoneMap = screen.getByLabelText("Project skill zones Client 1");
     const backendZone = within(zoneMap).getByText('Backend').closest('.diablo-skill-zone') as HTMLElement;
 
     fireEvent.drop(backendZone, {
@@ -1862,9 +1862,9 @@ describe('DiabloMonthCanvas', () => {
     const benchTiles = container.querySelectorAll('.diablo-person-bench-tile');
     const benchTileMetrics = container.querySelectorAll('.diablo-person-bench-tile .diablo-tile-metric-value');
 
-    expect(screen.getByLabelText(/Taylor, 0\/18k koszt, 160h wolne/)).toBeInTheDocument();
-    expect(screen.getByLabelText("Pokrycie kosztu Taylor: 0 z 18k, 0%")).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: "Pokaż kafelki Taylor na canvasie" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Taylor, 0\/18k cost, 160h free/)).toBeInTheDocument();
+    expect(screen.getByLabelText("Cost coverage Taylor: 0 of 18k, 0%")).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: "Show tiles for Taylor on canvas" })).not.toBeInTheDocument();
     expect(benchTiles).toHaveLength(18);
     benchTileMetrics.forEach((tile) => {
       expect(tile).toHaveTextContent('8.9h');
@@ -1887,7 +1887,7 @@ describe('DiabloMonthCanvas', () => {
     });
     const benchTiles = container.querySelectorAll('.diablo-person-bench-tile .diablo-tile-metric-value');
 
-    expect(screen.getByLabelText(/Taylor, 0\/18k koszt, 18k koszt wolny/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Taylor, 0\/18k cost, 18k unallocated cost/)).toBeInTheDocument();
     expect(benchTiles).toHaveLength(18);
     benchTiles.forEach((tile) => {
       expect(tile).toHaveTextContent('1k');
@@ -1905,15 +1905,15 @@ describe('DiabloMonthCanvas', () => {
       projects: [project],
       projectsById: new Map([[project.id, project]]),
     });
-    const costSummary = screen.getByLabelText("Pokrycie kosztu Taylor: 18 z 18k, 100%") as HTMLDetailsElement;
+    const costSummary = screen.getByLabelText("Cost coverage Taylor: 18 of 18k, 100%") as HTMLDetailsElement;
     const costSummaryHeader = costSummary.querySelector('summary') as HTMLElement;
-    const revenueLine = within(costSummary).getByText('18k przychód');
-    const balanceLine = within(costSummary).getByText('+0k bilans');
+    const revenueLine = within(costSummary).getByText('18k revenue');
+    const balanceLine = within(costSummary).getByText('+0k balance');
 
     expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument();
     expect(costSummary.tagName).toBe('DETAILS');
     expect(costSummary.open).toBe(false);
-    expect(within(costSummaryHeader).getByText('Pokrycie kosztu')).toBeVisible();
+    expect(within(costSummaryHeader).getByText('Cost coverage')).toBeVisible();
     expect(revenueLine).not.toBeVisible();
     expect(balanceLine).not.toBeVisible();
 
@@ -1994,14 +1994,14 @@ describe('DiabloMonthCanvas', () => {
     const commercialTiles = commercialFrame.querySelectorAll('.diablo-inventory-person-tile');
     const researchTiles = researchFrame.querySelectorAll('.diablo-inventory-person-tile');
 
-    expect(screen.getByLabelText("Pokrycie kosztu Taylor: 15 z 18k, 83%")).toBeInTheDocument();
+    expect(screen.getByLabelText("Cost coverage Taylor: 15 of 18k, 83%")).toBeInTheDocument();
     expect(screen.getByText('ALERT')).toBeInTheDocument();
-    expect(screen.getByText('Pokrycie kosztu: 15k vs koszt 18k, 3k poza pokryciem.')).toBeInTheDocument();
-    expect(screen.getByText('15k przychód')).toBeInTheDocument();
-    expect(screen.getByText('-3k bilans')).toBeInTheDocument();
-    expect(screen.getByText('3k poza pokr.')).toBeInTheDocument();
-    expect(screen.getByText('R&D poza')).toBeInTheDocument();
-    expect(screen.getAllByText(/brak wolnych kafelków/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Cost coverage: 15k vs cost 18k, 3k uncovered.')).toBeInTheDocument();
+    expect(screen.getByText('15k revenue')).toBeInTheDocument();
+    expect(screen.getByText('-3k balance')).toBeInTheDocument();
+    expect(screen.getByText('3k uncovered')).toBeInTheDocument();
+    expect(screen.getByText('R&D uncovered')).toBeInTheDocument();
+    expect(screen.getAllByText(/no available tiles/).length).toBeGreaterThan(0);
     expect(container.querySelectorAll('.diablo-person-bench-tile')).toHaveLength(0);
     expect(commercialTiles).toHaveLength(15);
     expect(researchTiles).toHaveLength(3);
@@ -2050,7 +2050,7 @@ describe('DiabloMonthCanvas', () => {
     const commercialFrame = screen.getByLabelText(/Client 1 - Discovery, 18\/18k/);
     const commercialTiles = commercialFrame.querySelectorAll('.diablo-inventory-person-tile');
 
-    expect(screen.getByLabelText("Pokrycie kosztu Taylor: 18 z 18k, 100%")).toBeInTheDocument();
+    expect(screen.getByLabelText("Cost coverage Taylor: 18 of 18k, 100%")).toBeInTheDocument();
     expect(container.querySelectorAll('.diablo-person-bench-tile')).toHaveLength(0);
     expect(commercialTiles).toHaveLength(18);
     commercialTiles.forEach((tile) => expect(tile).toHaveAttribute('data-cost-coverage', 'covered'));
@@ -2097,13 +2097,13 @@ describe('DiabloMonthCanvas', () => {
         [timeOffProject.id, timeOffProject],
       ]),
     });
-    const timeOffFrame = screen.getByLabelText(/URLOP - Urlopy, 4\/4k/);
+    const timeOffFrame = screen.getByLabelText(/TIME OFF - Leave, 4\/4k/);
     const timeOffTiles = timeOffFrame.querySelectorAll('.diablo-inventory-person-tile');
 
-    expect(screen.getByLabelText("Pokrycie kosztu Taylor: 14 z 18k, 78%")).toBeInTheDocument();
-    expect(screen.getByText('4k urlop')).toBeInTheDocument();
-    expect(screen.getByText('URLOP urlop')).toBeInTheDocument();
-    expect(screen.getByText('Pokrycie kosztu: 14k vs koszt 18k, 4k poza pokryciem, 4k urlop.')).toBeInTheDocument();
+    expect(screen.getByLabelText("Cost coverage Taylor: 14 of 18k, 78%")).toBeInTheDocument();
+    expect(screen.getByText('4k leave')).toBeInTheDocument();
+    expect(screen.getByText('TIME OFF leave')).toBeInTheDocument();
+    expect(screen.getByText('Cost coverage: 14k vs cost 18k, 4k uncovered, 4k leave.')).toBeInTheDocument();
     expect(container.querySelectorAll('.diablo-person-bench-tile')).toHaveLength(0);
     expect(timeOffTiles).toHaveLength(4);
     timeOffTiles.forEach((tile) => expect(tile).toHaveAttribute('data-cost-coverage', 'time-off'));
@@ -2112,15 +2112,15 @@ describe('DiabloMonthCanvas', () => {
   it('renders project inventory badges under Diablo project frames with tooltip details', () => {
     renderCanvas();
 
-    const projectPatternRail = screen.getByLabelText("Patterny projektu Client 1");
+    const projectPatternRail = screen.getByLabelText("Project patterns Client 1");
     const emptyProjectBadge = within(projectPatternRail).getByLabelText(
-      '0P: brak ludzi. projekt nie ma przypisanej osoby w tym miesiącu'
+      '0P: no people. no person is assigned to the project this month'
     );
 
     expect(emptyProjectBadge).toHaveTextContent('0P');
     expect(emptyProjectBadge).toHaveAttribute(
       'title',
-      'brak ludzi: projekt nie ma przypisanej osoby w tym miesiącu'
+      'no people: no person is assigned to the project this month'
     );
   });
 
@@ -2128,7 +2128,7 @@ describe('DiabloMonthCanvas', () => {
     const onLayoutChange = vi.fn();
     renderCanvas({ onLayoutChange });
 
-    const collapseButton = screen.getByRole('button', { name: 'Zwiń' });
+    const collapseButton = screen.getByRole('button', { name: 'Collapse' });
     expect(collapseButton).toHaveAttribute('aria-expanded', 'true');
 
     fireEvent.click(collapseButton);
@@ -2158,8 +2158,8 @@ describe('DiabloMonthCanvas', () => {
       },
     });
 
-    expect(screen.getByRole('button', { name: 'Rozwiń' })).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByLabelText('Sekcje legendy Diablo')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Expand' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByLabelText('Diablo legend sections')).not.toBeInTheDocument();
   });
 
   it('pulls a saved offscreen Diablo legend back into the visible viewport', async () => {
@@ -2203,7 +2203,7 @@ describe('DiabloMonthCanvas', () => {
     const onLayoutChange = vi.fn();
     const { container } = renderCanvas({ canvasTool: 'move', onLayoutChange });
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
-    const legendHeader = screen.getByText('Legenda').closest('header') as HTMLElement;
+    const legendHeader = screen.getByText('Legend').closest('header') as HTMLElement;
     const cellPitch = 54;
     grid.getBoundingClientRect = () => ({
       bottom: 1512,
@@ -2334,9 +2334,9 @@ describe('DiabloMonthCanvas', () => {
 
     renderCanvas({ layout: expandedLayout, onLayoutChange });
 
-    const fitButton = screen.getByRole('button', { name: 'Dopasuj widok do ludzi i projektów' });
+    const fitButton = screen.getByRole('button', { name: 'Fit view to people and projects' });
     expect(fitButton).not.toHaveAttribute('title');
-    expect(screen.getByText('Dopasuj widok do ludzi i projektów')).toHaveClass('traffic-tooltip-bubble');
+    expect(screen.getByText('Fit view to people and projects')).toHaveClass('traffic-tooltip-bubble');
 
     const fitTooltip = fitButton.closest('.traffic-tooltip');
     expect(fitTooltip).toBeInTheDocument();
@@ -2441,7 +2441,7 @@ describe('DiabloMonthCanvas', () => {
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 2500 });
     Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 720 });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Dopasuj widok do ludzi i projektów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fit view to people and projects' }));
 
     expect(onLayoutChange).not.toHaveBeenCalled();
     await waitFor(() => {
@@ -2499,11 +2499,11 @@ describe('DiabloMonthCanvas', () => {
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
     Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 480 });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Dopasuj widok do ludzi i projektów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fit view to people and projects' }));
 
     await waitFor(() => {
       expect(getCanvasScale(container)).toBeCloseTo(0.55);
-      expect(screen.getByRole('button', { name: 'Oddal canvas (55%)' })).not.toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Zoom out canvas (55%)' })).not.toBeDisabled();
     });
   });
 
@@ -2554,7 +2554,7 @@ describe('DiabloMonthCanvas', () => {
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 900 });
     Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 480 });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Dopasuj widok do ludzi i projektów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fit view to people and projects' }));
 
     await waitFor(() => {
       expect(getCanvasScale(container)).toBeGreaterThan(0.2);
@@ -2567,8 +2567,8 @@ describe('DiabloMonthCanvas', () => {
     const scaleShell = container.querySelector('.diablo-canvas-scale-shell') as HTMLElement;
     const peopleZoneBackdrop = container.querySelector('.diablo-people-zone-backdrop') as HTMLElement;
     const projectZoneBackdrop = container.querySelector('.diablo-project-zone-backdrop') as HTMLElement;
-    const zoomOutButton = screen.getByRole('button', { name: /Oddal canvas/ });
-    const zoomInButton = screen.getByRole('button', { name: /Przybliż canvas/ });
+    const zoomOutButton = screen.getByRole('button', { name: /Zoom out canvas/ });
+    const zoomInButton = screen.getByRole('button', { name: /Zoom in canvas/ });
     const initialPeopleZoneWidth = peopleZoneBackdrop.style.width;
     const initialProjectZoneLeft = projectZoneBackdrop.style.left;
 
@@ -2596,7 +2596,7 @@ describe('DiabloMonthCanvas', () => {
     }
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Oddal canvas (10%)' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Zoom out canvas (10%)' })).toBeDisabled();
       expect(grid.style.getPropertyValue('--diablo-cell')).toBe('48px');
       expect(getCanvasScale(container)).toBeCloseTo(0.1);
     });
@@ -2606,7 +2606,7 @@ describe('DiabloMonthCanvas', () => {
     }
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Przybliż canvas (200%)' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Zoom in canvas (200%)' })).toBeDisabled();
       expect(grid.style.getPropertyValue('--diablo-cell')).toBe('48px');
       expect(grid.style.getPropertyValue('--diablo-pitch')).toBe('54px');
       expect(getCanvasScale(container)).toBeCloseTo(2);
@@ -2616,7 +2616,7 @@ describe('DiabloMonthCanvas', () => {
   it('centers the canvas tool island against the visible canvas viewport', async () => {
     const { container } = renderCanvas();
     const viewport = container.querySelector('.diablo-canvas-viewport') as HTMLElement;
-    const toolIsland = screen.getByLabelText('Tryb pracy na canvasie');
+    const toolIsland = screen.getByLabelText('Canvas mode');
 
     viewport.getBoundingClientRect = () => ({
       bottom: 700,
@@ -2641,8 +2641,8 @@ describe('DiabloMonthCanvas', () => {
     const { container } = renderCanvas();
     const viewport = container.querySelector('.diablo-canvas-viewport') as HTMLElement;
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
-    const peoplePanel = screen.getByLabelText('Panel ludzi na canvasie');
-    const projectPanel = screen.getByLabelText('Panel projektów na canvasie');
+    const peoplePanel = screen.getByLabelText('People panel on canvas');
+    const projectPanel = screen.getByLabelText('Projects panel on canvas');
 
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 500 });
     Object.defineProperty(viewport, 'scrollWidth', { configurable: true, value: 2500 });
@@ -2669,7 +2669,7 @@ describe('DiabloMonthCanvas', () => {
     const { container } = renderCanvas();
     const viewport = container.querySelector('.diablo-canvas-viewport') as HTMLElement;
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
-    const projectPanel = screen.getByLabelText('Panel projektów na canvasie') as HTMLElement;
+    const projectPanel = screen.getByLabelText('Projects panel on canvas') as HTMLElement;
 
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 500 });
     viewport.getBoundingClientRect = () => getRect(0, 120, 500, 620);
@@ -2688,8 +2688,8 @@ describe('DiabloMonthCanvas', () => {
     const { container } = renderCanvas();
     const viewport = container.querySelector('.diablo-canvas-viewport') as HTMLElement;
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
-    const peoplePanel = screen.getByLabelText('Panel ludzi na canvasie') as HTMLElement;
-    const projectPanel = screen.getByLabelText('Panel projektów na canvasie') as HTMLElement;
+    const peoplePanel = screen.getByLabelText('People panel on canvas') as HTMLElement;
+    const projectPanel = screen.getByLabelText('Projects panel on canvas') as HTMLElement;
 
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 1600 });
     Object.defineProperty(viewport, 'scrollWidth', { configurable: true, value: 2500 });
@@ -2710,7 +2710,7 @@ describe('DiabloMonthCanvas', () => {
     const { container } = renderCanvas({ canvasTool: 'move' });
     const viewport = container.querySelector('.diablo-canvas-viewport') as HTMLElement;
     const grid = container.querySelector('.diablo-canvas-grid') as HTMLElement;
-    const projectPanel = screen.getByLabelText('Panel projektów na canvasie') as HTMLElement;
+    const projectPanel = screen.getByLabelText('Projects panel on canvas') as HTMLElement;
 
     Object.defineProperty(viewport, 'clientWidth', { configurable: true, value: 500 });
     Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 620 });
@@ -2737,8 +2737,8 @@ describe('DiabloMonthCanvas', () => {
     const onOpenHiddenProjects = vi.fn();
     renderCanvas({ hiddenProjectCount: 2, onOpenHiddenProjects });
 
-    const hiddenProjectsButton = screen.getByRole('button', { name: 'Pokaż ukryte projekty w miesiącu: 2' });
-    expect(hiddenProjectsButton).toHaveTextContent('Ukryte');
+    const hiddenProjectsButton = screen.getByRole('button', { name: 'Show hidden projects this month: 2' });
+    expect(hiddenProjectsButton).toHaveTextContent('Hidden');
     expect(hiddenProjectsButton).toHaveTextContent('2');
 
     fireEvent.click(hiddenProjectsButton);
@@ -2753,28 +2753,28 @@ describe('DiabloMonthCanvas', () => {
       periodAllocations: [benchAllocation],
     });
 
-    const clearButton = screen.getByRole('button', { name: 'Wyczyść aktualny miesiąc' });
-    expect(clearButton).toHaveTextContent('Wyczyść miesiąc');
+    const clearButton = screen.getByRole('button', { name: 'Clear current month' });
+    expect(clearButton).toHaveTextContent('Clear month');
 
     fireEvent.click(clearButton);
     expect(onClearMonthPlan).not.toHaveBeenCalled();
-    expect(screen.getByRole('button', { name: 'Potwierdź wyczyszczenie aktualnego miesiąca' }))
-      .toHaveTextContent('Potwierdź');
+    expect(screen.getByRole('button', { name: 'Confirm clearing the current month' }))
+      .toHaveTextContent('Confirm');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Potwierdź wyczyszczenie aktualnego miesiąca' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm clearing the current month' }));
     expect(onClearMonthPlan).toHaveBeenCalledTimes(1);
   });
 
   it('disables month clearing when the canvas month is already empty', () => {
     renderCanvas({ projects: [] });
 
-    expect(screen.getByRole('button', { name: 'Wyczyść aktualny miesiąc' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Clear current month' })).toBeDisabled();
   });
 
   it('disables the hidden projects trigger when the month has no hidden projects', () => {
     renderCanvas({ hiddenProjectCount: 0 });
 
-    expect(screen.getByRole('button', { name: 'Pokaż ukryte projekty w miesiącu: 0' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Show hidden projects this month: 0' })).toBeDisabled();
   });
 
   it('keeps growing the canvas when dragging a frame after fitting to content', () => {
@@ -2951,21 +2951,21 @@ describe('DiabloMonthCanvas', () => {
 
     fireEvent.pointerDown(screen.getByLabelText(/Client 1 - Discovery/), { button: 0 });
 
-    expect(screen.getByRole('button', { name: /Otwórz szczegóły projektu/ })).toHaveTextContent('Pokaż');
-    expect(screen.getByRole('button', { name: 'Zwiększ szerokość ramki o jedną kolumnę' })).toHaveTextContent('S+');
-    expect(screen.getByRole('button', { name: /Ukryj projekt w aktywnym miesiącu/ })).toHaveTextContent('Ukryj');
-    expect(screen.getByRole('button', { name: /Usuń projekt i przenieś alokacje na ławkę/ })).toHaveTextContent('Usuń');
+    expect(screen.getByRole('button', { name: /Open project details/ })).toHaveTextContent('Show');
+    expect(screen.getByRole('button', { name: 'Increase frame width by one column' })).toHaveTextContent('W+');
+    expect(screen.getByRole('button', { name: /Hide project in the active month/ })).toHaveTextContent('Hide');
+    expect(screen.getByRole('button', { name: /Delete project and move allocations to the bench/ })).toHaveTextContent('Delete');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zwiększ szerokość ramki o jedną kolumnę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Increase frame width by one column' }));
     expect(onProjectFrameResize).toHaveBeenCalledWith(project.id, expect.objectContaining({
       width: 5,
       height: 2,
     }));
 
-    fireEvent.click(screen.getByRole('button', { name: /Ukryj projekt w aktywnym miesiącu/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Hide project in the active month/ }));
     expect(onArchiveProject).toHaveBeenCalledWith(project.id, period.id);
 
-    fireEvent.click(screen.getByRole('button', { name: /Usuń projekt i przenieś alokacje na ławkę/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Delete project and move allocations to the bench/ }));
     expect(onDeleteProject).toHaveBeenCalledWith(project.id);
   });
 
@@ -2995,7 +2995,7 @@ describe('DiabloMonthCanvas', () => {
     fireEvent.pointerDown(projectFrame, { button: 0, clientX: 167, clientY: 221 });
 
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Otwórz szczegóły projektu/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Open project details/ })).not.toBeInTheDocument();
 
     fireEvent.pointerMove(window, { clientX: 383, clientY: 221 });
     fireEvent.pointerUp(window, { clientX: 383, clientY: 221 });

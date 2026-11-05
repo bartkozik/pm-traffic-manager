@@ -18,8 +18,8 @@ async function requestSession(action: 'load' | 'start' | 'reset', signal?: Abort
   });
   if (response.status === 401) return null;
   if (!response.ok) throw new Error(response.status === 429
-    ? 'Demo osiągnęło chwilowy limit. Spróbuj ponownie za kilka minut.'
-    : 'Nie udało się połączyć z demo. Spróbuj ponownie.');
+    ? 'The demo has reached its temporary limit. Please try again in a few minutes.'
+    : 'Could not connect to the demo. Please try again.');
   return sessionSchema.parse(await response.json());
 }
 
@@ -48,8 +48,8 @@ export function DemoLayout() {
       }
     } catch (cause) {
       if (id === operation.current && !signal?.aborted) {
-        setError(cause instanceof Error && cause.message.startsWith('Demo osiągnęło')
-          ? cause.message : 'Nie udało się połączyć z demo. Spróbuj ponownie.');
+        setError(cause instanceof Error && cause.message.startsWith('The demo has reached')
+          ? cause.message : 'Could not connect to the demo. Please try again.');
       }
     } finally {
       if (id === operation.current && !signal?.aborted) setBusy(false);
@@ -69,7 +69,7 @@ export function DemoLayout() {
       setSession(null);
       setGuideOpen(false);
       setBusy(false);
-      setError('Sesja wygasła. Uruchom nowe demo, aby wrócić do danych startowych.');
+      setError('Your session has expired. Open a new demo to restore the sample data.');
     };
     const reset = () => setConfirmReset(true);
     const refresh = async () => {
@@ -101,38 +101,38 @@ export function DemoLayout() {
     <a href="https://kozikowski.it/projects/pm-traffic-manager">← Portfolio</a>
     <p className="demo-label">INTERACTIVE DEMO</p>
     <h1>PM Traffic Manager</h1>
-    <p>Twoja prywatna tablica do planowania zespołu. Bez konta, bez danych klientów.</p>
+    <p>Your own team planning board. No account or real client data required.</p>
     <ol>
-      <li>Przeciągnij kafelki osób do projektów i sprawdź obciążenie.</li>
-      <li>Porównaj koszty i przychody albo otwórz analizę AI.</li>
-      <li>Eksperymentuj — reset odtworzy dane tylko w Twojej sesji.</li>
+      <li>Drag people’s capacity tiles into projects and check their workload.</li>
+      <li>Compare costs and revenue, or try an AI analysis.</li>
+      <li>Experiment freely — resetting restores the sample data in your session only.</li>
     </ol>
-    <p>Wyłącznie fikcyjne dane. Sesja trwa do 24 godzin. Nie wpisuj danych osobowych ani poufnych.
-      Analizy AI są opcjonalne, limitowane i wysyłają dane tablicy do OpenAI.</p>
+    <p>All data is fictional. Sessions last up to 24 hours. Do not enter personal or confidential information.
+      AI analyses are optional and limited. Running an analysis sends your board data to OpenAI.</p>
     {error && <p role="alert">{error}</p>}
-    <button disabled={busy} onClick={() => void changeSession('start')}>{busy ? 'Ładowanie…' : 'Uruchom demo'}</button>
+    <button disabled={busy} onClick={() => void changeSession('start')}>{busy ? 'Loading…' : 'Open demo'}</button>
     <p className="demo-credit">Designed and developed end to end with AI-assisted development.</p>
   </main>;
 
   const match = location.pathname.match(/^\/(board|diablo-board)\/([^/]+)(\/ai-planning)?$/);
   const target = `/${match?.[1] || 'diablo-board'}/${session.boardId}${match?.[3] || ''}`;
   return <>
-    <aside className="demo-banner" aria-label="Sesja demo">
-      <div><strong>DEMO · Fikcyjne dane</strong><span>Prywatna tablica · sesja do 24 h · Pozostałe analizy AI: {session.aiRemaining}</span>
-        {session.aiAvailable === false && <span>AI jest obecnie niedostępne. Planowanie i obliczenia działają niezależnie.</span>}</div>
+    <aside className="demo-banner" aria-label="Demo session">
+      <div><strong>DEMO · Fictional data</strong><span>Private board · up to 24 hours · AI analyses remaining: {session.aiRemaining}</span>
+        {session.aiAvailable === false && <span>AI is currently unavailable. Planning and calculations remain available.</span>}</div>
       <a href="https://kozikowski.it/projects/pm-traffic-manager">Portfolio ↗</a>
-      <button ref={guideButton} disabled={busy} onClick={() => setGuideOpen(true)}>Jak to działa?</button>
+      <button ref={guideButton} disabled={busy} onClick={() => setGuideOpen(true)}>Quick guide</button>
       <button disabled={busy} onClick={() => setConfirmReset((value) => !value)}>Reset demo</button>
-      {confirmReset && <div className="demo-reset" role="group" aria-label="Potwierdzenie resetu">
-        <span>Usunąć Twoje zmiany i odtworzyć dane? Limit AI pozostaje bez zmian.</span>
-        <button onClick={() => void changeSession('reset')}>Przywróć dane startowe</button>
-        <button onClick={() => setConfirmReset(false)}>Anuluj</button>
+      {confirmReset && <div className="demo-reset" role="group" aria-label="Confirm reset">
+        <span>Discard your changes and restore the sample data? Your AI limit will not reset.</span>
+        <button onClick={() => void changeSession('reset')}>Restore sample data</button>
+        <button onClick={() => setConfirmReset(false)}>Cancel</button>
       </div>}
       {error && <p role="alert">{error}</p>}
     </aside>
     {guideOpen && !busy && location.pathname === target && <DemoGuide onClose={closeGuide} />}
-    {busy ? <p role="status">Przygotowanie tablicy…</p> : location.pathname !== target
+    {busy ? <p role="status">Preparing your board…</p> : location.pathname !== target
       ? <Navigate to={target} replace />
-      : <Suspense fallback={<p role="status">Ładowanie tablicy…</p>}><Outlet key={session.boardId} /></Suspense>}
+      : <Suspense fallback={<p role="status">Loading your board…</p>}><Outlet key={session.boardId} /></Suspense>}
   </>;
 }

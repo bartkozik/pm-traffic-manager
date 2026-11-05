@@ -31,7 +31,7 @@ describe('currency helpers', () => {
       stage: 'signed',
       budgetK: 39.5,
       probability: 1,
-      startMonth: 'Czerwiec 2026',
+      startMonth: 'June 2026',
       startPeriodId: '2026-06',
       currencyProfile: {
         billingCurrency: 'USD',

@@ -132,38 +132,38 @@ export function PlanningRulesManager({
   };
 
   return (
-    <div className="traffic-rules-overlay" role="dialog" aria-modal="true" aria-label="Zarządzanie regułami planowania">
+    <div className="traffic-rules-overlay" role="dialog" aria-modal="true" aria-label="Manage planning rules">
       <section className="traffic-rules-modal" ref={modalRef} tabIndex={-1}>
         <div className="traffic-editor-header">
           <div>
-            <h2>Zarządzanie regułami</h2>
-            <p>Reguły wpływają na walidacje i AI Assisted Planning. Manualne ruchy nadal są możliwe, ale dostaną warning.</p>
+            <h2>Manage rules</h2>
+            <p>Rules affect validation and the AI planning assistant. Manual moves remain possible but will receive a warning.</p>
           </div>
-          <button aria-label="Zamknij reguły planowania" className="traffic-icon-button" type="button" onClick={onClose}>
+          <button aria-label="Close planning rules" className="traffic-icon-button" type="button" onClick={onClose}>
             x
           </button>
         </div>
 
-        <section className="traffic-rules-create" aria-label="Dodaj regułę">
+        <section className="traffic-rules-create" aria-label="Add rule">
           <div className="traffic-rules-section-heading">
-            <h3>Nie łącz osób</h3>
-            <p>Reguła stała obowiązuje bez terminu końca. Reguła czasowa działa tylko w wybranym miesiącu. Projekt jest opcjonalny.</p>
+            <h3>Keep people apart</h3>
+            <p>A permanent rule has no end date. A temporary rule applies only to the selected month. The project is optional.</p>
           </div>
           <form
-            aria-label="Formularz dodawania reguły"
+            aria-label="Add rule form"
             className="traffic-rules-form"
             onSubmit={handleCreateRuleSubmit}
           >
             <div className="traffic-rules-person-panel">
               <div className="traffic-rules-people-picker">
-                <span>Osoba A</span>
+                <span>Person A</span>
                 <input
-                  aria-label="Filtr osoby A"
+                  aria-label="Filter person A"
                   value={personAQuery}
                   onChange={(event) => setPersonAQuery(event.target.value)}
-                  placeholder="filtruj po imieniu, roli, skillu"
+                  placeholder="filter by name, role or skill"
                 />
-                <div className="traffic-rules-person-options is-single" role="radiogroup" aria-label="Osoba A">
+                <div className="traffic-rules-person-options is-single" role="radiogroup" aria-label="Person A">
                   {visiblePersonAOptions.length ? visiblePersonAOptions.map((person) => {
                     const isSelected = personAId === person.id;
                     return (
@@ -187,19 +187,19 @@ export function PlanningRulesManager({
                       </label>
                     );
                   }) : (
-                    <p className="traffic-rules-empty-option">Brak osób dla filtra.</p>
+                    <p className="traffic-rules-empty-option">No people match this filter.</p>
                   )}
                 </div>
               </div>
               <div className="traffic-rules-people-picker">
-                <span className="traffic-rules-field-label">Osoby B</span>
+                <span className="traffic-rules-field-label">People B</span>
                 <input
-                  aria-label="Filtr osób B"
+                  aria-label="Filter people B"
                   value={personBQuery}
                   onChange={(event) => setPersonBQuery(event.target.value)}
-                  placeholder="filtruj po imieniu, roli, skillu"
+                  placeholder="filter by name, role or skill"
                 />
-                <div className="traffic-rules-person-options" role="group" aria-label="Osoby B">
+                <div className="traffic-rules-person-options" role="group" aria-label="People B">
                   {personBOptions.length ? personBOptions.map((person) => {
                     const isSelected = personBIds.includes(person.id);
                     return (
@@ -224,14 +224,14 @@ export function PlanningRulesManager({
                       </label>
                     );
                   }) : (
-                    <p className="traffic-rules-empty-option">Brak osób dla filtra.</p>
+                    <p className="traffic-rules-empty-option">No people match this filter.</p>
                   )}
                 </div>
                 <div className="traffic-rules-selected-summary">
-                  <span>{selectedPersonBNames.length ? `Wybrane: ${selectedPersonBNames.join(', ')}` : 'Brak wybranych osób.'}</span>
+                  <span>{selectedPersonBNames.length ? `Selected: ${selectedPersonBNames.join(', ')}` : 'No people selected.'}</span>
                   {personBIds.length ? (
                     <button className="traffic-inline-link" type="button" onClick={() => setPersonBIds([])}>
-                      Wyczyść
+                      Clear
                     </button>
                   ) : null}
                 </div>
@@ -240,15 +240,15 @@ export function PlanningRulesManager({
             <div className="traffic-rules-scope-panel">
               <div className="traffic-rules-scope-grid">
                 <label className="traffic-rules-field">
-                  <span>Zakres reguły</span>
+                  <span>Rule scope</span>
                   <select value={ruleTimeScope} onChange={(event) => setRuleTimeScope(event.target.value as RuleTimeScope)}>
-                    <option value="permanent">Stała - bez terminu końca</option>
-                    <option value="period">Czasowa - wybrany miesiąc</option>
+                    <option value="permanent">Permanent - no end date</option>
+                    <option value="period">Temporary - selected month</option>
                   </select>
                 </label>
                 {ruleTimeScope === 'period' ? (
                   <label className="traffic-rules-field">
-                    <span>Miesiąc reguły</span>
+                    <span>Rule month</span>
                     <select value={rulePeriodId} onChange={(event) => setRulePeriodId(event.target.value)}>
                       {monthPeriods.map((period) => (
                         <option key={period.id} value={period.id}>{period.label}</option>
@@ -257,43 +257,43 @@ export function PlanningRulesManager({
                   </label>
                 ) : null}
                 <label className="traffic-rules-field">
-                  <span>Projekt</span>
+                  <span>Project</span>
                   <select value={ruleProjectId} onChange={(event) => setRuleProjectId(event.target.value)}>
-                    <option value="">{ruleTimeScope === 'period' ? 'Cały miesiąc' : 'Wszystkie projekty'}</option>
+                    <option value="">{ruleTimeScope === 'period' ? 'Entire month' : 'All projects'}</option>
                     {activeProjects.map((project) => (
                       <option key={project.id} value={project.id}>{project.client}: {project.name}</option>
                     ))}
                   </select>
                 </label>
                 <label className="traffic-rules-field">
-                  <span>Siła reguły</span>
+                  <span>Rule strength</span>
                   <select value={severity} onChange={(event) => setSeverity(event.target.value as PlanningRule['severity'])}>
-                    <option value="hard">Twarda dla AI</option>
-                    <option value="warning">Warning manualny</option>
+                    <option value="hard">Strict for AI</option>
+                    <option value="warning">Warning for manual moves</option>
                   </select>
                 </label>
               </div>
               <label className="traffic-rules-field traffic-rules-reason">
-                <span>Powód / notatka</span>
-                <textarea value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Krótki powód widoczny dla PM/HR" />
+                <span>Reason / note</span>
+                <textarea value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Short reason visible to PM/HR" />
               </label>
               <div className="traffic-rules-actions">
                 <button className="traffic-button is-primary" type="submit" disabled={!canCreate}>
-                  Dodaj regułę
+                  Add rule
                 </button>
               </div>
             </div>
           </form>
         </section>
 
-        <section className="traffic-rules-list" aria-label="Aktywne reguły">
+        <section className="traffic-rules-list" aria-label="Active rules">
           <div className="traffic-rules-list-header">
-            <strong>Aktywne reguły</strong>
+            <strong>Active rules</strong>
             <span>{filteredRules.length} / {activeRules.length}</span>
           </div>
-          <section className="traffic-rules-toolbar" aria-label="Filtry aktywnych reguł">
+          <section className="traffic-rules-toolbar" aria-label="Active rule filters">
             <label>
-              Miesiąc aktywnych reguł
+              Active rules month
               <select
                 disabled={!hasAnyRules}
                 value={activeRulesPeriodId}
@@ -305,39 +305,39 @@ export function PlanningRulesManager({
               </select>
             </label>
             <label>
-              Osoba w regule
+              Person in rule
               <select
                 disabled={!hasActiveRules}
                 value={personFilterId}
                 onChange={(event) => setPersonFilterId(event.target.value)}
               >
-                <option value="all">Wszystkie osoby</option>
+                <option value="all">All people</option>
                 {activePeople.map((person) => (
                   <option key={person.id} value={person.id}>{person.name}</option>
                 ))}
               </select>
             </label>
             <label>
-              Projekt reguły
+              Rule project
               <select
                 disabled={!hasActiveRules}
                 value={projectFilterId}
                 onChange={(event) => setProjectFilterId(event.target.value)}
               >
-                <option value="all">Wszystkie zakresy</option>
-                <option value="global">Bez projektu</option>
+                <option value="all">All scopes</option>
+                <option value="global">No project</option>
                 {activeProjects.map((project) => (
                   <option key={project.id} value={project.id}>{project.client}: {project.name}</option>
                 ))}
               </select>
             </label>
             <label>
-              Szukaj w regułach
+              Search rules
               <input
                 disabled={!hasActiveRules}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="imię, projekt, powód"
+                placeholder="name, project, reason"
               />
             </label>
           </section>
@@ -351,31 +351,31 @@ export function PlanningRulesManager({
                 const timeScope = getPlanningRuleTimeScope(rule);
                 const rulePeriod = rule.periodId ? periods.find((period) => period.id === rule.periodId) : undefined;
                 const scopeDetail = timeScope === 'permanent'
-                  ? 'Obowiązuje stale'
-                  : rulePeriod?.label || rule.periodId || 'Wybrany miesiąc';
+                  ? 'Always applies'
+                  : rulePeriod?.label || rule.periodId || 'Selected month';
                 const projectLabel = project
                   ? `${project.client}: ${project.name}`
-                  : timeScope === 'period' ? 'cały miesiąc' : 'wszystkie projekty';
+                  : timeScope === 'period' ? 'entire month' : 'all projects';
                 return (
                   <article className="traffic-rule-row" key={rule.id}>
                     <div>
                       <span className="traffic-rule-row-heading">
                         <strong>{personA?.name || rule.personAId} + {personB?.name || rule.personBId}</strong>
                         <span className={`traffic-rule-scope-badge is-${timeScope}`}>
-                          {timeScope === 'permanent' ? 'Stała' : 'Czasowa'}
+                          {timeScope === 'permanent' ? 'Permanent' : 'Temporary'}
                         </span>
                       </span>
-                      <span>{scopeDetail} · {projectLabel} · {rule.severity === 'hard' ? 'twarda dla AI' : 'warning'}</span>
+                      <span>{scopeDetail} · {projectLabel} · {rule.severity === 'hard' ? 'strict for AI' : 'warning'}</span>
                       {rule.reason ? <p>{rule.reason}</p> : null}
                     </div>
                     <button className="traffic-inline-link" type="button" onClick={() => onDelete(rule.id)}>
-                      Usuń
+                      Delete
                     </button>
                   </article>
                 );
               })
             ) : (
-              <p className="traffic-editor-section-note">Brak reguł dla wybranych filtrów.</p>
+              <p className="traffic-editor-section-note">No rules match the selected filters.</p>
             )}
           </div>
         </section>

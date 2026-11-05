@@ -5,7 +5,7 @@ import { ProjectEditor } from './ProjectEditor';
 
 const period: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -58,18 +58,18 @@ describe('ProjectEditor', () => {
       />
     );
 
-    const currencySelect = screen.getByLabelText('Waluta rozliczenia');
+    const currencySelect = screen.getByLabelText('Billing currency');
 
     expect(currencySelect).toHaveDisplayValue('PLN');
     expect(screen.getByRole('option', { name: 'USD' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'EUR' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Inna waluta...' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Other currency...' })).toBeInTheDocument();
 
     fireEvent.change(currencySelect, { target: { value: '__custom_currency__' } });
-    fireEvent.change(screen.getByLabelText('Kod waluty'), { target: { value: 'aed' } });
+    fireEvent.change(screen.getByLabelText('Currency code'), { target: { value: 'aed' } });
 
-    expect(screen.getByLabelText('Kod waluty')).toHaveValue('AED');
-    expect(screen.getByLabelText('Przychód w aktywnym miesiącu (k AED)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Currency code')).toHaveValue('AED');
+    expect(screen.getByLabelText('Revenue in the active month (k AED)')).toBeInTheDocument();
   });
 
   it('preserves the PLN board value when changing currency and then adding FX', () => {
@@ -87,21 +87,21 @@ describe('ProjectEditor', () => {
       />
     );
 
-    const saveButton = screen.getByRole('button', { name: 'Zapisz zmiany' });
+    const saveButton = screen.getByRole('button', { name: 'Save changes' });
 
     expect(saveButton).toBeEnabled();
 
-    fireEvent.change(screen.getByLabelText('Waluta rozliczenia'), { target: { value: 'USD' } });
+    fireEvent.change(screen.getByLabelText('Billing currency'), { target: { value: 'USD' } });
 
     expect(saveButton).toBeDisabled();
-    expect(screen.getByText('Waluta obca wymaga kursu FX, zanim zapisze PLN-ową wartość boardu.')).toBeInTheDocument();
-    expect(screen.getByLabelText('Wartość boardu (k PLN)')).toHaveValue(24);
+    expect(screen.getByText('A foreign currency requires an exchange rate before the PLN board value can be saved.')).toBeInTheDocument();
+    expect(screen.getByLabelText('Board value (k PLN)')).toHaveValue(24);
 
-    fireEvent.change(screen.getByLabelText('Kurs do PLN'), { target: { value: '4' } });
+    fireEvent.change(screen.getByLabelText('Exchange rate to PLN'), { target: { value: '4' } });
 
     expect(saveButton).toBeEnabled();
-    expect(screen.getByLabelText('Przychód w aktywnym miesiącu (k USD)')).toHaveValue(6);
-    expect(screen.getByLabelText('Wartość boardu (k PLN)')).toHaveValue(24);
+    expect(screen.getByLabelText('Revenue in the active month (k USD)')).toHaveValue(6);
+    expect(screen.getByLabelText('Board value (k PLN)')).toHaveValue(24);
 
     fireEvent.click(saveButton);
 
@@ -134,11 +134,11 @@ describe('ProjectEditor', () => {
       />
     );
 
-    const dialog = screen.getByRole('dialog', { name: 'Edytor projektu' });
+    const dialog = screen.getByRole('dialog', { name: 'Project editor' });
 
     expect(dialog).toHaveAttribute('aria-modal', 'true');
 
-    fireEvent.change(screen.getByLabelText('Nazwa projektu'), { target: { value: 'Delivery' } });
+    fireEvent.change(screen.getByLabelText('Project name'), { target: { value: 'Delivery' } });
     fireEvent.submit(dialog);
 
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ name: 'Delivery' }));
@@ -164,10 +164,10 @@ describe('ProjectEditor', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Waluta rozliczenia'), { target: { value: 'USD' } });
-    fireEvent.change(screen.getByLabelText('Kurs do PLN'), { target: { value: '4' } });
-    fireEvent.change(screen.getByLabelText('Wartość boardu (k PLN)'), { target: { value: '40' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz zmiany' }));
+    fireEvent.change(screen.getByLabelText('Billing currency'), { target: { value: 'USD' } });
+    fireEvent.change(screen.getByLabelText('Exchange rate to PLN'), { target: { value: '4' } });
+    fireEvent.change(screen.getByLabelText('Board value (k PLN)'), { target: { value: '40' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
 
     const savedProject = onSave.mock.calls[0][0] as ProjectFrame;
     expect(savedProject.budgetK).toBe(40);
@@ -193,10 +193,10 @@ describe('ProjectEditor', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Waluta rozliczenia'), { target: { value: 'USD' } });
-    fireEvent.change(screen.getByLabelText('Przychód w aktywnym miesiącu (k USD)'), { target: { value: '30' } });
-    fireEvent.change(screen.getByLabelText('Kurs do PLN'), { target: { value: '4' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz zmiany' }));
+    fireEvent.change(screen.getByLabelText('Billing currency'), { target: { value: 'USD' } });
+    fireEvent.change(screen.getByLabelText('Revenue in the active month (k USD)'), { target: { value: '30' } });
+    fireEvent.change(screen.getByLabelText('Exchange rate to PLN'), { target: { value: '4' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
 
     const savedProject = onSave.mock.calls[0][0] as ProjectFrame;
     expect(savedProject.budgetK).toBe(120);
@@ -221,20 +221,20 @@ describe('ProjectEditor', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Typ ramki'), { target: { value: 'non_commercial' } });
+    fireEvent.change(screen.getByLabelText('Frame type'), { target: { value: 'non_commercial' } });
 
-    expect(screen.getByLabelText('Typ ramki')).toHaveDisplayValue('Niekomercyjne / niedostępność');
-    expect(screen.getByLabelText('Rodzaj ramki')).toHaveDisplayValue('URLOP');
-    expect(screen.getByLabelText('Planowany koszt/capacity w aktywnym miesiącu (k PLN)')).toHaveValue(24);
-    expect(screen.queryByLabelText('Typ kontraktu')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Etap')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Status planowania')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Spójność źródła / scope')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Waluta rozliczenia')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Data kursu')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Kurs do PLN')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Prawdopodobieństwo')).not.toBeInTheDocument();
-    expect(screen.queryByText('Notatka o źródle / CRM')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Frame type')).toHaveDisplayValue('Non-commercial / unavailable');
+    expect(screen.getByLabelText('Frame kind')).toHaveDisplayValue('TIME OFF');
+    expect(screen.getByLabelText('Planned cost/capacity in the active month (k PLN)')).toHaveValue(24);
+    expect(screen.queryByLabelText('Contract type')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Stage')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Planning status')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Source / scope consistency')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Billing currency')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Exchange rate date')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Exchange rate to PLN')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Probability')).not.toBeInTheDocument();
+    expect(screen.queryByText('Source / CRM note')).not.toBeInTheDocument();
   });
 
   it('normalizes hidden commercial fields when saving a non-commercial frame', () => {
@@ -293,9 +293,9 @@ describe('ProjectEditor', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Typ ramki'), { target: { value: 'non_commercial' } });
-    fireEvent.change(screen.getByLabelText('Planowany koszt/capacity w aktywnym miesiącu (k PLN)'), { target: { value: '12' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz zmiany' }));
+    fireEvent.change(screen.getByLabelText('Frame type'), { target: { value: 'non_commercial' } });
+    fireEvent.change(screen.getByLabelText('Planned cost/capacity in the active month (k PLN)'), { target: { value: '12' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
 
     const savedProject = onSave.mock.calls[0][0] as ProjectFrame;
     expect(savedProject).toMatchObject({
@@ -345,10 +345,10 @@ describe('ProjectEditor', () => {
       />
     );
 
-    expect(screen.getByLabelText('Plan kafelków dla Backend')).toHaveValue(10);
+    expect(screen.getByLabelText('Planned tiles for Backend')).toHaveValue(10);
 
-    fireEvent.change(screen.getByLabelText('Plan kafelków dla Backend'), { target: { value: '6' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz zmiany' }));
+    fireEvent.change(screen.getByLabelText('Planned tiles for Backend'), { target: { value: '6' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
 
     const savedProject = onSave.mock.calls[0][0] as ProjectFrame;
     expect(savedProject.requirements[0]).toMatchObject({
@@ -381,7 +381,7 @@ describe('ProjectEditor', () => {
       />
     );
 
-    const requiredToggle = screen.getByLabelText('Wymaganie Backend jest obowiązkowe');
+    const requiredToggle = screen.getByLabelText('Requirement Backend is required');
 
     expect(requiredToggle).toBeChecked();
 
@@ -389,7 +389,7 @@ describe('ProjectEditor', () => {
 
     expect(requiredToggle).not.toBeChecked();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz zmiany' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
 
     const savedProject = onSave.mock.calls[0][0] as ProjectFrame;
     expect(savedProject.requirements[0]).toMatchObject({

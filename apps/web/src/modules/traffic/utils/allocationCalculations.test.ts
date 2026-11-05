@@ -42,7 +42,7 @@ const project = {
   stage: 'signed',
   budgetK: 10,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: '2026-03',
   rateConfig: {
     projectRatePlnH: 160,

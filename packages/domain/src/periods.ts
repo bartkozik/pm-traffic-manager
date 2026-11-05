@@ -1,7 +1,7 @@
 import { Period, Person, PersonTileAllocation } from './traffic.model.js';
 import { getPersonPeriodCostTileCount, getPersonPeriodHoursPerTile } from './personPeriod.js';
 
-const monthFormatter = new Intl.DateTimeFormat('pl-PL', {
+const monthFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'long',
   year: 'numeric',
 });

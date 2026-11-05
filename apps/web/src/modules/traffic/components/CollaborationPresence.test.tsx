@@ -46,9 +46,9 @@ describe('CollaborationPresence', () => {
       />
     );
 
-    expect(screen.getByLabelText('Twoja nazwa widoczna dla innych użytkowników')).toHaveValue('Ala PM');
-    expect(screen.getByRole('switch', { name: 'Publikuj moją obecność i aktywność innym' })).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByLabelText('Kogo śledzić na tablicy')).toHaveValue('all');
+    expect(screen.getByLabelText('Your name shown to other users')).toHaveValue('Ala PM');
+    expect(screen.getByRole('switch', { name: 'Share my presence and activity with others' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByLabelText('Who to follow on the board')).toHaveValue('all');
     expect(screen.getByTitle('Bartek Dev')).toBeInTheDocument();
   });
 
@@ -69,8 +69,8 @@ describe('CollaborationPresence', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('switch', { name: 'Publikuj moją obecność i aktywność innym' }));
-    fireEvent.change(screen.getByLabelText('Kogo śledzić na tablicy'), { target: { value: 'peer' } });
+    fireEvent.click(screen.getByRole('switch', { name: 'Share my presence and activity with others' }));
+    fireEvent.change(screen.getByLabelText('Who to follow on the board'), { target: { value: 'peer' } });
 
     expect(onTrackingEnabledChange).toHaveBeenCalledWith(false);
     expect(onFollowedUserIdChange).toHaveBeenCalledWith('peer');
@@ -90,10 +90,10 @@ describe('CollaborationPresence', () => {
       />
     );
 
-    expect(screen.getByLabelText('Twoja nazwa widoczna dla innych użytkowników')).not.toBeDisabled();
-    expect(screen.getByRole('switch', { name: 'Publikuj moją obecność i aktywność innym' })).not.toBeDisabled();
-    expect(screen.getByLabelText('Kogo śledzić na tablicy')).toBeDisabled();
-    expect(screen.getByText('Tylko Ty')).toBeInTheDocument();
+    expect(screen.getByLabelText('Your name shown to other users')).not.toBeDisabled();
+    expect(screen.getByRole('switch', { name: 'Share my presence and activity with others' })).not.toBeDisabled();
+    expect(screen.getByLabelText('Who to follow on the board')).toBeDisabled();
+    expect(screen.getByText('Just you')).toBeInTheDocument();
   });
 
   it('caps visible peer avatars and shows an overflow counter', () => {
@@ -131,11 +131,11 @@ describe('CollaborationPresence', () => {
         peers={[
           {
             ...createPeer(1, 'Ala'),
-            action: { type: 'click', label: 'Klik: Liquid Editions', at: 10 },
+            action: { type: 'click', label: 'Click: Liquid Editions', at: 10 },
           },
           {
             ...createPeer(2, 'Bartek'),
-            action: { type: 'click', label: 'Klik: Filtry wzorców', at: 20 },
+            action: { type: 'click', label: 'Click: Pattern filters', at: 20 },
           },
         ]}
         trackingEnabled
@@ -147,8 +147,8 @@ describe('CollaborationPresence', () => {
     );
 
     expect(screen.getAllByText('Bartek').length).toBeGreaterThan(0);
-    expect(screen.getByText('Klik: Filtry wzorców')).toBeInTheDocument();
-    expect(screen.queryByText('Klik: Liquid Editions')).not.toBeInTheDocument();
+    expect(screen.getByText('Click: Pattern filters')).toBeInTheDocument();
+    expect(screen.queryByText('Click: Liquid Editions')).not.toBeInTheDocument();
   });
 
   it('renders remote cursor and same-target editing conflict', () => {
@@ -160,8 +160,8 @@ describe('CollaborationPresence', () => {
     );
 
     expect(screen.getAllByText('Bartek Dev').length).toBeGreaterThan(0);
-    expect(screen.getByText('Równoczesna edycja')).toBeInTheDocument();
-    expect(screen.getByText(/też edytuje Client 1/)).toBeInTheDocument();
+    expect(screen.getByText('Simultaneous editing')).toBeInTheDocument();
+    expect(screen.getByText(/is also editing Client 1/)).toBeInTheDocument();
   });
 
   it('does not render cursor or target overlay for a peer that disabled tracking', () => {

@@ -80,99 +80,99 @@ type PersonMeetingStateEntry = {
 
 const meetingStateLabels: Record<AllocationMeetingStateKey, { label: string; compactLabel: string; title: string; className: string }> = {
   unchanged: {
-    label: 'bez zmian',
-    compactLabel: 'BZ',
-    title: 'Przypisanie potwierdzone jako zostaje bez zmian',
+    label: 'unchanged',
+    compactLabel: 'UC',
+    title: 'Allocation confirmed as unchanged',
     className: 'is-unchanged',
   },
   changedThisWeek: {
-    label: 'zmiana',
-    compactLabel: 'Z',
-    title: 'Ustalone lub zmienione w tym tygodniu',
+    label: 'change',
+    compactLabel: 'CH',
+    title: 'Agreed or changed this week',
     className: 'is-changed',
   },
   handoffRequired: {
     label: 'info',
     compactLabel: 'I',
-    title: 'Wymaga przekazania informacji',
+    title: 'Handoff needed',
     className: 'is-handoff',
   },
   planB: {
     label: 'Plan B',
     compactLabel: 'PB',
-    title: 'Plan B / rezerwowa ścieżka',
+    title: 'Plan B / fallback',
     className: 'is-plan-b',
   },
   mentoring: {
     label: 'mentor',
     compactLabel: 'M',
-    title: 'Mentoring w projekcie',
+    title: 'Mentoring on the project',
     className: 'is-mentoring',
   },
   backup: {
     label: 'backup',
     compactLabel: 'B',
-    title: 'Backup / druga osoba znająca kontekst',
+    title: 'Backup / another person with context',
     className: 'is-backup',
   },
   moved: {
-    label: 'ruch',
-    compactLabel: 'R',
-    title: 'Osoba została przesunięta z poprzedniego targetu',
+    label: 'move',
+    compactLabel: 'MV',
+    title: 'Person moved from the previous target',
     className: 'is-moved',
   },
   activeEngagement: {
     label: '20h+',
     compactLabel: '20h',
-    title: 'Zaangażowanie co najmniej 20h w tym okresie',
+    title: 'At least 20h of work in this period',
     className: 'is-active-engagement',
   },
   unavailableContext: {
     label: 'HR',
     compactLabel: 'HR',
-    title: 'Osoba ma urlop, niedostępność lub notice period w tym miesiącu',
+    title: 'Person is on leave, unavailable or serving notice this month',
     className: 'is-unavailable-context',
   },
   lowWorkload: {
     label: 'bench',
     compactLabel: '0h',
-    title: 'Osoba lub kafelek jest na ławce / bez projektu',
+    title: 'Person or tile is on the bench / has no project',
     className: 'is-low-workload',
   },
   underloaded: {
-    label: 'mało',
-    compactLabel: 'MŁ',
-    title: 'Osoba ma za mało produktywnej pracy w tym okresie',
+    label: 'low',
+    compactLabel: 'LO',
+    title: 'Person has too little productive work in this period',
     className: 'is-underloaded',
   },
   rdWork: {
     label: 'R&D',
     compactLabel: 'RD',
-    title: 'Alokacja w projekcie R&D / eksperymentalnym',
+    title: 'Allocation to an R&D / experimental project',
     className: 'is-rd-work',
   },
   waitingRoomWork: {
     label: 'wait',
     compactLabel: 'W',
-    title: 'Alokacja w projekcie-poczekalni',
+    title: 'Allocation to a waiting-room project',
     className: 'is-waiting-room',
   },
   timeOffWork: {
-    label: 'urlop',
-    compactLabel: 'UR',
-    title: 'Alokacja w urlopie / zaplanowanej niedostępności',
+    label: 'leave',
+    compactLabel: 'LV',
+    title: 'Allocation to leave / planned unavailability',
     className: 'is-time-off',
   },
   lowValueWork: {
     label: 'low',
     compactLabel: 'LOW',
-    title: 'Projekt ma niski lub niepewny sygnał komercyjny',
+    title: 'Project has a weak or uncertain commercial signal',
     className: 'is-low-value',
   },
   ownership: {
     label: 'PM',
     compactLabel: 'PM',
-    title: 'Osoba niesie marker PM / ownership',
+    title: 'Person has a PM / ownership marker',
     className: 'is-ownership',
   },
 };
@@ -187,7 +187,7 @@ function ScaledTileGridComponent({
   className = 'traffic-tile-grid',
   displayTileUnit,
   emptyRevenueK = 0,
-  emptySlotLabel = 'Wolne miejsce',
+  emptySlotLabel = 'Available space',
   emptySlotKeyPrefix,
   emptySlotTone = 'capped',
   periodAllocations,
@@ -215,9 +215,9 @@ function ScaledTileGridComponent({
           </div>
         ) : null}
         {emptyRevenueK > 0 ? (
-          <div className={`traffic-frame-empty-slots is-${emptySlotTone}`} aria-label={`${emptySlotLabel || 'Wolne miejsce'}: ${emptyRevenueK}k`}>
+          <div className={`traffic-frame-empty-slots is-${emptySlotTone}`} aria-label={`${emptySlotLabel || 'Available space'}: ${emptyRevenueK}k`}>
             <div className="traffic-frame-empty-slots-header">
-              <span className="traffic-frame-empty-slots-label">{emptySlotLabel || 'Wolne miejsce'}</span>
+              <span className="traffic-frame-empty-slots-label">{emptySlotLabel || 'Available space'}</span>
               <strong>{formatMoneyLabel(emptyRevenueK)}</strong>
             </div>
             <div className="traffic-frame-empty-slots-list">
@@ -253,9 +253,9 @@ function ScaledTileGridComponent({
         </div>
       ) : null}
       {emptyGroups.length ? (
-        <div className={`traffic-frame-empty-slots is-${emptySlotTone}`} aria-label={`${emptySlotLabel || 'Wolne miejsce'}: ${emptyRevenueK}k`}>
+        <div className={`traffic-frame-empty-slots is-${emptySlotTone}`} aria-label={`${emptySlotLabel || 'Available space'}: ${emptyRevenueK}k`}>
           <div className="traffic-frame-empty-slots-header">
-            <span className="traffic-frame-empty-slots-label">{emptySlotLabel || 'Wolne miejsce'}</span>
+            <span className="traffic-frame-empty-slots-label">{emptySlotLabel || 'Available space'}</span>
             <strong>{formatMoneyLabel(emptyRevenueK)}</strong>
           </div>
           <div className="traffic-frame-empty-slots-list">
@@ -289,14 +289,14 @@ function renderPersonGroup(
     ? groupAllocationsByMoneyUnit(group.allocations, moneyUnitValue)
     : [{ allocations: group.allocations, revenueK: group.revenueK }];
   const warningLabel = group.warningCount
-    ? `ryzyka: ${group.warningCount}`
+    ? `risks: ${group.warningCount}`
     : group.positiveCount
-      ? `dobre sygnały: ${group.positiveCount}`
-      : 'bez sygnałów';
+      ? `positive signals: ${group.positiveCount}`
+      : 'no signals';
   const fragmentLabel =
-    group.fragmentCount > 1 ? `, ta sama osoba jest alokowana w ${group.fragmentCount} miejscach` : '';
+    group.fragmentCount > 1 ? `, the same person is allocated to ${group.fragmentCount} destinations` : '';
   const layerSummary = getLayerSummary(group);
-  const groupLabel = `${group.person.name}: ${formatMoneyLabel(group.revenueK)} przychodu, ${formatHours(group.hours)}h pracy, ${warningLabel}${fragmentLabel}. Warstwy: ${layerSummary.map((layer) => `${layer.label} ${formatMoneyLabel(layer.revenueK)}`).join(', ')}. Przeciągnij uchwyt, żeby przenieść tę grupę alokacji.`;
+  const groupLabel = `${group.person.name}: ${formatMoneyLabel(group.revenueK)} revenue, ${formatHours(group.hours)}h of work, ${warningLabel}${fragmentLabel}. Layers: ${layerSummary.map((layer) => `${layer.label} ${formatMoneyLabel(layer.revenueK)}`).join(', ')}. Drag the handle to move this allocation group.`;
   const meetingStateEntries = (Object.keys(meetingStateLabels) as AllocationMeetingStateKey[])
     .map((key) => ({ ...meetingStateLabels[key], key, count: group.meetingStateCounts[key] }))
     .filter((item) => item.count > 0);
@@ -309,7 +309,7 @@ function renderPersonGroup(
   const signalChips = getPersonSignalChips(group, underloadSignal, visibleMeetingStateEntries);
   const weeklySlots = getPersonWeeklySlots(group, periods);
   const weeklySlotLabel = weeklySlots.length
-    ? `Rozkład tygodniowy osoby ${group.person.name}: ${weeklySlots.map((slot) => `${slot.label} ${formatHours(slot.hours)}h${slot.isManual ? ' ręcznie' : ''}`).join(', ')}`
+    ? `Weekly breakdown for ${group.person.name}: ${weeklySlots.map((slot) => `${slot.label} ${formatHours(slot.hours)}h${slot.isManual ? ' manual' : ''}`).join(', ')}`
     : undefined;
   const visibleSignalChips = signalChips.slice(0, MAX_VISIBLE_PERSON_SIGNAL_CHIPS);
   const hiddenSignalChipCount = Math.max(0, signalChips.length - visibleSignalChips.length);
@@ -318,7 +318,7 @@ function renderPersonGroup(
     .map((chip) => chip.label)
     .join(', ');
   const compactTileClusterLabel = isCompactTileCluster
-    ? `Kompaktowy klaster kafelków osoby ${group.person.name}: ${group.allocations.length} kafelków, ${formatMoneyLabel(group.revenueK)}, ${formatHours(group.hours)}h. Pojedyncze kafelki nadal można kliknąć albo przeciągnąć.`
+    ? `Compact tile cluster for ${group.person.name}: ${group.allocations.length} tiles, ${formatMoneyLabel(group.revenueK)}, ${formatHours(group.hours)}h. Individual tiles can still be clicked or dragged.`
     : undefined;
 
   return (
@@ -355,7 +355,7 @@ function renderPersonGroup(
         </div>
         {stateMarkers.length ? (
           <div
-            aria-label={`Markery wizualne osoby ${group.person.name}: ${stateMarkers.map((marker) => `${marker.label}${marker.count && marker.count > 1 ? ` ${marker.count}` : ''}`).join(', ')}`}
+            aria-label={`Visual markers for person ${group.person.name}: ${stateMarkers.map((marker) => `${marker.label}${marker.count && marker.count > 1 ? ` ${marker.count}` : ''}`).join(', ')}`}
             className="traffic-person-state-strip"
           >
             {stateMarkers.map((marker) => (
@@ -378,16 +378,16 @@ function renderPersonGroup(
           ))}
           {hiddenSignalChipCount ? (
             <span
-              aria-label={`${hiddenSignalChipCount} dodatkowe markery osoby ${group.person.name}: ${hiddenSignalChipLabels}`}
+              aria-label={`${hiddenSignalChipCount} additional markers for person ${group.person.name}: ${hiddenSignalChipLabels}`}
               className="is-more"
-              title={`${hiddenSignalChipCount} kolejne markery osoby: ${hiddenSignalChipLabels}`}
+              title={`${hiddenSignalChipCount} more person markers: ${hiddenSignalChipLabels}`}
             >
-              <span className="traffic-person-signal-full">więcej {hiddenSignalChipCount}</span>
+              <span className="traffic-person-signal-full">more {hiddenSignalChipCount}</span>
               <span aria-hidden="true" className="traffic-person-signal-compact">+{hiddenSignalChipCount}</span>
             </span>
           ) : null}
         </div>
-        <div className="traffic-person-layer-strip" aria-label={`Warstwy alokacji: ${layerSummary.map((layer) => `${layer.label} ${formatMoneyLabel(layer.revenueK)}`).join(', ')}`}>
+        <div className="traffic-person-layer-strip" aria-label={`Allocation layers: ${layerSummary.map((layer) => `${layer.label} ${formatMoneyLabel(layer.revenueK)}`).join(', ')}`}>
           {layerSummary.map((layer) => (
             <span
               aria-label={`${layer.label}: ${formatMoneyLabel(layer.revenueK)}`}
@@ -405,10 +405,10 @@ function renderPersonGroup(
           <div className="traffic-person-week-strip" aria-label={weeklySlotLabel}>
             {weeklySlots.map((slot) => (
               <span
-                aria-label={`${slot.label}: ${formatHours(slot.hours)}h${slot.isManual ? ', ustawione ręcznie' : ', rozlane proporcjonalnie'}`}
+                aria-label={`${slot.label}: ${formatHours(slot.hours)}h${slot.isManual ? ', set manually' : ', distributed proportionally'}`}
                 className={`${slot.isManual ? 'is-manual' : 'is-auto'} ${slot.hours >= 20 ? 'is-heavy' : ''}`}
                 key={slot.id}
-                title={`${slot.label}: ${formatHours(slot.hours)}h${slot.isManual ? ' · ręcznie' : ' · proporcjonalnie'}`}
+                title={`${slot.label}: ${formatHours(slot.hours)}h${slot.isManual ? ' · manual' : ' · proportional'}`}
               >
                 <b>{slot.label}</b>
                 <small>{formatHours(slot.hours)}h</small>
@@ -418,13 +418,13 @@ function renderPersonGroup(
         ) : null}
         {isCompactTileCluster ? (
           <div className="traffic-person-tile-cluster-summary" aria-label={compactTileClusterLabel} role="note">
-            <span>{group.allocations.length} kaf.</span>
+            <span>{group.allocations.length} tiles</span>
             <strong>{formatMoneyLabel(group.revenueK)}</strong>
             <em>{formatHours(group.hours)}h</em>
           </div>
         ) : null}
         <div
-          aria-label={isCompactTileCluster ? `Kafelki w kompaktowym klastrze osoby ${group.person.name}` : undefined}
+          aria-label={isCompactTileCluster ? `Tiles in compact cluster for ${group.person.name}` : undefined}
           className={`traffic-person-tile-group-tiles ${moneyUnitValue ? 'is-scaled' : ''} ${isCompactTileCluster ? 'is-compact-cluster' : ''}`}
           role={isCompactTileCluster ? 'group' : undefined}
         >
@@ -502,9 +502,9 @@ function getPersonSignalChips(
   if (group.warningCount > 0) {
     chips.push({
       id: 'warning',
-      label: `ryzyka: ${group.warningCount}`,
+      label: `risks: ${group.warningCount}`,
       compactLabel: `R${group.warningCount}`,
-      title: `${group.warningCount} ryzyk dla tej grupy alokacji`,
+      title: `${group.warningCount} risks for this allocation group`,
       className: 'is-warning',
     });
   }
@@ -513,16 +513,16 @@ function getPersonSignalChips(
       id: 'positive',
       label: `OK: ${group.positiveCount}`,
       compactLabel: `OK${group.positiveCount}`,
-      title: `${group.positiveCount} dobrych sygnałów dla tej grupy alokacji`,
+      title: `${group.positiveCount} positive signals for this allocation group`,
       className: 'is-positive',
     });
   }
   if (group.fragmentCount > 1) {
     chips.push({
       id: 'fragmented',
-      label: `w ${group.fragmentCount} miejscach`,
+      label: `in ${group.fragmentCount} destinations`,
       compactLabel: `W${group.fragmentCount}`,
-      title: `Ta sama osoba jest alokowana w ${group.fragmentCount} miejscach`,
+      title: `The same person is allocated to ${group.fragmentCount} destinations`,
       className: 'is-fragmented',
     });
   }
@@ -542,7 +542,7 @@ function getPersonSignalChips(
       id: item.key,
       label: `${item.label}${suffix}`,
       compactLabel: `${item.compactLabel}${item.count > 1 ? item.count : ''}`,
-      title: `${item.title}: ${item.count} kaf.`,
+      title: `${item.title}: ${item.count} tiles`,
       className: item.className,
     });
   });
@@ -551,8 +551,8 @@ function getPersonSignalChips(
 }
 
 function getCompactSignalLabel(label: string) {
-  if (label === 'niska') return 'N';
-  if (label === 'mało') return 'MŁ';
+  if (label === 'very low') return 'VL';
+  if (label === 'low') return 'LO';
   if (label === 'bench') return '0h';
   return label;
 }
@@ -565,8 +565,8 @@ function getPersonStateMarkers(
   if (group.warningCount > 0) {
     markers.push({
       id: 'warning',
-      label: 'ryzyka',
-      title: `${group.warningCount} ryzyk dla tej grupy alokacji`,
+      label: 'risks',
+      title: `${group.warningCount} risks for this allocation group`,
       className: 'is-warning',
       count: group.warningCount,
     });
@@ -575,7 +575,7 @@ function getPersonStateMarkers(
     markers.push({
       id: 'positive',
       label: 'OK',
-      title: `${group.positiveCount} dobrych sygnałów dla tej grupy alokacji`,
+      title: `${group.positiveCount} positive signals for this allocation group`,
       className: 'is-positive',
       count: group.positiveCount,
     });
@@ -583,8 +583,8 @@ function getPersonStateMarkers(
   if (group.fragmentCount > 1) {
     markers.push({
       id: 'fragmented',
-      label: 'w kilku miejscach',
-      title: `Ta sama osoba jest alokowana w ${group.fragmentCount} miejscach`,
+      label: 'multiple destinations',
+      title: `The same person is allocated to ${group.fragmentCount} destinations`,
       className: 'is-fragmented',
       count: group.fragmentCount,
     });
@@ -621,21 +621,21 @@ function getUnderloadVisualEntry(underloadSeverity: PersonUnderloadSeverity): Pe
       return {
         id: 'underload-bench',
         label: '0h',
-        title: 'Osoba nie ma produktywnej pracy w tym okresie i siedzi na ławce',
+        title: 'Person has no productive work in this period and is on the bench',
         className: 'is-bench-only',
       };
     case 'critical':
       return {
         id: 'underload-critical',
-        label: 'niska',
-        title: 'Osoba ma skrajnie niskie wykorzystanie produktywne w tym okresie',
+        label: 'very low',
+        title: 'Person has extremely low productive utilisation in this period',
         className: 'is-underloaded-critical',
       };
     case 'low':
       return {
         id: 'underload-low',
-        label: 'mało',
-        title: 'Osoba ma za mało produktywnej pracy w tym okresie',
+        label: 'low',
+        title: 'Person has too little productive work in this period',
         className: 'is-underloaded',
       };
     case 'none':
@@ -646,10 +646,10 @@ function getUnderloadVisualEntry(underloadSeverity: PersonUnderloadSeverity): Pe
 
 function getLayerSummary(group: PersonAllocationGroup) {
   const labels = {
-    work: { label: 'koszt pracy', code: 'K' },
-    admin: { label: 'biuro/admin', code: 'B' },
-    sales: { label: 'sprzedaż/marketing', code: 'S' },
-    margin: { label: 'marża/cel', code: 'M' },
+    work: { label: 'labour cost', code: 'L' },
+    admin: { label: 'office/admin', code: 'A' },
+    sales: { label: 'sales/marketing', code: 'S' },
+    margin: { label: 'margin/target', code: 'M' },
   };
   const revenueByLayer = group.allocations.reduce<Record<keyof typeof labels, number>>((result, allocation) => {
     const layer = getTileLayer(group.person, allocation.tileIndex, allocation.periodId);

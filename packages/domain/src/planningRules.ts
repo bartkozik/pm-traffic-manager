@@ -191,7 +191,7 @@ export function formatPlanningRuleConflictMessage(
   return {
     code: 'person_collaboration_conflict',
     severity: 'warning',
-    message: `${person.name} nie powinien/powinna pracować w tym projekcie z: ${names}.${reasons.length ? ` Powód: ${reasons.join('; ')}.` : ''}`,
+    message: `${person.name} should not work on this project with: ${names}.${reasons.length ? ` Reason: ${reasons.join('; ')}.` : ''}`,
   };
 }
 

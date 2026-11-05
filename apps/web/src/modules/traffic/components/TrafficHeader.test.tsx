@@ -24,7 +24,7 @@ function renderHeader(
         collaborationUser={user}
         customRoomName="ptm-mvp"
         followedCollaborationUserId={null}
-        headerSyncDetail="współpraca"
+        headerSyncDetail="collaboration"
         headerSyncLabel="Online"
         isConnected
         isHeaderMenuOpen
@@ -64,14 +64,14 @@ describe('TrafficHeader', () => {
 
     renderHeader({
       weekViewLink: {
-        label: 'Widok miesiąca',
+        label: 'Month view',
         onClick,
-        title: 'Wróć do miesięcznego widoku Diablo Board',
+        title: 'Return to the monthly Diablo Board view',
         to: '/diablo-board/ptm-mvp',
       },
     });
 
-    fireEvent.click(screen.getByRole('link', { name: 'Widok miesiąca' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Month view' }));
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -84,7 +84,7 @@ describe('TrafficHeader', () => {
       onSetTileMetricMode,
     });
 
-    fireEvent.change(screen.getByLabelText('Tryb metryk na kafelkach'), {
+    fireEvent.change(screen.getByLabelText('Tile metric mode'), {
       target: { value: 'cost' },
     });
 
@@ -96,13 +96,13 @@ describe('TrafficHeader', () => {
       activeTileMetricMode: 'hours',
       onSetTileMetricMode: vi.fn(),
     });
-    const toolsSection = screen.getByText('Narzędzia').closest('.traffic-action-section-tools');
+    const toolsSection = screen.getByText('Tools').closest('.traffic-action-section-tools');
 
     expect(toolsSection).not.toBeNull();
-    expect(within(toolsSection as HTMLElement).getByLabelText('Tryb metryk na kafelkach')).toBeInTheDocument();
-    expect(screen.queryByText('Wyświetlanie')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Skala planszy kafelków')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Punkt odniesienia godzin w opisach kafelków')).not.toBeInTheDocument();
+    expect(within(toolsSection as HTMLElement).getByLabelText('Tile metric mode')).toBeInTheDocument();
+    expect(screen.queryByText('Display')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Tile board scale')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Hours reference in tile descriptions')).not.toBeInTheDocument();
   });
 
   it('keeps the authenticated account and logout action visible outside collapsed settings', async () => {
@@ -126,9 +126,9 @@ describe('TrafficHeader', () => {
       workspaceDomain: 'example.test',
     });
 
-    const logoutButton = screen.getByRole('button', { name: 'Wyloguj' });
-    const boardOptionsButton = screen.getByRole('button', { name: 'Pokaż opcje tablicy' });
-    const administrationButton = screen.getByRole('button', { name: 'Administracja' });
+    const logoutButton = screen.getByRole('button', { name: 'Sign out' });
+    const boardOptionsButton = screen.getByRole('button', { name: 'Show board options' });
+    const administrationButton = screen.getByRole('button', { name: 'Administration' });
     const settings = document.querySelector('#traffic-header-menu');
 
     expect(logoutButton.closest('.traffic-brand-bar')).not.toBeNull();
@@ -163,7 +163,7 @@ describe('TrafficHeader', () => {
       workspaceDomain: 'example.test',
     });
 
-    expect(screen.queryByRole('button', { name: 'Administracja' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Wyloguj' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Administration' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
   });
 });

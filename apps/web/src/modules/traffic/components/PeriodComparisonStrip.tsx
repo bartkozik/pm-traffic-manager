@@ -17,10 +17,10 @@ export function PeriodComparisonStrip({
   onSelectPeriod,
 }: PeriodComparisonStripProps) {
   return (
-    <section className="traffic-period-comparison" aria-label="Porównanie podpisanych, prognozy i celu">
+    <section className="traffic-period-comparison" aria-label="Committed, forecast and target comparison">
       <div className="traffic-section-title">
-        <span>Podpisane / prognoza / cel</span>
-        <span>{comparisons.length} mies.</span>
+        <span>Committed / forecast / target</span>
+        <span>{comparisons.length} months</span>
       </div>
       <div className="traffic-period-comparison-grid">
         {comparisons.map((comparison) => {
@@ -40,15 +40,15 @@ export function PeriodComparisonStrip({
             >
               <strong>{comparison.label}</strong>
               <span>
-                Podpisane {formatComparisonValue(comparison.committedRevenueK)} / prognoza {formatComparisonValue(comparison.expectedRevenueK)} / cel{' '}
+                Committed {formatComparisonValue(comparison.committedRevenueK)} / forecast {formatComparisonValue(comparison.expectedRevenueK)} / target{' '}
                 {formatComparisonValue(comparison.targetRevenueK)}
               </span>
-              <div className="traffic-period-comparison-meter" aria-label={`${expectedCoverage}% pokrycia celu prognozą`}>
+              <div className="traffic-period-comparison-meter" aria-label={`${expectedCoverage}% of target covered by forecast`}>
                 <i style={{ width: `${expectedCoverage}%` }} />
                 <em style={{ width: `${committedCoverage}%` }} />
               </div>
               <small>
-                Brakuje: podpisane {formatComparisonValue(comparison.committedGapK)} · prognoza {formatComparisonValue(comparison.expectedGapK)}
+                Shortfall: committed {formatComparisonValue(comparison.committedGapK)} · forecast {formatComparisonValue(comparison.expectedGapK)}
               </small>
             </button>
           );

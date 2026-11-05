@@ -14,7 +14,7 @@ import type { Period, Person, ProjectFrame, TrafficSnapshot } from './traffic.mo
 
 const month: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',

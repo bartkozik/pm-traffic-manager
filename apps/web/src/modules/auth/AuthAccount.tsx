@@ -25,7 +25,7 @@ export function AuthAccount() {
 
   return (
     <>
-      <div className="traffic-header-account" aria-label={`Konto użytkownika ${user.email}`}>
+      <div className="traffic-header-account" aria-label={`User account ${user.email}`}>
         <span className="traffic-account-avatar" aria-hidden="true">{getInitials(user.name)}</span>
         <span className="traffic-account-copy">
           <strong>{user.name}</strong>
@@ -39,17 +39,17 @@ export function AuthAccount() {
             type="button"
             onClick={() => setIsAccessManagementOpen(true)}
           >
-            Administracja
+            Administration
           </button>
         ) : null}
         <button
           className="traffic-button traffic-account-logout"
           disabled={isLoggingOut}
-          title={logoutFailed ? 'Nie udało się wylogować. Spróbuj ponownie.' : undefined}
+          title={logoutFailed ? 'Could not sign out. Please try again.' : undefined}
           type="button"
           onClick={handleLogout}
         >
-          {isLoggingOut ? 'Wylogowanie…' : logoutFailed ? 'Ponów wylogowanie' : 'Wyloguj'}
+          {isLoggingOut ? 'Signing out…' : logoutFailed ? 'Retry sign-out' : 'Sign out'}
         </button>
       </div>
       {isAccessManagementOpen ? (

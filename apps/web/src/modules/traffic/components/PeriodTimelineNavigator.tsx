@@ -39,7 +39,7 @@ interface PeriodTimelineNavigatorProps<T extends PeriodRangeMonths> {
   onRangeStartChange: (periodId: string) => void;
 }
 
-const shortMonthFormatter = new Intl.DateTimeFormat('pl-PL', { month: 'short' });
+const shortMonthFormatter = new Intl.DateTimeFormat('en-GB', { month: 'short' });
 
 function formatShortMonth(period: Period) {
   const value = shortMonthFormatter.format(new Date(`${period.id}-01T00:00:00.000Z`));
@@ -117,7 +117,7 @@ export function PeriodTimelineNavigator<T extends PeriodRangeMonths>({
         </div>
 
         {shouldShowTimelineBody && shouldShowModeSwitch ? (
-          <div className="period-timeline-mode-switch" role="group" aria-label="Jednostka zakresu czasu">
+          <div className="period-timeline-mode-switch" role="group" aria-label="Time range unit">
             {rangeOptions?.map((option) => (
               <button
                 aria-pressed={rangeMonths === option.value}
@@ -141,12 +141,12 @@ export function PeriodTimelineNavigator<T extends PeriodRangeMonths>({
           {collapsible ? (
             <button
               aria-expanded={isTimelineOpen}
-              aria-label={isTimelineOpen ? 'Zwiń zakres planowania' : 'Rozwiń zakres planowania'}
+              aria-label={isTimelineOpen ? 'Collapse planning range' : 'Expand planning range'}
               className="period-timeline-toggle"
               type="button"
               onClick={() => setIsTimelineOpen((current) => !current)}
             >
-              {isTimelineOpen ? 'Zwiń' : 'Rozwiń'}
+              {isTimelineOpen ? 'Collapse' : 'Expand'}
             </button>
           ) : null}
         </div>
@@ -155,7 +155,7 @@ export function PeriodTimelineNavigator<T extends PeriodRangeMonths>({
       {shouldShowTimelineBody ? (
         <div className="period-timeline-bar">
           <button
-            aria-label="Pokaż wcześniejszy zakres"
+            aria-label="Show earlier range"
             className="period-timeline-step is-previous"
             disabled={!hasPreviousRange}
             type="button"
@@ -164,7 +164,7 @@ export function PeriodTimelineNavigator<T extends PeriodRangeMonths>({
             <span aria-hidden="true">&lt;</span>
           </button>
           <div className="period-timeline-rail-wrap">
-            <div className="period-timeline-rail" role="group" aria-label="Miesiące na osi czasu">
+            <div className="period-timeline-rail" role="group" aria-label="Months on the timeline">
               {timelineMonths.map((period) => {
                 const isInRange = visiblePeriodIds.has(period.id);
                 const isActive = period.id === activePeriodId;
@@ -194,7 +194,7 @@ export function PeriodTimelineNavigator<T extends PeriodRangeMonths>({
             </div>
           </div>
           <button
-            aria-label="Pokaż późniejszy zakres"
+            aria-label="Show later range"
             className="period-timeline-step is-next"
             disabled={!hasNextRange}
             type="button"

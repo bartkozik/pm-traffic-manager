@@ -57,13 +57,13 @@ export function generateBoardRisks({
     risks.push({
       id: 'target-pressure',
       severity: getSeverityForGap(pressureToTargetK),
-      title: 'Brak do celu przychodu',
-      detail: `Brakuje ${formatMoneyK(pressureToTargetK)} do celu przychodu w aktywnym miesiącu.`,
+      title: 'Revenue target gap',
+      detail: `${formatMoneyK(pressureToTargetK)} short of the revenue target in the active month.`,
       items: [{
         id: 'target-pressure-summary',
-        primary: 'Aktywny miesiąc',
+        primary: 'Active month',
         secondary: activePeriodId,
-        detail: `Po zsumowaniu planu i kosztów brakuje ${formatMoneyK(pressureToTargetK)} do celu przychodu.`,
+        detail: `After adding up the plan and costs, the revenue target gap is ${formatMoneyK(pressureToTargetK)}.`,
       }],
     });
   }
@@ -79,8 +79,8 @@ export function generateBoardRisks({
     risks.push({
       id: 'bench-cost',
       severity: getSeverityForGap(uncoveredCostK),
-      title: 'Koszt ludzi na ławce',
-      detail: `${formatMoneyK(uncoveredCostK)} kosztu ludzi zostaje bez przypisania do projektów.`,
+      title: 'Bench people cost',
+      detail: `${formatMoneyK(uncoveredCostK)} of people cost remains unassigned to projects.`,
       items: periodAllocations
         .filter((allocation) => allocation.target === 'bench')
         .filter((allocation) => {
@@ -93,8 +93,8 @@ export function generateBoardRisks({
           return {
             id: allocation.id,
             primary: person?.name || allocation.personId,
-            secondary: 'Ławka / nieprzypisany cel',
-            detail: `Kafelek ${allocation.revenueK}k PLN nie jest przypisany do projektu.`,
+            secondary: 'Bench / unassigned target',
+            detail: `The ${allocation.revenueK}k PLN tile is not assigned to a project.`,
           };
         }),
     });
@@ -112,13 +112,13 @@ export function generateBoardRisks({
         risks.push({
           id: `${project.id}-resource-gap`,
           severity: getSeverityForGap(resourceGapK),
-          title: `${project.client}: brakuje obsady`,
-          detail: `Projekt ma ${formatMoneyK(plannedRevenueK)} planu, ale obsadzone jest ${formatMoneyK(allocatedRevenueK)}. Brakuje ${formatMoneyK(resourceGapK)} zasobów/kafelków.`,
+          title: `${project.client}: staffing gap`,
+          detail: `The project has ${formatMoneyK(plannedRevenueK)} planned but ${formatMoneyK(allocatedRevenueK)} staffed. Resources/tiles are short by ${formatMoneyK(resourceGapK)}.`,
           items: [{
             id: `${project.id}-resource-gap-detail`,
             primary: `${project.client}: ${project.name}`,
-            secondary: `Plan: ${formatMoneyK(plannedRevenueK)} · obsada: ${formatMoneyK(allocatedRevenueK)}`,
-            detail: `Brakuje ${formatMoneyK(resourceGapK)} w przypisanych kafelkach do pokrycia zaplanowanego zakresu projektu.`,
+            secondary: `Plan: ${formatMoneyK(plannedRevenueK)} · staffing: ${formatMoneyK(allocatedRevenueK)}`,
+            detail: `Assigned tiles are ${formatMoneyK(resourceGapK)} short of covering the planned project scope.`,
           }],
         });
       }
@@ -133,18 +133,18 @@ export function generateBoardRisks({
         const person = peopleById.get(allocation.personId);
         const project = projectsById.get(allocation.target);
         const owner = person?.name || allocation.personId;
-        const target = project ? project.client : 'ławka';
+        const target = project ? project.client : 'bench';
         return `${owner} -> ${target}: ${validation.message}`;
       });
     const remaining = savedValidationCount - validationExamples.length;
     const detail = validationExamples.length
-      ? `${validationExamples.join(' ')}${remaining > 0 ? ` +${remaining} podobne.` : ''}`
-      : `${savedValidationCount} ostrzeżeń zapisanych na alokacjach.`;
+      ? `${validationExamples.join(' ')}${remaining > 0 ? ` +${remaining} similar.` : ''}`
+      : `${savedValidationCount} warnings saved on allocations.`;
 
     risks.push({
       id: 'allocation-validation',
       severity: savedValidationCount >= 5 ? 'high' : 'medium',
-      title: 'Ostrzeżenia w alokacjach',
+      title: 'Allocation warnings',
       detail,
       items: periodAllocations
         .flatMap((allocation) => (allocation.validation || []).map((validation) => ({ allocation, validation })))
@@ -155,7 +155,7 @@ export function generateBoardRisks({
           return {
             id: `${allocation.id}-${validation.code}`,
             primary: person?.name || allocation.personId,
-            secondary: project ? `${project.client}: ${project.name}` : 'Ławka / nieprzypisany cel',
+            secondary: project ? `${project.client}: ${project.name}` : 'Bench / unassigned target',
             detail: validation.message,
           };
         }),
@@ -170,8 +170,8 @@ export function generateBoardRisks({
     risks.push({
       id: 'internal-margin-gap',
       severity: getSeverityForGap(internalMarginGapK),
-      title: 'Brak pokrycia kosztów',
-      detail: `${formatMoneyK(internalMarginGapK)} brakuje do pokrycia kosztu ludzi na alokacjach.`,
+      title: 'Cost coverage gap',
+      detail: `${formatMoneyK(internalMarginGapK)} short of covering people cost on allocations.`,
       items: periodAllocations
         .map((allocation) => ({
           allocation,
@@ -186,7 +186,7 @@ export function generateBoardRisks({
             id: `${allocation.id}-internal-margin`,
             primary: person?.name || allocation.personId,
             secondary: project ? `${project.client}: ${project.name}` : allocation.target,
-            detail: `Brakuje ${formatMoneyK(gapK)} do pokrycia kosztu osoby na tej alokacji.`,
+            detail: `${formatMoneyK(gapK)} short of covering person cost on this allocation.`,
           };
         }),
     });
@@ -204,8 +204,8 @@ export function generateBoardRisks({
     risks.push({
       id: 'target-rate-gap',
       severity: getSeverityForGap(targetGapK),
-      title: 'Stawka poniżej celu',
-      detail: `${formatMoneyK(targetGapK)} brakuje względem celu przychodu dla zaplanowanych godzin.`,
+      title: 'Rate below target',
+      detail: `${formatMoneyK(targetGapK)} short of the revenue target for the planned hours.`,
       items: periodAllocations
         .map((allocation) => ({
           allocation,
@@ -224,7 +224,7 @@ export function generateBoardRisks({
             id: `${allocation.id}-target-rate`,
             primary: person?.name || allocation.personId,
             secondary: project ? `${project.client}: ${project.name}` : allocation.target,
-            detail: `Po kosztach i celu stawki brakuje ${formatMoneyK(gapK)} na tej alokacji.`,
+            detail: `After costs and the target rate, this allocation has a ${formatMoneyK(gapK)} gap.`,
           };
         }),
     });
@@ -241,8 +241,8 @@ export function generateBoardRisks({
     risks.push({
       id: 'people-preferences',
       severity: preferenceWarnings >= 5 ? 'high' : 'medium',
-      title: 'Konflikty preferencji zespołu',
-      detail: `${preferenceWarnings} alokacji narusza preferencje albo blokady osób w projekcie.`,
+      title: 'Team preference conflicts',
+      detail: `${preferenceWarnings} allocations violate project people preferences or restrictions.`,
       items: periodAllocations
         .filter((allocation) => {
           const project = projectsById.get(allocation.target);
@@ -259,7 +259,7 @@ export function generateBoardRisks({
             id: `${allocation.id}-preference`,
             primary: person?.name || allocation.personId,
             secondary: project ? `${project.client}: ${project.name}` : allocation.target,
-            detail: isBlocked ? 'Osoba jest zablokowana dla tego projektu.' : 'Osoba nie jest na liście preferowanych osób dla tego projektu.',
+            detail: isBlocked ? 'This person is blocked for this project.' : 'This person is not on the preferred people list for this project.',
           };
         }),
     });
@@ -273,8 +273,8 @@ export function generateBoardRisks({
     risks.push({
       id: 'people-collaboration-conflicts',
       severity: collaborationConflicts >= 3 ? 'high' : 'medium',
-      title: 'Osoby nie powinny pracować razem',
-      detail: `${collaborationConflicts} alokacji łączy osoby oznaczone jako konflikt współpracy.`,
+      title: 'People should not work together',
+      detail: `${collaborationConflicts} allocations combine people flagged with a collaboration conflict.`,
       items: periodAllocations
         .flatMap((allocation) => (allocation.validation || [])
           .filter((validation) => validation.code === 'person_collaboration_conflict')
@@ -313,13 +313,13 @@ export function generateBoardRisks({
             risks.push({
               id: `${project.id}-${requirement.id}-hours`,
               severity: requirement.estimatedHours - coveredHours >= 40 ? 'high' : 'medium',
-              title: `${project.client}: brakuje ${requirement.skillId}`,
-              detail: `${coveredHours}/${requirement.estimatedHours}h pokrycia wymaganej kompetencji.`,
+              title: `${project.client}: missing ${requirement.skillId}`,
+              detail: `${coveredHours}/${requirement.estimatedHours}h of required skill coverage.`,
               items: [{
                 id: `${project.id}-${requirement.id}-hours-detail`,
                 primary: `${project.client}: ${project.name}`,
-                secondary: `Wymaganie: ${requirement.skillId}${requirement.seniority ? ` ${requirement.seniority}` : ''}`,
-                detail: `Pokryte ${coveredHours}/${requirement.estimatedHours}h. Brakuje ${requirement.estimatedHours - coveredHours}h wymaganej kompetencji.`,
+                secondary: `Requirement: ${requirement.skillId}${requirement.seniority ? ` ${requirement.seniority}` : ''}`,
+                detail: `Covered ${coveredHours}/${requirement.estimatedHours}h. Missing ${requirement.estimatedHours - coveredHours}h of the required skill.`,
               }],
             });
           }
@@ -330,8 +330,8 @@ export function generateBoardRisks({
     risks.push({
       id: 'no-major-risks',
       severity: 'low',
-      title: 'Brak istotnych ryzyk',
-      detail: 'Brak istotnych automatycznych ostrzeżeń dla aktywnego miesiąca.',
+      title: 'No major risks',
+      detail: 'No major automatic warnings for the active month.',
     });
   }
 

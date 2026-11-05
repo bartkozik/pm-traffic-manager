@@ -21,10 +21,10 @@ function formatUnitValue(allocation: PersonTileAllocation, tileUnit: TileUnit | 
 }
 
 const layerLabels = {
-  work: 'koszt pracy',
-  admin: 'koszty administracyjne',
-  sales: 'koszty sprzedaży',
-  margin: 'marża',
+  work: 'labour cost',
+  admin: 'admin costs',
+  sales: 'sales costs',
+  margin: 'margin',
 };
 
 function setTileDragImage(event: React.DragEvent<HTMLButtonElement>) {
@@ -52,21 +52,21 @@ export function TrafficTile({ allocation, compact = false, person, tileUnit, min
   const hasWarnings = riskCount > 0;
   const hasPositiveSignal = positiveSignalCount > 0;
   const warningLabel = hasWarnings
-    ? `${riskCount} ostrzeżeń`
+    ? `${riskCount} warnings`
     : hasPositiveSignal
-      ? `${positiveSignalCount} dobrych sygnałów`
-      : 'bez ostrzeżeń';
-  const skillLabel = allocation.skillId ? `, kompetencja: ${allocation.skillId}` : '';
+      ? `${positiveSignalCount} positive signals`
+      : 'no warnings';
+  const skillLabel = allocation.skillId ? `, skill: ${allocation.skillId}` : '';
   const unitLabel = formatUnitValue(allocation, tileUnit);
-  const unitDetails = unitLabel ? `, jednostka: ${unitLabel}` : '';
-  const tileDetails = `${person.name}: ${allocation.revenueK}k PLN, ${allocation.hours}h${unitDetails}${skillLabel}, warstwa: ${layerLabels[layer]}, ${warningLabel}`;
+  const unitDetails = unitLabel ? `, unit: ${unitLabel}` : '';
+  const tileDetails = `${person.name}: ${allocation.revenueK}k PLN, ${allocation.hours}h${unitDetails}${skillLabel}, layer: ${layerLabels[layer]}, ${warningLabel}`;
 
   return (
     <button
       className={`traffic-tile ${mini ? 'is-mini' : ''} ${compact ? 'is-compact' : ''} ${hasWarnings ? 'has-warning' : ''} ${hasPositiveSignal && !hasWarnings ? 'has-positive' : ''}`}
-      aria-label={`${tileDetails}. Kliknij, żeby edytować alokację.`}
+      aria-label={`${tileDetails}. Click to edit the allocation.`}
       data-collaboration-target-id={allocation.id}
-      data-collaboration-target-label={`${person.name} · ${allocation.target === 'bench' ? 'ławka' : allocation.target}`}
+      data-collaboration-target-label={`${person.name} · ${allocation.target === 'bench' ? 'bench' : allocation.target}`}
       data-collaboration-target-type="allocation"
       data-tooltip={tileDetails}
       data-layer={layer}

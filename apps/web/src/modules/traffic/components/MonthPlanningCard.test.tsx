@@ -5,7 +5,7 @@ import { Period, Person, PersonTileAllocation, ProjectFrame } from '../models/tr
 
 const period: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -82,9 +82,9 @@ describe('MonthPlanningCard', () => {
             id: 'short-project-no-resources-project-1',
             owner: 'PM',
             severity: 'high',
-            title: "Client 1: bez zasobów",
-            detail: 'Projekt jest aktywny w miesiącu, ale nie ma przypisanych kafelków.',
-            action: 'Dodać przynajmniej jedną osobę.',
+            title: "Client 1: no resources",
+            detail: 'The project is active this month but has no allocated tiles.',
+            action: 'Add at least one person.',
             projectId: project.id,
           }]],
         ])}
@@ -104,7 +104,7 @@ describe('MonthPlanningCard', () => {
       />
     );
 
-    expect(screen.getByLabelText("Triggery Traffic Review projektu: Client 1")).toHaveTextContent('bez zasobów');
+    expect(screen.getByLabelText("Traffic Review triggers for project: Client 1")).toHaveTextContent('no resources');
   });
 
   it('keeps the bench as a full-row bench target instead of a project grid card', () => {
@@ -138,7 +138,7 @@ describe('MonthPlanningCard', () => {
       />
     );
 
-    const benchToggle = screen.getByRole('button', { name: /Ławka \/ nieprzypisany cel/i });
+    const benchToggle = screen.getByRole('button', { name: /Bench \/ unassigned target/i });
     const benchTarget = benchToggle.closest('.traffic-bench-grid-target');
 
     expect(benchTarget).toBeInTheDocument();

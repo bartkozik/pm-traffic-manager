@@ -3,11 +3,11 @@ import type { OpportunityCheckResponse } from '@ptm/contracts';
 export function formatOpportunityConfidence(confidence: OpportunityCheckResponse['result']['confidence']) {
   switch (confidence) {
     case 'low':
-      return 'niska';
+      return 'low';
     case 'medium':
-      return 'średnia';
+      return 'medium';
     case 'high':
-      return 'wysoka';
+      return 'high';
   }
 }
 
@@ -16,6 +16,6 @@ export function formatOpportunitySource(mode: OpportunityCheckResponse['mode']) 
     case 'model':
       return 'AI';
     case 'mock':
-      return 'analiza testowa';
+      return 'test analysis';
   }
 }

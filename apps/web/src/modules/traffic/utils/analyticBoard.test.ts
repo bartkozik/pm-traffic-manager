@@ -9,8 +9,8 @@ import {
 } from './analyticBoard';
 
 const periods: Period[] = [
-  { id: '2026-06', label: 'Czerwiec 2026', granularity: 'month', startsOn: '2026-06-01', endsOn: '2026-06-30' },
-  { id: '2026-07', label: 'Lipiec 2026', granularity: 'month', startsOn: '2026-07-01', endsOn: '2026-07-31' },
+  { id: '2026-06', label: 'June 2026', granularity: 'month', startsOn: '2026-06-01', endsOn: '2026-06-30' },
+  { id: '2026-07', label: 'July 2026', granularity: 'month', startsOn: '2026-07-01', endsOn: '2026-07-31' },
   { id: '2026-08', label: 'Sierpien 2026', granularity: 'month', startsOn: '2026-08-01', endsOn: '2026-08-31' },
 ];
 
@@ -53,7 +53,7 @@ const fanimani = {
   workType: 'commercial',
   budgetK: 30,
   probability: 1,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: '2026-06',
   rateConfig: { companyTargetRatePlnH: 260 },
   requirements: [],
@@ -313,6 +313,6 @@ describe('analytic board rows', () => {
       expect(legendCodes.has(code)).toBe(true);
     });
     expect(getAnalyticSignalCodeMeta('LOW')?.className).toBe('is-low-value');
-    expect(getAnalyticSignalCodeMeta('RUCH')?.className).toBe('is-moved');
+    expect(getAnalyticSignalCodeMeta('MOVE')?.className).toBe('is-moved');
   });
 });

@@ -42,28 +42,28 @@ export interface AppliedSuggestionMove {
 export function formatOpportunityVerdict(verdict: OpportunityCheckResponse['result']['verdict']) {
   switch (verdict) {
     case 'pursue':
-      return 'Realizować';
+      return 'Pursue';
     case 'pursue_with_changes':
-      return 'Realizować po zmianach';
+      return 'Pursue with changes';
     case 'renegotiate':
-      return 'Renegocjować';
+      return 'Renegotiate';
     case 'drop_or_delay':
-      return 'Wyrzucić albo opóźnić';
+      return 'Drop or delay';
   }
 }
 
 export function formatOpportunityAction(action: OpportunityCheckResponse['result']['projectActions'][number]['action']) {
   switch (action) {
     case 'keep':
-      return 'Zostaw';
+      return 'Keep';
     case 'drop':
-      return 'Usuń';
+      return 'Remove';
     case 'delay':
-      return 'Opóźnij';
+      return 'Delay';
     case 'renegotiate':
-      return 'Renegocjuj';
+      return 'Renegotiate';
     case 'reallocate':
-      return 'Przealokuj';
+      return 'Reallocate';
   }
 }
 
@@ -185,7 +185,7 @@ export function buildSuggestedAllocationPlan({
             projectId: project.id,
             projectLabel: `${project.client}: ${project.name}`,
             requirementLabel: formatRequirementLabel(requirement),
-            sourceLabel: 'Ławka',
+            sourceLabel: 'Bench',
             hours: allocation.hours,
             revenueK: allocation.revenueK,
           });
@@ -509,12 +509,12 @@ function getCandidateSourceLabel(
   const sourceTargetIds = 'sourceTargetIds' in candidate && Array.isArray(candidate.sourceTargetIds)
     ? candidate.sourceTargetIds
     : [];
-  if (!sourceTargetIds.length) return 'Ławka';
+  if (!sourceTargetIds.length) return 'Bench';
 
   return sourceTargetIds
     .slice(0, 2)
     .map((targetId) => {
-      if (targetId === 'bench') return 'Ławka';
+      if (targetId === 'bench') return 'Bench';
       const project = projectById.get(targetId);
       return project ? `${project.client}: ${project.name}` : targetId;
     })
@@ -531,7 +531,7 @@ function formatCandidateRequirementLabel(
 
   return requirement
     ? formatRequirementLabel(requirement)
-    : 'komercyjna pojemnosc';
+    : 'commercial capacity';
 }
 
 function violatesHardPairRule({
