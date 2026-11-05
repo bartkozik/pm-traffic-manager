@@ -50,7 +50,7 @@ describe('visualLegend', () => {
       'manual',
       'heavy',
     ]);
-    expect(weeklySlotLegend.find((item) => item.id === 'manual')?.detail).toContain('ręcznie');
+    expect(weeklySlotLegend.find((item) => item.id === 'manual')?.detail).toContain('manually');
     expect(weeklySlotLegend.find((item) => item.id === 'heavy')?.hours).toBe('20h+');
     expect(relationshipLegend.map((item) => item.id)).toEqual([
       'unchanged',
@@ -76,7 +76,7 @@ describe('visualLegend', () => {
       'active',
       'ownership',
     ]);
-    expect(personCardStateLegend.find((item) => item.id === 'active')?.detail).toContain('prawy pasek');
+    expect(personCardStateLegend.find((item) => item.id === 'active')?.detail).toContain('right border');
     expect(projectInventoryStateLegend.map((item) => item.id)).toEqual([
       'healthy-team',
       'single-person',

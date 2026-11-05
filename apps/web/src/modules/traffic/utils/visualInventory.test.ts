@@ -36,8 +36,8 @@ const person = {
 } satisfies Person;
 
 const periods = [
-  { id: '2026-06', label: 'Czerwiec 2026', granularity: 'month', startsOn: '2026-06-01', endsOn: '2026-06-30' },
-  { id: '2026-07', label: 'Lipiec 2026', granularity: 'month', startsOn: '2026-07-01', endsOn: '2026-07-31' },
+  { id: '2026-06', label: 'June 2026', granularity: 'month', startsOn: '2026-06-01', endsOn: '2026-06-30' },
+  { id: '2026-07', label: 'July 2026', granularity: 'month', startsOn: '2026-07-01', endsOn: '2026-07-31' },
 ] satisfies Period[];
 
 const project = {
@@ -48,7 +48,7 @@ const project = {
   stage: 'signed',
   budgetK: 20,
   probability: 1,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: '2026-06',
   endPeriodId: '2026-07',
   rateConfig: { companyTargetRatePlnH: 220 },
@@ -112,9 +112,9 @@ describe('visual inventory helpers', () => {
       emptyRevenueK: 4,
       overflowRevenueK: 2,
     }).map((segment) => [segment.kind, segment.label, segment.valueK])).toEqual([
-      ['filled', 'zajęte', 6],
-      ['empty', 'wolne', 4],
-      ['overflow', 'poza ramką', 2],
+      ['filled', 'filled', 6],
+      ['empty', 'free', 4],
+      ['overflow', 'overflow', 2],
     ]);
 
     expect(getProjectFrameGeometrySegments({
@@ -124,9 +124,9 @@ describe('visual inventory helpers', () => {
       poolRemainingK: 12,
       overflowRevenueK: 0,
     }).map((segment) => [segment.kind, segment.label, segment.valueK])).toEqual([
-      ['filled', 'zajęte', 7],
-      ['empty', 'okno/pula', 1],
-      ['poolRemaining', 'pula dalej', 12],
+      ['filled', 'filled', 7],
+      ['empty', 'window/pool', 1],
+      ['poolRemaining', 'remaining pool', 12],
     ]);
   });
 
@@ -140,7 +140,7 @@ describe('visual inventory helpers', () => {
     const cells = getProjectFrameGeometryCells(segments, 12);
 
     expect(cells).toHaveLength(12);
-    expect(cells[0]).toMatchObject({ kind: 'filled', label: 'zajęte', segmentValueK: 18, unitK: 3 });
+    expect(cells[0]).toMatchObject({ kind: 'filled', label: 'filled', segmentValueK: 18, unitK: 3 });
     expect(cells.filter((cell) => cell.kind === 'filled')).toHaveLength(6);
     expect(cells.filter((cell) => cell.kind === 'empty')).toHaveLength(4);
     expect(cells.filter((cell) => cell.kind === 'overflow')).toHaveLength(2);
@@ -344,11 +344,11 @@ describe('visual inventory helpers', () => {
       count: summary.count,
       detail: summary.detail,
     }))).toEqual([
-      { kind: 'unchanged', count: 1, detail: "bez zmian: Taylor" },
-      { kind: 'moved', count: 1, detail: "ruch: Taylor" },
+      { kind: 'unchanged', count: 1, detail: "unchanged: Taylor" },
+      { kind: 'moved', count: 1, detail: "move: Taylor" },
       { kind: 'handoff', count: 1, detail: "handoff: Taylor" },
-      { kind: 'changed', count: 1, detail: "zmiana: Taylor" },
-      { kind: 'fragmented', count: 1, detail: "w kilku miejscach: Taylor" },
+      { kind: 'changed', count: 1, detail: "change: Taylor" },
+      { kind: 'fragmented', count: 1, detail: "across multiple projects: Taylor" },
     ]);
   });
 
@@ -617,7 +617,7 @@ describe('visual inventory helpers', () => {
 
     expect(signals.map((signal) => signal.kind)).toEqual(['unchanged', 'moved', 'handoff', 'changed', 'backup', 'fragmented']);
     expect(signals.find((signal) => signal.kind === 'moved')).toMatchObject({
-      sourceLabel: 'Ławka',
+      sourceLabel: 'Bench',
       targetLabel: 'Client',
     });
     expect(signals.map((signal) => signal.targetLabel)).toContain('Client');
@@ -652,16 +652,16 @@ describe('visual inventory helpers', () => {
     expect(connectors[0]).toMatchObject({
       sourceTarget: 'bench',
       targetTarget: project.id,
-      sourceLabel: 'Ławka',
+      sourceLabel: 'Bench',
       targetLabel: 'Client',
-      label: 'ruch',
+      label: 'move',
     });
     expect(connectors[1]).toMatchObject({
       sourceTarget: project.id,
       targetTarget: secondProject.id,
       sourceLabel: 'Client',
       targetLabel: 'Second Client',
-      label: 'w kilku miejscach',
+      label: 'across multiple projects',
     });
   });
 

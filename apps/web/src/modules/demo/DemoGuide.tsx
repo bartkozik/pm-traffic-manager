@@ -3,32 +3,32 @@ import { Modal } from '@mantine/core';
 
 const steps = [
   {
-    title: 'Przydziel osoby do projektów',
-    description: 'Po lewej znajdziesz osoby i ich dostępny czas. Po prawej są projekty, do których możesz przydzielać pracę.',
-    action: 'Przeciągnij kafelek osoby do projektu. Obserwuj, jak zmieniają się dostępność i obciążenie.',
-    hint: 'Kafelki reprezentują czas pracy. Kolory i oznaczenia wyjaśnia legenda na tablicy.',
-    labels: ['Osoba', 'Czas pracy', 'Projekt'],
+    title: 'Assign people to projects',
+    description: 'People and their available time are on the left. Projects you can assign work to are on the right.',
+    action: 'Drag a person’s tile into a project. Watch their availability and workload change.',
+    hint: 'Tiles represent working time. The board legend explains their colours and indicators.',
+    labels: ['Person', 'Working time', 'Project'],
   },
   {
-    title: 'Zmieniaj perspektywę czasu',
-    description: 'Plan zaczyna się od bieżącego miesiąca. Pasek nad tablicą pozwala przechodzić między miesiącami i wybierać tygodnie.',
-    action: 'Wybierz tydzień, aby przyjrzeć się krótszemu okresowi, albo przejdź do kolejnego miesiąca.',
-    hint: 'Sprawdzaj zaznaczony okres przed przenoszeniem kafelków — pracujesz na wybranym fragmencie planu.',
-    labels: ['Miesiąc', 'Tydzień', 'Plan'],
+    title: 'Explore different time periods',
+    description: 'The plan starts in the current month. Use the bar above the board to move between months and select weeks.',
+    action: 'Select a week for a closer look, or move to the next month.',
+    hint: 'Check the selected period before moving tiles — your changes apply to that part of the plan.',
+    labels: ['Month', 'Week', 'Plan'],
   },
   {
-    title: 'Porównuj koszty i przychody',
-    description: 'Przydziały łączą czas zespołu z kosztami i przychodami projektów. Zmiana planu wpływa na te wartości.',
-    action: 'Użyj przełącznika „P/L” na dolnym pasku, aby sprawdzić finansową stronę planowania.',
-    hint: 'To dane demonstracyjne. Możesz zmieniać przydziały i porównywać warianty bez wpływu na rzeczywisty zespół.',
-    labels: ['Przydział', 'Koszt', 'Przychód'],
+    title: 'Compare costs and revenue',
+    description: 'Allocations connect team time with project costs and revenue. Changing the plan affects these figures.',
+    action: 'Use the “P/L” toggle in the bottom bar to see the financial side of your plan.',
+    hint: 'This is sample data. Change allocations and compare scenarios without affecting a real team.',
+    labels: ['Allocation', 'Cost', 'Revenue'],
   },
   {
-    title: 'Eksperymentuj bez obaw',
-    description: 'Masz prywatną tablicę z fikcyjnymi danymi. Inni odwiedzający nie zobaczą Twoich zmian. Asystenta planowania znajdziesz w „Opcjach tablicy”.',
-    action: '„Reset demo” odtworzy dane startowe. Do przewodnika wrócisz przyciskiem „Jak to działa?” na górze strony.',
-    hint: 'AI jest opcjonalne: do 3 analiz na sesję, w ramach wspólnego budżetu demo. Dane tablicy są wysyłane do OpenAI dopiero po uruchomieniu analizy. Reset nie odnawia limitu. Nie wpisuj poufnych danych.',
-    labels: ['Eksperyment', 'Reset', 'Nowy plan'],
+    title: 'Experiment freely',
+    description: 'Your board contains fictional data and is private to your session. Other visitors cannot see your changes. Find the AI planning assistant in “Board options”.',
+    action: '“Reset demo” restores the sample data. Reopen this guide with “Quick guide” at the top of the page.',
+    hint: 'AI is optional: up to 3 analyses per session, subject to the shared demo budget. Board data is sent to OpenAI only when you run an analysis. Resetting does not renew the limit. Do not enter confidential information.',
+    labels: ['Experiment', 'Reset', 'New plan'],
   },
 ] as const;
 
@@ -43,16 +43,16 @@ export function DemoGuide({ onClose }: { onClose: () => void }) {
   return <Modal
     opened
     onClose={onClose}
-    title="Przewodnik po demo"
+    title="Demo guide"
     size="lg"
     centered
     returnFocus={false}
     transitionProps={{ duration: 0 }}
     overlayProps={{ backgroundOpacity: 0.7 }}
-    closeButtonProps={{ 'aria-label': 'Zamknij przewodnik' }}
+    closeButtonProps={{ 'aria-label': 'Close guide' }}
     classNames={{ content: 'demo-guide', header: 'demo-guide-header', title: 'demo-guide-title', close: 'demo-guide-close', body: 'demo-guide-body' }}
   >
-    <p className="demo-guide-progress">Krok {index + 1} z {steps.length} · Około minuty</p>
+    <p className="demo-guide-progress">Step {index + 1} of {steps.length} · About a minute</p>
     <div className="demo-guide-track" aria-hidden="true">
       {steps.map((item, position) => <span key={item.title} data-current={position === index || undefined} data-complete={position < index || undefined} />)}
     </div>
@@ -66,11 +66,11 @@ export function DemoGuide({ onClose }: { onClose: () => void }) {
     <p className="demo-guide-action">{step.action}</p>
     <p className="demo-guide-hint">{step.hint}</p>
     <div className="demo-guide-actions">
-      <button type="button" className="demo-guide-skip" onClick={onClose}>Pomiń przewodnik</button>
+      <button type="button" className="demo-guide-skip" onClick={onClose}>Skip guide</button>
       <div>
-        {index > 0 && <button type="button" onClick={() => setIndex(index - 1)}>Wstecz</button>}
+        {index > 0 && <button type="button" onClick={() => setIndex(index - 1)}>Back</button>}
         <button type="button" className="demo-guide-next" onClick={last ? onClose : () => setIndex(index + 1)}>
-          {last ? 'Zaczynam planować' : 'Dalej'}
+          {last ? 'Start planning' : 'Next'}
         </button>
       </div>
     </div>

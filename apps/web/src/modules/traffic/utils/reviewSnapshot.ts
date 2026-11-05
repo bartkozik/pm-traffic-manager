@@ -67,7 +67,7 @@ export function generateReviewSnapshot({
   const riskLines = risks.slice(0, 6).map((risk) => `- [${risk.severity}] ${risk.title}: ${risk.detail}`);
   const aiLines = aiOpportunityCheck
     ? [
-      `Werdykt: ${aiOpportunityCheck.result.verdict} (Pewność: ${formatOpportunityConfidence(aiOpportunityCheck.result.confidence)}, źródło: ${formatOpportunitySource(aiOpportunityCheck.mode)})`,
+      `Verdict: ${aiOpportunityCheck.result.verdict} (Confidence: ${formatOpportunityConfidence(aiOpportunityCheck.result.confidence)}, source: ${formatOpportunitySource(aiOpportunityCheck.mode)})`,
       ...aiOpportunityCheck.result.topReasons.slice(0, 3).map((reason) => `- ${reason}`),
       `Next scenario: ${aiOpportunityCheck.result.nextScenarioToTry}`,
     ]
@@ -89,7 +89,7 @@ export function generateReviewSnapshot({
     `Top risks`,
     ...(riskLines.length ? riskLines : ['- No generated risks.']),
     '',
-    `AI Assisted Planning`,
+    `AI planning assistant`,
     ...aiLines,
     '',
     `Project coverage`,

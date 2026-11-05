@@ -4,7 +4,7 @@ import { buildWeeklyDrilldown, getWeeksForMonth } from './weeklyDrilldown';
 
 const month = {
   id: '2026-03',
-  label: 'Marzec 2026',
+  label: 'March 2026',
   granularity: 'month',
   startsOn: '2026-03-01',
   endsOn: '2026-03-31',
@@ -35,7 +35,7 @@ const project = {
   stage: 'signed',
   budgetK: 10,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: month.id,
   rateConfig: { companyTargetRatePlnH: 250 },
   requirements: [],
@@ -62,7 +62,7 @@ describe('weekly drilldown', () => {
       month,
       {
         id: '2026-03-w1',
-        label: 'Marzec W1',
+        label: 'March W1',
         granularity: 'week',
         startsOn: '2026-03-01',
         endsOn: '2026-03-07',

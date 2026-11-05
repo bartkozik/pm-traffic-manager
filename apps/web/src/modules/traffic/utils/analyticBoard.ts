@@ -148,23 +148,23 @@ export interface AnalyticLegendSection {
 export const analyticFilterLabels: Record<AnalyticFilterId, string> = {
   overload: 'Overload',
   bench: 'Bench',
-  fragmentation: 'Fragmentacja',
+  fragmentation: 'Fragmentation',
   'low-value': 'Low value',
   rd: 'R&D',
   'single-person': 'Single point',
-  changes: 'Zmiany',
-  risks: 'Ryzyka',
+  changes: 'Changes',
+  risks: 'Risks',
 };
 
 const analyticSignalLegendItems: AnalyticLegendItem[] = [
-  { id: 'overload', kind: 'tone', className: 'is-overflow', code: 'OVER', label: 'Overload', detail: 'ponad dostępne godziny' },
-  { id: 'risk', kind: 'tone', className: 'is-tone-red', code: 'RISK', label: 'Ryzyko', detail: 'walidacja albo alert' },
-  { id: 'bench', kind: 'person', className: 'is-bench-footprint', code: 'BENCH', label: 'Bench', detail: 'capacity poza projektem' },
-  { id: 'fragmentation', kind: 'tone', className: 'is-tone-mixed', code: 'FRAG', label: 'Fragmentacja', detail: 'osoba w kilku miejscach' },
-  { id: 'lowValue', kind: 'marker', className: 'is-low-value', code: 'LOW', label: 'Low value', detail: 'niski komercyjny zwrot' },
-  { id: 'researchDevelopment', kind: 'frame', className: 'is-work-research_development', code: 'R&D', label: 'R&D', detail: 'eksperyment / inwestycja' },
-  { id: 'singlePersonProject', kind: 'project', className: 'is-single-person', code: '1P', label: 'Single point', detail: 'jedna osoba niesie kontekst' },
-  { id: 'changed', kind: 'marker', className: 'is-moved', code: 'RUCH', label: 'Ruch', detail: 'zmiana lub handoff' },
+  { id: 'overload', kind: 'tone', className: 'is-overflow', code: 'OVER', label: 'Overload', detail: 'above available hours' },
+  { id: 'risk', kind: 'tone', className: 'is-tone-red', code: 'RISK', label: 'Risk', detail: 'validation or alert' },
+  { id: 'bench', kind: 'person', className: 'is-bench-footprint', code: 'BENCH', label: 'Bench', detail: 'capacity outside a project' },
+  { id: 'fragmentation', kind: 'tone', className: 'is-tone-mixed', code: 'FRAG', label: 'Fragmentation', detail: 'person across multiple projects' },
+  { id: 'lowValue', kind: 'marker', className: 'is-low-value', code: 'LOW', label: 'Low value', detail: 'low commercial return' },
+  { id: 'researchDevelopment', kind: 'frame', className: 'is-work-research_development', code: 'R&D', label: 'R&D', detail: 'experiment / investment' },
+  { id: 'singlePersonProject', kind: 'project', className: 'is-single-person', code: '1P', label: 'Single point', detail: 'one person holds the context' },
+  { id: 'changed', kind: 'marker', className: 'is-moved', code: 'MOVE', label: 'Move', detail: 'change or handoff' },
 ];
 
 const analyticSkillLegendItems: AnalyticLegendItem[] = visualSkillLegend.map((item) => ({
@@ -173,45 +173,45 @@ const analyticSkillLegendItems: AnalyticLegendItem[] = visualSkillLegend.map((it
   className: `is-skill-${item.id}`,
   code: item.glyph,
   label: item.label,
-  detail: 'kompetencja alokacji',
+  detail: 'allocation skill',
 }));
 
 export const analyticLegendSections: AnalyticLegendSection[] = [
   {
     id: 'signals',
-    label: 'Sygnały',
-    description: 'Ten sam słownik sygnałów co na Diablo Board.',
+    label: 'Signals',
+    description: 'The same signal vocabulary as Diablo Board.',
     items: analyticSignalLegendItems,
   },
   {
     id: 'work',
-    label: 'Typ pracy',
-    description: 'Ramki i assignmenty z tą samą semantyką koloru.',
+    label: 'Work type',
+    description: 'Frames and assignments share the same colour meanings.',
     items: [
-      { id: 'signed', kind: 'frame', className: 'is-healthy', code: 'OK', label: 'Zdrowe', detail: 'pokryta alokacja' },
-      { id: 'uncertain', kind: 'frame', className: 'is-gap', code: '?', label: 'Niepewne', detail: 'luka albo weak confidence' },
-      { id: 'rd', kind: 'frame', className: 'is-work-research_development', code: 'R&D', label: 'R&D', detail: 'eksperyment' },
-      { id: 'waiting', kind: 'frame', className: 'is-work-waiting_room', code: 'WAIT', label: 'Poczekalnia', detail: 'capacity bez decyzji' },
-      { id: 'defensive', kind: 'frame', className: 'is-work-defensive_maintenance', code: 'DEF', label: 'Defensive', detail: 'obrona relacji' },
-      { id: 'future', kind: 'frame', className: 'is-ghost', code: 'GHOST', label: 'Ghost', detail: 'przyszła rezerwacja' },
-      { id: 'time-off', kind: 'frame', className: 'is-work-time_off', code: 'OFF', label: 'Urlop', detail: 'niedostępność' },
+      { id: 'signed', kind: 'frame', className: 'is-healthy', code: 'OK', label: 'Healthy', detail: 'covered allocation' },
+      { id: 'uncertain', kind: 'frame', className: 'is-gap', code: '?', label: 'Uncertain', detail: 'gap or low confidence' },
+      { id: 'rd', kind: 'frame', className: 'is-work-research_development', code: 'R&D', label: 'R&D', detail: 'experiment' },
+      { id: 'waiting', kind: 'frame', className: 'is-work-waiting_room', code: 'WAIT', label: 'Waiting room', detail: 'capacity without a decision' },
+      { id: 'defensive', kind: 'frame', className: 'is-work-defensive_maintenance', code: 'DEF', label: 'Defensive', detail: 'protecting the relationship' },
+      { id: 'future', kind: 'frame', className: 'is-ghost', code: 'GHOST', label: 'Ghost', detail: 'future reservation' },
+      { id: 'time-off', kind: 'frame', className: 'is-work-time_off', code: 'OFF', label: 'Leave', detail: 'unavailability' },
     ],
   },
   {
     id: 'skills',
-    label: 'Skille',
-    description: 'Te same mikro-badge kompetencji co na Diablo Board.',
+    label: 'Skills',
+    description: 'The same small skill badges as Diablo Board.',
     items: analyticSkillLegendItems,
   },
   {
     id: 'metrics',
-    label: 'Metryki',
-    description: 'Metryki w tabeli bez osobnego systemu alertów.',
+    label: 'Metrics',
+    description: 'Table metrics without a separate alert system.',
     items: [
-      { id: 'util-ok', kind: 'metric', className: 'is-healthy', code: '85%', label: 'Zdrowo', detail: 'w dostępności' },
-      { id: 'util-low', kind: 'metric', className: 'is-gap', code: '<65%', label: 'Niedociążenie', detail: 'za mało pracy' },
-      { id: 'util-over', kind: 'metric', className: 'is-overflow', code: '>105%', label: 'Przeciążenie', detail: 'ponad dostępność' },
-      { id: 'bench-cost', kind: 'person', className: 'is-bench-footprint', code: '12k', label: 'Bench koszt', detail: 'nieproduktywna capacity' },
+      { id: 'util-ok', kind: 'metric', className: 'is-healthy', code: '85%', label: 'Healthy', detail: 'within availability' },
+      { id: 'util-low', kind: 'metric', className: 'is-gap', code: '<65%', label: 'Underload', detail: 'too little work' },
+      { id: 'util-over', kind: 'metric', className: 'is-overflow', code: '>105%', label: 'Overload', detail: 'above availability' },
+      { id: 'bench-cost', kind: 'person', className: 'is-bench-footprint', code: '12k', label: 'Bench cost', detail: 'non-productive capacity' },
     ],
   },
 ];
@@ -269,7 +269,7 @@ export function buildAnalyticBoardRows({
       projectsById,
       skillsById,
     }))
-    .sort((a, b) => a.person.name.localeCompare(b.person.name, 'pl'));
+    .sort((a, b) => a.person.name.localeCompare(b.person.name, 'en-GB'));
 }
 
 export function filterAnalyticBoardRows(
@@ -290,7 +290,7 @@ export function sortAnalyticBoardRows(
   const direction = sortStatus.direction === 'asc' ? 1 : -1;
   return [...rows].sort((first, second) => {
     const result = compareAnalyticRows(first, second, sortStatus.columnAccessor);
-    return result * direction || first.person.name.localeCompare(second.person.name, 'pl');
+    return result * direction || first.person.name.localeCompare(second.person.name, 'en-GB');
   });
 }
 
@@ -478,7 +478,7 @@ function groupPersonPeriodAssignments({
     .sort((a, b) => {
       if (a.targetId === 'bench') return 1;
       if (b.targetId === 'bench') return -1;
-      return b.warningCount - a.warningCount || b.hours - a.hours || a.label.localeCompare(b.label, 'pl');
+      return b.warningCount - a.warningCount || b.hours - a.hours || a.label.localeCompare(b.label, 'en-GB');
     });
 }
 
@@ -527,7 +527,7 @@ function buildAssignment({
     id: `${periodId}:${targetId}`,
     targetId,
     label,
-    detail: project ? `${getProjectWorkTypeLabel(project.workType)} · ${project.stage}` : targetId === 'bench' ? 'Nieprzypisana pojemność' : 'Brak projektu',
+    detail: project ? `${getProjectWorkTypeLabel(project.workType)} · ${project.stage}` : targetId === 'bench' ? 'Unassigned capacity' : 'No project',
     revenueK,
     hours,
     allocationCount: allocations.length,
@@ -633,7 +633,7 @@ function uniqueSignals(signals: AnalyticSignalKind[]) {
 }
 
 function normalizeSearch(value: string) {
-  return value.trim().toLocaleLowerCase('pl');
+  return value.trim().toLocaleLowerCase('en-GB');
 }
 
 function compareAnalyticRows(
@@ -643,7 +643,7 @@ function compareAnalyticRows(
 ) {
   switch (accessor) {
     case 'personName':
-      return first.person.name.localeCompare(second.person.name, 'pl');
+      return first.person.name.localeCompare(second.person.name, 'en-GB');
     case 'rangeUtilizationPercent':
       return first.rangeUtilizationPercent - second.rangeUtilizationPercent;
     case 'rangeProjectCount':

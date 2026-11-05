@@ -114,16 +114,16 @@ export default function DiabloAiPlanningView() {
 
   return (
     <div className={`diablo-app traffic-app is-${theme} diablo-ai-view`}>
-      <Helmet><title>AI Assisted Planning</title></Helmet>
+      <Helmet><title>AI planning assistant</title></Helmet>
 
       <header className="diablo-ai-view-header">
         <div className="diablo-ai-view-heading">
           <Link className="traffic-view-switch-link" to={boardPath}>← Diablo Board</Link>
-          <strong>AI Assisted Planning</strong>
-          <small>Osobny moduł · zastępowalny przez MCP planning tools</small>
+          <strong>AI planning assistant</strong>
+          <small>Standalone module · compatible with MCP planning tools</small>
         </div>
         <label className="diablo-ai-view-period">
-          <span>Miesiąc</span>
+          <span>Month</span>
           <select
             className="traffic-pill"
             value={activeMonthId || ''}
@@ -138,7 +138,7 @@ export default function DiabloAiPlanningView() {
 
       <main className="diablo-ai-view-main">
         {durableLoadStatus === 'loading' && !monthPeriods.length ? (
-          <p className="diablo-ai-view-loading">Ładuję dane tablicy…</p>
+          <p className="diablo-ai-view-loading">Loading board data…</p>
         ) : activePeriod ? (
           <DiabloAiPlanningPanel
             allocations={periodAllocations}
@@ -152,7 +152,7 @@ export default function DiabloAiPlanningView() {
             onApplyAllocationMoves={applyBackendAllocationMoves}
           />
         ) : (
-          <p className="diablo-ai-view-loading">Brak miesięcy w tej tablicy.</p>
+          <p className="diablo-ai-view-loading">No months on this board.</p>
         )}
       </main>
     </div>

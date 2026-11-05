@@ -216,14 +216,14 @@ export function DiabloProjectFrame({
   const projectSummary = [
     `${project.client} - ${project.name}`,
     `${filledRevenueK}/${frameCapacityK}k`,
-    `koszt ${financialSummary.internalCostK}k`,
-    financialSummary.marginK >= 0 ? `marża +${financialSummary.marginK}k` : `gap ${Math.abs(financialSummary.marginK)}k`,
+    `cost ${financialSummary.internalCostK}k`,
+    financialSummary.marginK >= 0 ? `margin +${financialSummary.marginK}k` : `gap ${Math.abs(financialSummary.marginK)}k`,
     `${financialSummary.hours}h`,
-    `${visibleSlots.length}/${canvasSlotCount} slotów`,
-    `${uniquePersonCount} os.`,
+    `${visibleSlots.length}/${canvasSlotCount} slots`,
+    `${uniquePersonCount} people`,
     `${probability}%`,
-    frameOverflowRevenueK > 0 ? `poza ramką +${frameOverflowRevenueK}k` : null,
-    riskCount ? `ryzyka ${riskCount}` : null,
+    frameOverflowRevenueK > 0 ? `beyond frame +${frameOverflowRevenueK}k` : null,
+    riskCount ? `risks ${riskCount}` : null,
   ].filter(Boolean).join(', ');
   const isDropCandidate = Boolean(activeDragPayload || isPersonFrameDropPreview);
   const stopProjectToolbarPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
@@ -260,13 +260,13 @@ export function DiabloProjectFrame({
           </div>
           <div
             className="diablo-project-toolbar"
-            aria-label={`Narzędzia projektu ${project.client}`}
+            aria-label={`Project tools ${project.client}`}
             onPointerDown={stopProjectToolbarPointerDown}
           >
             <button
               className="diablo-frame-action-button"
               type="button"
-              title="Edytuj projekt"
+              title="Edit project"
               onClick={() => onEditProject(project.id)}
             >
               Edit
@@ -277,81 +277,81 @@ export function DiabloProjectFrame({
         {shouldShowFrameActions ? (
           <div
             className="diablo-selected-frame-actions"
-            aria-label={`Akcje ramki ${project.client}`}
+            aria-label={`Frame actions ${project.client}`}
             onPointerDown={stopProjectToolbarPointerDown}
           >
             <button
               type="button"
-              aria-label={`Otwórz szczegóły projektu ${project.client} - ${project.name}`}
-              title="Otwórz szczegóły projektu"
+              aria-label={`Open project details ${project.client} - ${project.name}`}
+              title="Open project details"
               onClick={() => onEditProject(project.id)}
             >
-              Pokaż
+              Show
             </button>
-            <div className="diablo-selected-frame-resize-actions" aria-label="Zmień zakres ramki">
+            <div className="diablo-selected-frame-resize-actions" aria-label="Change frame capacity">
               <button
                 type="button"
-                aria-label="Zmniejsz szerokość ramki o jedną kolumnę"
-                title="Zmniejsz szerokość ramki o jedną kolumnę"
+                aria-label="Reduce frame width by one column"
+                title="Reduce frame width by one column"
                 onClick={() => onResizeByGridStep(project.id, { width: -1 })}
-              >
-                S-
-              </button>
-              <button
-                type="button"
-                aria-label="Zwiększ szerokość ramki o jedną kolumnę"
-                title="Zwiększ szerokość ramki o jedną kolumnę"
-                onClick={() => onResizeByGridStep(project.id, { width: 1 })}
-              >
-                S+
-              </button>
-              <button
-                type="button"
-                aria-label="Zmniejsz wysokość ramki o jeden wiersz"
-                title="Zmniejsz wysokość ramki o jeden wiersz"
-                onClick={() => onResizeByGridStep(project.id, { height: -1 })}
               >
                 W-
               </button>
               <button
                 type="button"
-                aria-label="Zwiększ wysokość ramki o jeden wiersz"
-                title="Zwiększ wysokość ramki o jeden wiersz"
-                onClick={() => onResizeByGridStep(project.id, { height: 1 })}
+                aria-label="Increase frame width by one column"
+                title="Increase frame width by one column"
+                onClick={() => onResizeByGridStep(project.id, { width: 1 })}
               >
                 W+
+              </button>
+              <button
+                type="button"
+                aria-label="Reduce frame height by one row"
+                title="Reduce frame height by one row"
+                onClick={() => onResizeByGridStep(project.id, { height: -1 })}
+              >
+                H-
+              </button>
+              <button
+                type="button"
+                aria-label="Increase frame height by one row"
+                title="Increase frame height by one row"
+                onClick={() => onResizeByGridStep(project.id, { height: 1 })}
+              >
+                H+
               </button>
             </div>
             <button
               className={isArchivePending ? 'is-confirming' : ''}
               type="button"
-              aria-label={`${isArchivePending ? 'Potwierdź ukrycie projektu' : 'Ukryj projekt w aktywnym miesiącu'}: ${project.client} - ${project.name}`}
-              title="Ukryj projekt w aktywnym miesiącu"
+              aria-label={`${isArchivePending ? 'Confirm hiding project' : 'Hide project in the active month'}: ${project.client} - ${project.name}`}
+              title="Hide project in the active month"
               onClick={() => onArchiveProject(project.id, periodId)}
             >
-              {isArchivePending ? 'OK' : 'Ukryj'}
+              {isArchivePending ? 'OK' : 'Hide'}
             </button>
             <button
               className={`is-danger ${isDeletePending ? 'is-confirming' : ''}`}
               type="button"
-              aria-label={`${isDeletePending ? 'Potwierdź usunięcie projektu' : 'Usuń projekt i przenieś alokacje na ławkę'}: ${project.client} - ${project.name}`}
-              title="Usuń projekt i przenieś jego alokacje na ławkę"
+              aria-label={`${isDeletePending ? 'Confirm project deletion' : 'Delete project and move allocations to the bench'}: ${project.client} - ${project.name}`}
+              title="Delete project and move its allocations to the bench"
               onClick={() => onDeleteProject(project.id)}
             >
-              {isDeletePending ? 'OK' : 'Usuń'}
+              {isDeletePending ? 'OK' : 'Delete'}
             </button>
           </div>
         ) : null}
 
-        <div className="diablo-project-signals" aria-label={`Sygnały projektu ${project.client}`}>
-          {emptyRevenueK > 0 || emptySlotCount > 0 ? <i className="is-warning" title={`Luka ${emptyRevenueK}k / ${emptySlotCount} slotów`} /> : null}
-          {frameOverflowRevenueK > 0 || overflowRevenueK > 0 ? <i className="is-danger" title={`Poza ramką +${frameOverflowRevenueK || overflowRevenueK}k`} /> : null}
-          {riskCount ? <i className="is-danger" title={`${riskCount} ostrzeżeń`} /> : null}
-          {positiveCount ? <i className="is-positive" title={`${positiveCount} dobrych sygnałów`} /> : null}
+        <div className="diablo-project-signals" aria-label={`Project signals ${project.client}`}>
+          {emptyRevenueK > 0 || emptySlotCount > 0 ? <i className="is-warning" title={`Gap ${emptyRevenueK}k / ${emptySlotCount} slots`} /> : null}
+          {frameOverflowRevenueK > 0 || overflowRevenueK > 0 ? <i className="is-danger" title={`Beyond frame +${frameOverflowRevenueK || overflowRevenueK}k`} /> : null}
+          {riskCount ? <i className="is-danger" title={`${riskCount} warnings`} /> : null}
+          {positiveCount ? <i className="is-positive" title={`${positiveCount} positive signals`} /> : null}
         </div>
 
         {skillZoneSlots.length ? (
-          <div className="diablo-skill-zone-map" aria-label={`Strefy skillowe projektu ${project.client}`}>
+          <div className="diablo-skill-zone-map" aria-label={`Project skill zones ${project.client}`}>
             {skillZoneSlots.map(({ slotIndex, zone, isZoneStart }) => {
               const slotColumn = (slotIndex % layout.width) + 1;
               const slotRow = Math.floor(slotIndex / layout.width) + 1;
@@ -379,7 +379,7 @@ export function DiabloProjectFrame({
 
         <div
           className="diablo-inventory-grid"
-          aria-label={`${project.client}: ${canvasSlotCount} pól inventory, ${visibleSlots.length} zajętych`}
+          aria-label={`${project.client}: ${canvasSlotCount} inventory slots, ${visibleSlots.length} occupied`}
         >
           {Array.from({ length: canvasSlotCount }, (_, slotIndex) => {
             const inventorySlot = inventorySlots[slotIndex];
@@ -393,7 +393,7 @@ export function DiabloProjectFrame({
             if (!allocation) {
               return (
                 <div
-                  aria-label={slotIndex >= frameCapacityCellCount ? 'Pole poza budżetem projektu' : slotZone ? `Wolny slot projektu: ${slotZone.skillLabel}` : 'Wolny slot projektu'}
+                  aria-label={slotIndex >= frameCapacityCellCount ? 'Slot beyond project budget' : slotZone ? `Available project slot: ${slotZone.skillLabel}` : 'Available project slot'}
                   className={`diablo-inventory-cell ${slotIndex >= frameCapacityCellCount ? 'is-padding' : 'is-empty'} ${skillZoneClassName}`}
                   data-skill-zone={slotZone?.skillId}
                   key={`slot-${slotIndex}`}
@@ -407,7 +407,7 @@ export function DiabloProjectFrame({
             if (!person) {
               return (
                 <div
-                  aria-label="Alokacja bez osoby"
+                  aria-label="Allocation without a person"
                   className={`diablo-inventory-cell is-missing ${skillZoneClassName}`}
                   data-skill-zone={slotZone?.skillId}
                   key={allocation.id}
@@ -440,7 +440,7 @@ export function DiabloProjectFrame({
         {projectInventoryPatterns.length || frameOverflow.length ? (
           <div className="diablo-project-frame-footer">
             {projectInventoryPatterns.length ? (
-              <div className="diablo-project-inventory-badges" aria-label={`Patterny projektu ${project.client}`}>
+              <div className="diablo-project-inventory-badges" aria-label={`Project patterns ${project.client}`}>
                 {visibleProjectInventoryPatterns.map((pattern) => (
                   <span
                     aria-label={`${getProjectInventoryPatternCode(pattern.kind)}: ${pattern.label}. ${pattern.detail}`}
@@ -453,7 +453,7 @@ export function DiabloProjectFrame({
                 ))}
                 {hiddenProjectInventoryPatterns.length ? (
                   <span
-                    aria-label={`${hiddenProjectInventoryPatterns.length} dodatkowe patterny projektu: ${hiddenProjectInventoryPatterns.map((pattern) => pattern.label).join(', ')}`}
+                    aria-label={`${hiddenProjectInventoryPatterns.length} additional project patterns: ${hiddenProjectInventoryPatterns.map((pattern) => pattern.label).join(', ')}`}
                     className="is-more"
                     title={hiddenProjectInventoryPatterns.map((pattern) => `${pattern.label}: ${pattern.detail}`).join('\n')}
                   >
@@ -464,7 +464,7 @@ export function DiabloProjectFrame({
             ) : null}
 
             {frameOverflow.length ? (
-              <div className="diablo-project-overflow-strip" aria-label={`Poza ramką ${frameOverflowRevenueK}k`}>
+              <div className="diablo-project-overflow-strip" aria-label={`Beyond frame ${frameOverflowRevenueK}k`}>
                 {frameOverflow.slice(0, 12).map((allocation) => {
                   const person = peopleById.get(allocation.personId);
                   if (!person) return null;
@@ -494,9 +494,9 @@ export function DiabloProjectFrame({
 
         {isSelected ? (
           <button
-            aria-label={`Zmień rozmiar ramki projektu ${project.client} - ${project.name}`}
+            aria-label={`Resize project frame ${project.client} - ${project.name}`}
             className="diablo-frame-resize-handle"
-            title="Przeciągnij, żeby zmienić zakres projektu"
+            title="Drag to change project capacity"
             type="button"
             onPointerDown={(event) => onResizePointerDown(event, project.id)}
           />
@@ -679,7 +679,7 @@ function DiabloPersonInventoryTile({
 
   return (
     <button
-      aria-label={`${tileLabel}. ${isSelected ? 'Zaznaczony do przeniesienia grupowego.' : 'Kliknij, żeby edytować alokację. Shift+klik zaznacza do przeniesienia grupowego.'}`}
+      aria-label={`${tileLabel}. ${isSelected ? 'Selected for a group move.' : 'Click to edit the allocation. Shift+click selects it for a group move.'}`}
       aria-pressed={isSelected}
       className={`${className} ${skillZone ? `has-skill-zone is-skill-${skillZone.skillId}` : ''} ${warningCount ? 'has-warning' : ''} ${positiveCountForTile && !warningCount ? 'has-positive' : ''} ${isSelected ? 'is-multi-selected' : ''}`}
       data-collaboration-target-id={allocation.id}
@@ -740,13 +740,13 @@ function getProjectTileCostCoverageState(
 function getProjectTileCostCoverageLabel(state: ProjectTileCostCoverageState) {
   switch (state) {
     case 'covered':
-      return ', pełne komercyjne pokrycie kosztu osoby';
+      return ', person\'s cost fully covered by commercial work';
     case 'non-covering':
-      return ', poza pokryciem kosztu osoby';
+      return ', person\'s cost not covered';
     case 'time-off':
-      return ', urlop poza przychodem';
+      return ', leave does not generate revenue';
     default:
-      return ', komercyjny kafelek, ale osoba nie ma jeszcze pełnego pokrycia kosztu';
+      return ', commercial tile, but the person\'s cost is not yet fully covered';
   }
 }
 

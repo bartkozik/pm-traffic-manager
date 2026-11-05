@@ -52,7 +52,7 @@ export interface DiabloBusinessWeek {
 }
 
 const BUSINESS_WEEK_SHORT_MONTHS_PL = [
-  'sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru',
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
 // Mon–Fri working weeks within a month, clipped at the month edges (so the first

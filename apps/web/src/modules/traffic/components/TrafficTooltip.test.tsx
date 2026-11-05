@@ -47,14 +47,14 @@ describe('TrafficTooltip', () => {
   it('keeps the portal tooltip inside the viewport without extending a scrollable panel', () => {
     render(
       <div data-testid="settings-panel" style={{ maxHeight: 120, overflow: 'auto' }}>
-        <TrafficTooltip label="Przełącz na tryb nocny" placement="bottom">
-          <button type="button">Jasny</button>
+        <TrafficTooltip label="Switch to dark mode" placement="bottom">
+          <button type="button">Light</button>
         </TrafficTooltip>
       </div>
     );
 
     const panel = screen.getByTestId('settings-panel');
-    const button = screen.getByRole('button', { name: 'Jasny' });
+    const button = screen.getByRole('button', { name: 'Light' });
     const tooltip = button.closest('.traffic-tooltip') as HTMLElement;
     const bubble = screen.getByRole('tooltip');
     vi.spyOn(tooltip, 'getBoundingClientRect').mockReturnValue(getRect(160, 170, 80, 24));

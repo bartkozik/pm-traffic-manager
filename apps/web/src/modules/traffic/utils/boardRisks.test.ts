@@ -25,7 +25,7 @@ const project = {
   planningStatus: 'active',
   budgetK: 24,
   probability: 0.65,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: '2026-03',
   rateConfig: { companyTargetRatePlnH: 240 },
   requirements: [],
@@ -58,12 +58,12 @@ describe('generateBoardRisks', () => {
     expect(risks).toEqual(expect.arrayContaining([
       expect.objectContaining({
         id: 'project-1-resource-gap',
-        title: "Client 2: brakuje obsady",
-        detail: 'Projekt ma 24k PLN planu, ale obsadzone jest 8k PLN. Brakuje 16k PLN zasobów/kafelków.',
+        title: "Client 2: staffing gap",
+        detail: 'The project has 24k PLN planned but 8k PLN staffed. Resources/tiles are short by 16k PLN.',
         items: [expect.objectContaining({
           primary: "Client 2: Product discovery",
-          secondary: 'Plan: 24k PLN · obsada: 8k PLN',
-          detail: 'Brakuje 16k PLN w przypisanych kafelkach do pokrycia zaplanowanego zakresu projektu.',
+          secondary: 'Plan: 24k PLN · staffing: 8k PLN',
+          detail: 'Assigned tiles are 16k PLN short of covering the planned project scope.',
         })],
       }),
     ]));

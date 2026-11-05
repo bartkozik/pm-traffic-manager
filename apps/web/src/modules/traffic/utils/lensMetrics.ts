@@ -103,11 +103,11 @@ export function generateLensMetrics({
   if (lens === 'finance') {
     const marginK = Math.round((metrics.expectedRevenue - metrics.totalCost) * 10) / 10;
     return [
-      { id: 'people-cost', label: 'Koszt ludzi', value: formatK(metrics.totalCost) },
-      { id: 'committed-revenue', label: 'Podpisane revenue', value: formatK(metrics.committedRevenue), tone: metrics.committedRevenue >= metrics.totalCost ? 'success' : 'warning' },
-      { id: 'expected-revenue', label: 'Prognoza revenue', value: formatK(metrics.expectedRevenue), tone: metrics.expectedRevenue >= metrics.targetRevenue ? 'success' : 'default' },
-      { id: 'expected-margin', label: 'Marża vs koszt', value: formatK(marginK), tone: marginK < 0 ? 'danger' : 'success' },
-      { id: 'target-gap', label: 'Brak do celu', value: formatK(metrics.pressureToTarget), tone: metrics.pressureToTarget > 0 ? 'warning' : 'success' },
+      { id: 'people-cost', label: 'People cost', value: formatK(metrics.totalCost) },
+      { id: 'committed-revenue', label: 'Committed revenue', value: formatK(metrics.committedRevenue), tone: metrics.committedRevenue >= metrics.totalCost ? 'success' : 'warning' },
+      { id: 'expected-revenue', label: 'Expected revenue', value: formatK(metrics.expectedRevenue), tone: metrics.expectedRevenue >= metrics.targetRevenue ? 'success' : 'default' },
+      { id: 'expected-margin', label: 'Margin vs cost', value: formatK(marginK), tone: marginK < 0 ? 'danger' : 'success' },
+      { id: 'target-gap', label: 'Gap to target', value: formatK(metrics.pressureToTarget), tone: metrics.pressureToTarget > 0 ? 'warning' : 'success' },
     ];
   }
 
@@ -124,11 +124,11 @@ export function generateLensMetrics({
       .length;
 
     return [
-      { id: 'expected-forecast', label: 'Prognoza sprzedaży', value: formatK(metrics.expectedRevenue) },
-      { id: 'committed-coverage', label: 'Podpisane umowy', value: formatK(metrics.committedRevenue) },
-      { id: 'ghost-expected', label: 'Szanse w pipeline', value: formatK(ghostExpectedK), tone: ghostExpectedK > 0 ? 'warning' : 'default' },
-      { id: 'target-gap', label: 'Brak do celu', value: formatK(metrics.pressureToTarget), tone: metrics.pressureToTarget > 0 ? 'warning' : 'success' },
-      { id: 'cheap-deal-warnings', label: 'Ryzyka stawek', value: String(cheapDealWarnings), tone: cheapDealWarnings > 0 ? 'danger' : 'default' },
+      { id: 'expected-forecast', label: 'Sales forecast', value: formatK(metrics.expectedRevenue) },
+      { id: 'committed-coverage', label: 'Signed contracts', value: formatK(metrics.committedRevenue) },
+      { id: 'ghost-expected', label: 'Pipeline opportunities', value: formatK(ghostExpectedK), tone: ghostExpectedK > 0 ? 'warning' : 'default' },
+      { id: 'target-gap', label: 'Gap to target', value: formatK(metrics.pressureToTarget), tone: metrics.pressureToTarget > 0 ? 'warning' : 'success' },
+      { id: 'cheap-deal-warnings', label: 'Rate risks', value: String(cheapDealWarnings), tone: cheapDealWarnings > 0 ? 'danger' : 'default' },
     ];
   }
 
@@ -153,11 +153,11 @@ export function generateLensMetrics({
       .length;
 
     return [
-      { id: 'project-hours', label: 'Godziny projektowe', value: formatHours(projectHours) },
-      { id: 'required-gap', label: 'Brakujące godziny', value: formatHours(requiredHoursGap), tone: requiredHoursGap > 0 ? 'danger' : 'success' },
-      { id: 'weekly-overload', label: 'Tygodnie z przeciążeniem', value: String(weeklyOverloadWeeks), tone: weeklyOverloadWeeks > 0 ? 'danger' : 'default' },
-      { id: 'delivery-warnings', label: 'Ryzyka realizacji', value: String(deliveryWarnings), tone: deliveryWarnings > 0 ? 'warning' : 'default' },
-      { id: 'active-projects', label: 'Aktywne projekty', value: String(activeProjects.length) },
+      { id: 'project-hours', label: 'Project hours', value: formatHours(projectHours) },
+      { id: 'required-gap', label: 'Missing hours', value: formatHours(requiredHoursGap), tone: requiredHoursGap > 0 ? 'danger' : 'success' },
+      { id: 'weekly-overload', label: 'Overloaded weeks', value: String(weeklyOverloadWeeks), tone: weeklyOverloadWeeks > 0 ? 'danger' : 'default' },
+      { id: 'delivery-warnings', label: 'Delivery risks', value: String(deliveryWarnings), tone: deliveryWarnings > 0 ? 'warning' : 'default' },
+      { id: 'active-projects', label: 'Active projects', value: String(activeProjects.length) },
     ];
   }
 
@@ -172,19 +172,19 @@ export function generateLensMetrics({
     const utilization = availableHours ? Math.round((allocatedHours / availableHours) * 100) : 0;
 
     return [
-      { id: 'available-hours', label: 'Dostępne godziny', value: formatHours(availableHours) },
-      { id: 'allocated-hours', label: 'Zaplanowane godziny', value: formatHours(allocatedHours), tone: utilization > 100 ? 'danger' : 'default' },
-      { id: 'utilization', label: 'Zajętość', value: `${utilization}%`, tone: utilization > 100 ? 'danger' : utilization > 85 ? 'warning' : 'default' },
-      { id: 'bench-revenue', label: 'Cel na ławce', value: formatK(benchRevenueK), tone: benchRevenueK > 0 ? 'warning' : 'success' },
-      { id: 'overloaded-people', label: 'Osoby przeciążone', value: String(weeklyOverloadedPeople), tone: weeklyOverloadedPeople > 0 ? 'danger' : 'default' },
+      { id: 'available-hours', label: 'Available hours', value: formatHours(availableHours) },
+      { id: 'allocated-hours', label: 'Planned hours', value: formatHours(allocatedHours), tone: utilization > 100 ? 'danger' : 'default' },
+      { id: 'utilization', label: 'Utilization', value: `${utilization}%`, tone: utilization > 100 ? 'danger' : utilization > 85 ? 'warning' : 'default' },
+      { id: 'bench-revenue', label: 'Bench target', value: formatK(benchRevenueK), tone: benchRevenueK > 0 ? 'warning' : 'success' },
+      { id: 'overloaded-people', label: 'Overloaded people', value: String(weeklyOverloadedPeople), tone: weeklyOverloadedPeople > 0 ? 'danger' : 'default' },
     ];
   }
 
   return [
-    { id: 'total-cost', label: 'Koszt ludzi', value: formatK(metrics.totalCost) },
-    { id: 'target-revenue', label: 'Cel przychodu', value: formatK(metrics.targetRevenue) },
-    { id: 'committed-gap', label: 'Brak w podpisanych', value: formatK(Math.max(0, metrics.targetRevenue - metrics.committedRevenue)), tone: metrics.targetRevenue > metrics.committedRevenue ? 'warning' : 'success' },
-    { id: 'expected-gap', label: 'Brak w prognozie', value: formatK(metrics.pressureToTarget), tone: metrics.pressureToTarget > 0 ? 'warning' : 'success' },
-    { id: 'major-risks', label: 'Ryzyka', value: String(boardRisks.filter((risk) => risk.id !== 'no-major-risks').length), tone: boardRisks.some((risk) => risk.severity === 'high') ? 'danger' : 'default' },
+    { id: 'total-cost', label: 'People cost', value: formatK(metrics.totalCost) },
+    { id: 'target-revenue', label: 'Revenue target', value: formatK(metrics.targetRevenue) },
+    { id: 'committed-gap', label: 'Committed gap', value: formatK(Math.max(0, metrics.targetRevenue - metrics.committedRevenue)), tone: metrics.targetRevenue > metrics.committedRevenue ? 'warning' : 'success' },
+    { id: 'expected-gap', label: 'Forecast gap', value: formatK(metrics.pressureToTarget), tone: metrics.pressureToTarget > 0 ? 'warning' : 'success' },
+    { id: 'major-risks', label: 'Risks', value: String(boardRisks.filter((risk) => risk.id !== 'no-major-risks').length), tone: boardRisks.some((risk) => risk.severity === 'high') ? 'danger' : 'default' },
   ];
 }

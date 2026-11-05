@@ -136,10 +136,10 @@ export function ProjectEditor({
   );
   const canSaveProject = isCommercialDraft ? isBillingCurrencyComplete && !hasMissingFx : true;
   const amountFieldLabel = !isCommercialDraft
-    ? `Planowany koszt/capacity w aktywnym miesiącu (k PLN)`
+    ? `Planned cost/capacity in the active month (k PLN)`
     : manualSplitEnabled
-      ? `Cały zakres projektu (k ${billingCurrency})`
-      : `Przychód w aktywnym miesiącu (k ${activePlanCurrency})`;
+      ? `Full project scope (k ${billingCurrency})`
+      : `Revenue in the active month (k ${activePlanCurrency})`;
   const activeProjectRules = planningRules.filter((rule) => (
     isPlanningRuleActiveInPeriod(rule, activePeriodId) &&
     rule.type === 'person_pair_block' &&
@@ -211,7 +211,7 @@ export function ProjectEditor({
       seniority: 'mid',
       estimatedHours: 40,
       required: true,
-      phaseLabel: 'Implementacja',
+      phaseLabel: 'Implementation',
     };
     patchDraft({ requirements: [...draft.requirements, requirement] });
   };
@@ -372,7 +372,7 @@ export function ProjectEditor({
     } catch (error) {
       setFxLookupState({
         status: 'error',
-        message: error instanceof Error ? error.message : 'Nie udało się pobrać kursu.',
+        message: error instanceof Error ? error.message : 'Could not fetch the exchange rate.',
       });
     }
   };
@@ -396,7 +396,7 @@ export function ProjectEditor({
 
   return (
     <form
-      aria-label="Edytor projektu"
+      aria-label="Project editor"
       aria-modal="true"
       className="traffic-editor"
       ref={editorRef}
@@ -406,41 +406,41 @@ export function ProjectEditor({
     >
       <div className="traffic-editor-header">
         <div>
-          <h2>Projekt</h2>
-          <p>{isCommercialDraft ? 'Przychód, waluta, wymagane kompetencje i stawki.' : 'Ramka capacity/kosztu bez kontraktu i revenue.'}</p>
+          <h2>Project</h2>
+          <p>{isCommercialDraft ? 'Revenue, currency, required skills and rates.' : 'Capacity/cost frame without a contract or revenue.'}</p>
         </div>
-        <button aria-label="Zamknij edytor projektu" className="traffic-icon-button" type="button" onClick={onClose}>
+        <button aria-label="Close project editor" className="traffic-icon-button" type="button" onClick={onClose}>
           x
         </button>
       </div>
 
       <section className="traffic-editor-section is-first">
         <HelpSectionHeader
-          title={isCommercialDraft ? 'Dane, przychód i stawki' : 'Dane ramki niekomercyjnej'}
+          title={isCommercialDraft ? 'Details, revenue and rates' : 'Non-commercial frame details'}
           topicId="project-basic"
           onOpenHelp={onOpenHelp}
         />
         <div className="traffic-form-grid">
           <label>
-            Klient
+            Client
             <input value={draft.client} onChange={(event) => patchDraft({ client: event.target.value })} />
           </label>
           <label>
-            Nazwa projektu
+            Project name
             <input value={draft.name} onChange={(event) => patchDraft({ name: event.target.value })} />
           </label>
           <label>
-            Typ ramki
+            Frame type
             <select
               value={projectFrameKind}
               onChange={(event) => patchProjectFrameKind(event.target.value as ProjectFrameKind)}
             >
-              <option value="commercial">Projekt komercyjny</option>
-              <option value="non_commercial">Niekomercyjne / niedostępność</option>
+              <option value="commercial">Commercial project</option>
+              <option value="non_commercial">Non-commercial / unavailable</option>
             </select>
           </label>
           <label>
-            {isCommercialDraft ? 'Charakter projektu' : 'Rodzaj ramki'}
+            {isCommercialDraft ? 'Project category' : 'Frame kind'}
             <select
               value={draft.workType || (isCommercialDraft ? 'commercial' : 'time_off')}
               onChange={(event) => patchProjectWorkType(event.target.value as ProjectWorkType)}
@@ -455,7 +455,7 @@ export function ProjectEditor({
           {isCommercialDraft ? (
             <>
               <label>
-                Typ kontraktu
+                Contract type
                 <select
                   value={draft.contractType}
                   onChange={(event) => patchContractType(event.target.value as ContractType)}
@@ -468,7 +468,7 @@ export function ProjectEditor({
                 </select>
               </label>
               <label>
-                Etap
+                Stage
                 <select
                   value={draft.stage}
                   onChange={(event) => patchStage(event.target.value as ProjectStage)}
@@ -481,7 +481,7 @@ export function ProjectEditor({
                 </select>
               </label>
               <label>
-                Status planowania
+                Planning status
                 <select
                   value={draft.planningStatus || 'active'}
                   onChange={(event) => patchDraft({ planningStatus: event.target.value as ProjectPlanningStatus })}
@@ -494,7 +494,7 @@ export function ProjectEditor({
                 </select>
               </label>
               <label>
-                Spójność źródła / scope
+                Source / scope consistency
                 <select
                   value={draft.sourceStatus || 'synced'}
                   onChange={(event) => patchDraft({ sourceStatus: event.target.value as ProjectSourceStatus })}
@@ -507,7 +507,7 @@ export function ProjectEditor({
                 </select>
               </label>
               <label>
-                Waluta rozliczenia
+                Billing currency
                 <select
                   value={currencySelectValue}
                   onChange={(event) => {
@@ -523,21 +523,21 @@ export function ProjectEditor({
                       {currency}
                     </option>
                   ))}
-                  <option value={CUSTOM_CURRENCY_SELECT_VALUE}>Inna waluta...</option>
+                  <option value={CUSTOM_CURRENCY_SELECT_VALUE}>Other currency...</option>
                 </select>
               </label>
               {currencySelectValue === CUSTOM_CURRENCY_SELECT_VALUE ? (
                 <label>
-                  Kod waluty
+                  Currency code
                   <input
-                    aria-label="Kod waluty"
+                    aria-label="Currency code"
                     maxLength={3}
-                    placeholder="np. AED"
+                    placeholder="e.g. AED"
                     value={billingCurrencyInput}
                     onChange={(event) => patchBillingCurrency(event.target.value)}
                   />
                   {!isBillingCurrencyComplete ? (
-                    <small>Podaj 3-literowy kod waluty.</small>
+                    <small>Enter a three-letter currency code.</small>
                   ) : null}
                 </label>
               ) : null}
@@ -568,7 +568,7 @@ export function ProjectEditor({
               </label>
               {!manualSplitEnabled && !isPlnCurrency(activePlanCurrency) ? (
                 <label>
-                  Wartość boardu (k PLN)
+                  Board value (k PLN)
                   <input
                     min={0}
                     step={0.5}
@@ -579,7 +579,7 @@ export function ProjectEditor({
                 </label>
               ) : null}
               <label>
-                Data kursu
+                Exchange rate date
                 <input
                   disabled={isPlnCurrency(activePlanCurrency)}
                   type="date"
@@ -591,7 +591,7 @@ export function ProjectEditor({
                 />
               </label>
               <label>
-                Kurs do PLN
+                Exchange rate to PLN
                 <input
                   disabled={isPlnCurrency(activePlanCurrency)}
                   min={0.0001}
@@ -612,7 +612,7 @@ export function ProjectEditor({
                       type="button"
                       onClick={() => void fetchRateForPlan(activePeriodId, activeFxDate)}
                     >
-                      {fxLookupState.status === 'loading' ? 'Pobieram kurs...' : 'Pobierz kurs NBP'}
+                      {fxLookupState.status === 'loading' ? 'Fetching exchange rate...' : 'Fetch NBP exchange rate'}
                     </button>
                   </>
                 ) : null}
@@ -622,11 +622,11 @@ export function ProjectEditor({
               ) : null}
               {hasMissingFx ? (
                 <p className="traffic-editor-section-note is-warning">
-                  Waluta obca wymaga kursu FX, zanim zapisze PLN-ową wartość boardu.
+                  A foreign currency requires an exchange rate before the PLN board value can be saved.
                 </p>
               ) : null}
               <label>
-                Prawdopodobieństwo
+                Probability
                 <input
                   max={100}
                   min={0}
@@ -642,7 +642,7 @@ export function ProjectEditor({
                 />
               </label>
               <label>
-                Stawka klienta/projektu {billingCurrency}/h
+                Client/project rate {billingCurrency}/h
                 <input
                   min={0}
                   step={0.01}
@@ -663,7 +663,7 @@ export function ProjectEditor({
                 />
               </label>
               <label>
-                Docelowa stawka firmy PLN/h
+                Company target rate PLN/h
                 <input
                   min={0}
                   type="number"
@@ -692,7 +692,7 @@ export function ProjectEditor({
                 />
               </label>
               <p className="traffic-editor-section-note">
-                Ramka niekomercyjna używa kafelków capacity/kosztu. Nie ma typu kontraktu, waluty rozliczenia, etapu sprzedaży ani prawdopodobieństwa revenue.
+                A non-commercial frame uses capacity/cost tiles. It has no contract type, billing currency, sales stage or revenue probability.
               </p>
             </>
           )}
@@ -700,15 +700,15 @@ export function ProjectEditor({
       </section>
 
       <label className="traffic-field-block">
-        Notatki / ryzyka
+        Notes / risks
         <textarea value={draft.notes} onChange={(event) => patchDraft({ notes: event.target.value })} />
       </label>
 
       {isCommercialDraft ? (
         <label className="traffic-field-block">
-          Notatka o źródle / CRM
+          Source / CRM note
           <textarea
-            placeholder="Np. scope zmienił się po rozmowie z klientem, ale CRM/brief nie został jeszcze poprawiony."
+            placeholder="For example, the scope changed after a client discussion, but the CRM/brief has not yet been updated."
             value={draft.sourceStatusNote || ''}
             onChange={(event) => patchDraft({ sourceStatusNote: event.target.value })}
           />
@@ -717,18 +717,18 @@ export function ProjectEditor({
 
       {manualSplitEnabled ? (
         <section className="traffic-editor-section">
-          <HelpSectionHeader title="Ręczny podział przychodu na miesiące" topicId="project-monthly-split" onOpenHelp={onOpenHelp}>
+          <HelpSectionHeader title="Manual monthly revenue split" topicId="project-monthly-split" onOpenHelp={onOpenHelp}>
             <p className="traffic-editor-section-note">
-              Przychód z projektu o stałym zakresie dzielisz tutaj na miesiące. To plan przychodu, nie harmonogram płatności.
+              Split revenue from a fixed-scope project across months here. This is a revenue plan, not a payment schedule.
             </p>
           </HelpSectionHeader>
           <div className="traffic-revenue-split-summary">
-            <span>Razem w planie: {plannedRevenueK}k PLN</span>
+            <span>Total planned: {plannedRevenueK}k PLN</span>
             {!isPlnCurrency(billingCurrency) ? (
-              <span>Waluta klienta: {formatNativeMoneyK(getProjectPlannedNativeRevenueK(draft), billingCurrency)}</span>
+              <span>Client currency: {formatNativeMoneyK(getProjectPlannedNativeRevenueK(draft), billingCurrency)}</span>
             ) : null}
-            <span>Razem podpisane: {committedRevenueK}k PLN</span>
-            <span>Miesiące: {draft.revenuePlan.length}</span>
+            <span>Total committed: {committedRevenueK}k PLN</span>
+            <span>Months: {draft.revenuePlan.length}</span>
           </div>
           <div className="traffic-revenue-split-grid">
             {revenueSplitPeriods.map((period) => {
@@ -742,7 +742,7 @@ export function ProjectEditor({
                     <small>{period.startsOn} - {period.endsOn}</small>
                   </span>
                   <label>
-                    Przychód (k {getRevenuePlanCurrency(draft, plan)})
+                    Revenue (k {getRevenuePlanCurrency(draft, plan)})
                     <input
                       min={0}
                       step={0.5}
@@ -768,7 +768,7 @@ export function ProjectEditor({
                     </label>
                   ) : null}
                   <label>
-                    Podpisane (k {getRevenuePlanCurrency(draft, plan)})
+                    Committed (k {getRevenuePlanCurrency(draft, plan)})
                     <input
                       min={0}
                       step={0.5}
@@ -782,7 +782,7 @@ export function ProjectEditor({
                     />
                   </label>
                   <label>
-                    Kurs
+                    Exchange rate
                     <input
                       disabled={isPlnCurrency(getProjectBillingCurrency(draft))}
                       min={0}
@@ -793,7 +793,7 @@ export function ProjectEditor({
                     />
                   </label>
                   <label>
-                    Szansa (%)
+                    Probability (%)
                     <input
                       max={100}
                       min={0}
@@ -805,7 +805,7 @@ export function ProjectEditor({
                     />
                   </label>
                   <button
-                    aria-label={`Usuń podział dla miesiąca ${period.label}`}
+                    aria-label={`Remove monthly split ${period.label}`}
                     className="traffic-icon-button"
                     disabled={!plan || period.id === activePeriodId}
                     type="button"
@@ -818,7 +818,7 @@ export function ProjectEditor({
             })}
           </div>
           <label className="traffic-field-block">
-            Dodaj miesiąc do podziału
+            Add month to split
             <select
               value=""
               onChange={(event) => {
@@ -831,7 +831,7 @@ export function ProjectEditor({
                 }));
               }}
             >
-              <option value="">Wybierz miesiąc</option>
+              <option value="">Select month</option>
               {monthPeriods
                 .filter((period) => !draft.revenuePlan.some((entry) => entry.periodId === period.id))
                 .map((period) => (
@@ -845,18 +845,18 @@ export function ProjectEditor({
       ) : null}
 
       <section className="traffic-editor-section">
-        <HelpSectionHeader title="Preferowane / zablokowane osoby" topicId="project-people-fit" onOpenHelp={onOpenHelp} />
+        <HelpSectionHeader title="Preferred / blocked people" topicId="project-people-fit" onOpenHelp={onOpenHelp} />
         <div className="traffic-project-rules-summary">
           <div>
-            <strong>{activeProjectRules.length} aktywnych reguł dla tego miesiąca</strong>
+            <strong>{activeProjectRules.length} active rules this month</strong>
             <span>
-              {projectScopedRuleCount} projektowych · {globalRuleCount} ogólnych
-              {legacyPreferredCount || legacyBlockedCount ? ` · legacy: ${legacyPreferredCount} preferowanych / ${legacyBlockedCount} zablokowanych` : ''}
+              {projectScopedRuleCount} project-specific · {globalRuleCount} general
+              {legacyPreferredCount || legacyBlockedCount ? ` · legacy: ${legacyPreferredCount} preferred / ${legacyBlockedCount} blocked` : ''}
             </span>
           </div>
           {onOpenPlanningRules ? (
             <button className="traffic-button" type="button" onClick={onOpenPlanningRules}>
-              Zarządzaj regułami
+              Manage rules
             </button>
           ) : null}
         </div>
@@ -864,12 +864,12 @@ export function ProjectEditor({
 
       <section className="traffic-editor-section">
         <HelpSectionHeader
-          title="Wymagane kompetencje"
+          title="Required skills"
           topicId="project-requirements"
           onOpenHelp={onOpenHelp}
           actions={(
             <button className="traffic-button" type="button" onClick={addRequirement}>
-              Dodaj wymaganie
+              Add requirement
             </button>
           )}
         />
@@ -877,10 +877,10 @@ export function ProjectEditor({
           <div className="traffic-editor-requirement-header" aria-hidden="true">
             <span>Skill</span>
             <span>Seniority</span>
-            <span>Kafelki</span>
-            <span>Godziny</span>
-            <span>Etap</span>
-            <span>Wymagane</span>
+            <span>Tiles</span>
+            <span>Hours</span>
+            <span>Stage</span>
+            <span>Required</span>
             <span />
           </div>
         ) : null}
@@ -891,7 +891,7 @@ export function ProjectEditor({
           return (
             <div className="traffic-editor-row" key={requirement.id}>
               <select
-                aria-label="Kompetencja wymagania"
+                aria-label="Requirement skill"
                 value={requirement.skillId}
                 onChange={(event) => updateRequirementSkill(requirement, event.target.value as SkillId)}
               >
@@ -902,7 +902,7 @@ export function ProjectEditor({
                 ))}
               </select>
               <select
-                aria-label="Seniority wymagania"
+                aria-label="Requirement seniority"
                 value={requirement.seniority || ''}
                 onChange={(event) =>
                   updateRequirement(requirement.id, {
@@ -910,7 +910,7 @@ export function ProjectEditor({
                   })
                 }
               >
-                <option value="">Bez preferencji</option>
+                <option value="">No preference</option>
                 {seniorityOptions.map((seniority) => (
                   <option key={seniority} value={seniority}>
                     {seniorityLabels[seniority]}
@@ -918,7 +918,7 @@ export function ProjectEditor({
                 ))}
               </select>
               <input
-                aria-label={`Plan kafelków dla ${skillLabel}`}
+                aria-label={`Planned tiles for ${skillLabel}`}
                 min={0}
                 step={0.5}
                 type="number"
@@ -926,30 +926,30 @@ export function ProjectEditor({
                 onChange={(event) => updateRequirementTileCount(requirement, Number(event.target.value))}
               />
               <input
-                aria-label="Szacowane godziny"
+                aria-label="Estimated hours"
                 min={0}
                 type="number"
                 value={requirement.estimatedHours}
                 onChange={(event) => updateRequirement(requirement.id, { estimatedHours: Number(event.target.value) })}
               />
               <input
-                aria-label="Etap wymagania"
+                aria-label="Requirement stage"
                 value={requirement.phaseLabel || ''}
                 onChange={(event) => updateRequirement(requirement.id, { phaseLabel: event.target.value })}
-                placeholder="etap"
+                placeholder="stage"
               />
               <label className="traffic-inline-check traffic-required-toggle" htmlFor={requiredInputId}>
                 <input
                   id={requiredInputId}
-                  aria-label={`Wymaganie ${skillLabel} jest obowiązkowe`}
+                  aria-label={`Requirement ${skillLabel} is required`}
                   checked={requirement.required}
                   type="checkbox"
                   onChange={(event) => updateRequirement(requirement.id, { required: event.target.checked })}
                 />
-                <span>wymagane</span>
+                <span>required</span>
               </label>
               <button
-                aria-label="Usuń wymaganie"
+                aria-label="Delete requirement"
                 className="traffic-icon-button"
                 type="button"
                 onClick={() => removeRequirement(requirement.id)}
@@ -964,7 +964,7 @@ export function ProjectEditor({
       <div className="traffic-editor-actions">
         <div className="traffic-editor-action-group">
           <button className="traffic-button" type="button" onClick={onClose}>
-            Anuluj
+            Cancel
           </button>
           <button
             className="traffic-button is-primary"
@@ -975,7 +975,7 @@ export function ProjectEditor({
               saveProject();
             }}
           >
-            {isNew ? 'Utwórz projekt' : 'Zapisz zmiany'}
+            {isNew ? 'Create project' : 'Save changes'}
           </button>
         </div>
       </div>

@@ -582,13 +582,13 @@ function getAllocationCandidateReasons(
 ) {
   const sourceReason = getCandidateSourceReason(candidateSources, projectsById);
   const reasons = [
-    `${person.name} ma ${need.skillId ? `skill ${need.skillId}` : 'wolna komercyjna pojemnosc'}: ${sourceReason}.`,
-    `Szacowany zysk brutto ${roundMoneyK(estimatedGrossProfitK)}k, ok. ${profitPerHourPln} PLN/h.`,
+    `${person.name} has ${need.skillId ? `skill ${need.skillId}` : 'available commercial capacity'}: ${sourceReason}.`,
+    `Estimated gross profit: ${roundMoneyK(estimatedGrossProfitK)}k, approximately ${profitPerHourPln} PLN/h.`,
   ];
 
-  if (need.requirement?.seniority) reasons.push(`Wymagane seniority: ${need.requirement.seniority}.`);
-  if (project.preferredPersonIds?.includes(person.id)) reasons.push('Osoba jest preferowana w projekcie.');
-  if (!need.requirement) reasons.push('Projekt nie ma wymagan, wiec kandydat wypelnia luke przychodu wedlug rate projektu.');
+  if (need.requirement?.seniority) reasons.push(`Required seniority: ${need.requirement.seniority}.`);
+  if (project.preferredPersonIds?.includes(person.id)) reasons.push('This person is preferred for the project.');
+  if (!need.requirement) reasons.push('The project has no skill requirements, so the candidate fills its revenue gap at the project rate.');
 
   return reasons;
 }
@@ -626,7 +626,7 @@ function getAllocationCandidateSources({
           allocation,
           kind: 'bench' as const,
           priority: 0,
-          reason: 'kafelek jest na lawce',
+          reason: 'the tile is on the bench',
         }];
       }
       if (!need.requirement) return [];
@@ -680,7 +680,7 @@ function getReallocationSourceCandidate(
       allocation,
       kind: 'misallocated_project',
       priority: blockingValidation.severity === 'invalid' ? 18 : 10,
-      reason: `walidacja w ${sourceProject.client}: ${sourceProject.name}: ${blockingValidation.message}`,
+      reason: `validation in ${sourceProject.client}: ${sourceProject.name}: ${blockingValidation.message}`,
     };
   }
 
@@ -689,7 +689,7 @@ function getReallocationSourceCandidate(
       allocation,
       kind: 'misallocated_project',
       priority: 16,
-      reason: `nie pokrywa wymagan projektu ${sourceProject.client}: ${sourceProject.name}`,
+      reason: `does not meet the requirements of ${sourceProject.client}: ${sourceProject.name}`,
     };
   }
 
@@ -698,7 +698,7 @@ function getReallocationSourceCandidate(
       allocation,
       kind: 'low_value_project',
       priority: 8,
-      reason: `siedzi w pracy niekomercyjnej ${sourceProject.client}: ${sourceProject.name}`,
+      reason: `is assigned to non-commercial work in ${sourceProject.client}: ${sourceProject.name}`,
     };
   }
 
@@ -707,7 +707,7 @@ function getReallocationSourceCandidate(
       allocation,
       kind: 'low_value_project',
       priority: 6,
-      reason: `siedzi w ghost dealu ${sourceProject.client}: ${sourceProject.name}`,
+      reason: `is assigned to a sales opportunity in ${sourceProject.client}: ${sourceProject.name}`,
     };
   }
 
@@ -716,7 +716,7 @@ function getReallocationSourceCandidate(
       allocation,
       kind: 'low_value_project',
       priority: 4,
-      reason: `siedzi w projekcie o slabym pokryciu celu ${sourceProject.client}: ${sourceProject.name}`,
+      reason: `is assigned to a project with low target coverage in ${sourceProject.client}: ${sourceProject.name}`,
     };
   }
 
@@ -772,7 +772,7 @@ function getCandidateSourceReason(
     const target = source.allocation.target;
     const project = projectsById.get(target);
     const label = target === 'bench'
-      ? 'ławka'
+      ? 'bench'
       : project
         ? `${project.client}: ${project.name}`
         : target;
@@ -784,7 +784,7 @@ function getCandidateSourceReason(
 
   return groupedReasons
     .slice(0, 3)
-    .map(([label, item]) => `${label}${item.count > 1 ? ` (${item.count} kaf.)` : ''} - ${item.reason}`)
+    .map(([label, item]) => `${label}${item.count > 1 ? ` (${item.count} tiles)` : ''} - ${item.reason}`)
     .join('; ');
 }
 
@@ -836,8 +836,8 @@ function analyzeBenchUtilization(
       suggestion,
       preferredProjectIds: hasProjectCandidate ? candidateProjectIds : inhouseProjectIds,
       reason: hasProjectCandidate
-        ? 'Osoba ma dopasowanie do co najmniej jednego projektu z luka zasobow.'
-        : 'Brak bezpiecznego dopasowania do aktywnych projektow; rozwaz utworzenie wewnetrznego projektu R&D, sales support albo innego celu na lawke.',
+        ? 'This person matches at least one project with a capacity gap.'
+        : 'No safe match for active projects; consider an internal R&D project, sales support or another goal for bench time.',
     }];
   }).sort((a, b) => (
     getBenchAlertRank(b.alertLevel) - getBenchAlertRank(a.alertLevel) ||

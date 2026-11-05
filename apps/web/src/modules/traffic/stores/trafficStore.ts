@@ -45,6 +45,7 @@ import {
   createMonthPeriod,
   createWeekPeriods,
   getMonthPeriodId,
+  getPeriodDisplayLabel,
 } from '../utils/trafficPeriods';
 import { createPersonDraft } from '../utils/trafficBoardDrafts';
 import {
@@ -83,14 +84,14 @@ const SEED_SKILLS: Skill[] = [
 const SEED_PERIODS: Period[] = [
   {
     id: SEED_PERIOD_ID,
-    label: 'Czerwiec 2026',
+    label: 'June 2026',
     granularity: 'month',
     startsOn: '2026-06-01',
     endsOn: '2026-06-30',
   },
   {
     id: '2026-06-w1',
-    label: 'Czerwiec W1',
+    label: 'June W1',
     granularity: 'week',
     startsOn: '2026-06-01',
     endsOn: '2026-06-07',
@@ -98,7 +99,7 @@ const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w2',
-    label: 'Czerwiec W2',
+    label: 'June W2',
     granularity: 'week',
     startsOn: '2026-06-08',
     endsOn: '2026-06-14',
@@ -106,7 +107,7 @@ const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w3',
-    label: 'Czerwiec W3',
+    label: 'June W3',
     granularity: 'week',
     startsOn: '2026-06-15',
     endsOn: '2026-06-21',
@@ -114,7 +115,7 @@ const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w4',
-    label: 'Czerwiec W4',
+    label: 'June W4',
     granularity: 'week',
     startsOn: '2026-06-22',
     endsOn: '2026-06-28',
@@ -122,7 +123,7 @@ const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-06-w5',
-    label: 'Czerwiec W5',
+    label: 'June W5',
     granularity: 'week',
     startsOn: '2026-06-29',
     endsOn: '2026-06-30',
@@ -130,7 +131,7 @@ const SEED_PERIODS: Period[] = [
   },
   {
     id: '2026-07',
-    label: 'Lipiec 2026',
+    label: 'July 2026',
     granularity: 'month',
     startsOn: '2026-07-01',
     endsOn: '2026-07-31',
@@ -434,7 +435,7 @@ const SEED_PROJECTS: ProjectFrame[] = [
     },
     budgetK: 240,
     probability: 1,
-    startMonth: 'Czerwiec 2026',
+    startMonth: 'June 2026',
     startPeriodId: SEED_PERIOD_ID,
     rateConfig: {
       projectRatePlnH: 200,
@@ -488,7 +489,7 @@ const SEED_PROJECTS: ProjectFrame[] = [
     },
     budgetK: 360,
     probability: 0.65,
-    startMonth: 'Czerwiec 2026',
+    startMonth: 'June 2026',
     startPeriodId: SEED_PERIOD_ID,
     endPeriodId: '2026-07',
     rateConfig: {
@@ -520,7 +521,7 @@ const SEED_PROJECTS: ProjectFrame[] = [
       { periodId: '2026-07', nativeRevenueK: 60, currency: 'PLN', revenueK: 60, probability: 0.65 },
     ],
     invoices: [],
-    notes: 'Dobry target, ale revenue zalezy od decyzji klienta w tym tygodniu.',
+    notes: 'Good target, but revenue depends on the client decision this week.',
   },
   {
     id: 'gamma',
@@ -535,7 +536,7 @@ const SEED_PROJECTS: ProjectFrame[] = [
     },
     budgetK: 480,
     probability: 0.9,
-    startMonth: 'Czerwiec 2026',
+    startMonth: 'June 2026',
     startPeriodId: SEED_PERIOD_ID,
     rateConfig: {
       projectRatePlnH: 240,
@@ -992,7 +993,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         activePeriodId: String(ySettings.get('activePeriodId') || DEFAULT_ACTIVE_PERIOD_ID),
         activeTileUnitId: String(ySettings.get('activeTileUnitId') || ACTIVE_TILE_UNIT_ID),
         skills: Array.from(ySkills.values()),
-        periods: Array.from(yPeriods.values()),
+        periods: Array.from(yPeriods.values()).map((period) => ({ ...period, label: getPeriodDisplayLabel(period) })),
         tileUnits: Array.from(yTileUnits.values()),
         people: Array.from(yPeople.values()),
         projects: Array.from(yProjects.values()),
@@ -1085,7 +1086,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         })
         .catch((error) => {
           if (disposed) return;
-          const errorMessage = error instanceof Error ? error.message : 'Nie udało się zapisać komendy w backendzie.';
+          const errorMessage = error instanceof Error ? error.message : 'Could not save the command to the backend.';
           set({
             durableSaveStatus: 'failed',
             durableError: errorMessage,
@@ -1097,7 +1098,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
               if (state.durableSaveStatus !== 'failed' || state.durableError !== errorMessage) return;
               set({
                 durableSaveStatus: 'failed',
-                durableError: `${errorMessage} Przywróciłem ostatni zapisany stan z backendu.`,
+                durableError: `${errorMessage} Restored the last saved state from the backend.`,
               });
             })
             .catch(() => {
@@ -1181,7 +1182,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
       onError: () => {
         if (disposed) return;
         set({
-          durableError: 'Połączenie realtime z API zostało przerwane. Zmiany nadal idą przez REST command endpoint.',
+          durableError: 'The realtime API connection was interrupted. Changes still use the REST command endpoint.',
         });
       },
     });
@@ -1230,7 +1231,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
         set({
           durableLoadStatus: 'failed',
           durableSaveStatus: 'idle',
-          durableError: error instanceof Error ? error.message : 'Nie udało się pobrać danych z backendu.',
+          durableError: error instanceof Error ? error.message : 'Could not load data from the backend.',
         });
         if (demoEnabled) return;
         withSystemSnapshot(() => {
@@ -1701,8 +1702,8 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
     const id = `project-${Date.now()}`;
     const defaultProject: ProjectFrame = {
       id,
-      name: `Nowy projekt ${nextNumber}`,
-      client: `Klient ${nextNumber}`,
+      name: `New project ${nextNumber}`,
+      client: `Client ${nextNumber}`,
       contractType: 'time_materials_capped' satisfies ContractType,
       stage: 'possible' satisfies ProjectStage,
       planningStatus: 'ghost',
@@ -1713,7 +1714,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
       },
       budgetK: 10,
       probability: 0.5,
-      startMonth: targetPeriod?.label || 'Nowy miesiac',
+      startMonth: targetPeriod?.label || 'New month',
       startPeriodId: targetPeriodId,
       endPeriodId: targetPeriodId,
       rateConfig: {

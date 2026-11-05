@@ -9,7 +9,7 @@ describe('ScaledTileGrid', () => {
         allocations={[]}
         emptyRevenueK={3}
         emptySlotKeyPrefix="project-alpha"
-        emptySlotLabel="wolny limit CAP"
+        emptySlotLabel="Available cap"
         emptySlotTone="capped"
         peopleById={new Map()}
         skillsById={new Map()}
@@ -18,8 +18,8 @@ describe('ScaledTileGrid', () => {
       />
     );
 
-    expect(screen.getByLabelText('wolny limit CAP: 3k')).toHaveClass('is-capped');
-    expect(screen.getByText('wolny limit CAP')).toBeInTheDocument();
+    expect(screen.getByLabelText('Available cap: 3k')).toHaveClass('is-capped');
+    expect(screen.getByText('Available cap')).toBeInTheDocument();
     expect(screen.getByText('3k')).toBeInTheDocument();
   });
 
@@ -52,7 +52,7 @@ describe('ScaledTileGrid', () => {
             revenueK: 1,
             hours: 24,
             meetingState: { handoffRequired: true, backup: true },
-            validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Brak skillu' }],
+            validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Missing skill' }],
           },
         ]}
         emptySlotKeyPrefix="project-alpha"
@@ -63,19 +63,19 @@ describe('ScaledTileGrid', () => {
       />
     );
 
-    expect(screen.getByLabelText(/Markery wizualne osoby Avery/)).toBeInTheDocument();
-    expect(screen.getByLabelText(/ryzyka: 1 ryzyk/)).toHaveClass('is-warning');
-    expect(screen.getByLabelText(/info: Wymaga przekazania informacji/)).toHaveClass('is-handoff');
+    expect(screen.getByLabelText(/Visual markers for person Avery/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/risks: 1 risks/)).toHaveClass('is-warning');
+    expect(screen.getByLabelText(/info: Handoff needed/)).toHaveClass('is-handoff');
     expect(screen.getByLabelText(/backup: Backup/)).toHaveClass('is-backup');
-    expect(screen.getByLabelText(/ruch: Osoba została przesunięta/)).toHaveClass('is-moved');
-    expect(screen.getByLabelText(/niska: Osoba ma skrajnie niskie wykorzystanie/)).toHaveClass('is-underloaded-critical');
-    expect(screen.getByLabelText(/20h\+: Zaangażowanie/)).toHaveClass('is-active-engagement');
+    expect(screen.getByLabelText(/move: Person moved/)).toHaveClass('is-moved');
+    expect(screen.getByLabelText(/very low: Person has extremely low productive utilisation/)).toHaveClass('is-underloaded-critical');
+    expect(screen.getByLabelText(/20h\+: At least 20h of work/)).toHaveClass('is-active-engagement');
 
-    const riskChip = screen.getByLabelText('1 ryzyk dla tej grupy alokacji');
-    expect(within(riskChip).getByText('ryzyka: 1')).toHaveClass('traffic-person-signal-full');
+    const riskChip = screen.getByLabelText('1 risks for this allocation group');
+    expect(within(riskChip).getByText('risks: 1')).toHaveClass('traffic-person-signal-full');
     expect(within(riskChip).getByText('R1')).toHaveClass('traffic-person-signal-compact');
 
-    const handoffChip = screen.getByLabelText('Wymaga przekazania informacji: 1 kaf.');
+    const handoffChip = screen.getByLabelText('Handoff needed: 1 tiles');
     expect(within(handoffChip).getByText('info')).toHaveClass('traffic-person-signal-full');
     expect(within(handoffChip).getByText('I')).toHaveClass('traffic-person-signal-compact');
   });
@@ -114,7 +114,7 @@ describe('ScaledTileGrid', () => {
             mentoring: true,
             backup: true,
           },
-          validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Brak skillu' }],
+          validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Missing skill' }],
         }]}
         emptySlotKeyPrefix="project-alpha"
         periodAllocations={[
@@ -135,7 +135,7 @@ describe('ScaledTileGrid', () => {
               mentoring: true,
               backup: true,
             },
-            validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Brak skillu' }],
+            validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Missing skill' }],
           },
           {
             id: 'allocation-2',
@@ -158,7 +158,7 @@ describe('ScaledTileGrid', () => {
     const signals = container.querySelector('.traffic-person-tile-group-signals');
 
     expect(signals?.children).toHaveLength(6);
-    expect(screen.getByLabelText(/5 dodatkowe markery osoby Avery: Plan B, mentor, backup, ruch, 20h\+/)).toHaveTextContent('więcej 5');
+    expect(screen.getByLabelText(/5 additional markers for person Avery: Plan B, mentor, backup, move, 20h\+/)).toHaveTextContent('more 5');
   });
 
   it('renders cost layers as compact visual codes with accessible labels', () => {
@@ -228,15 +228,15 @@ describe('ScaledTileGrid', () => {
       />
     );
 
-    expect(screen.getByLabelText(/Warstwy alokacji: koszt pracy 1k, biuro\/admin 1k, sprzedaż\/marketing 1k, marża\/cel 1k/)).toBeInTheDocument();
-    expect(screen.getByTitle('koszt pracy: 1k')).toHaveTextContent('K1k');
-    expect(screen.getByTitle('biuro/admin: 1k')).toHaveTextContent('B1k');
-    expect(screen.getByTitle('sprzedaż/marketing: 1k')).toHaveTextContent('S1k');
-    expect(screen.getByTitle('marża/cel: 1k')).toHaveTextContent('M1k');
-    expect(screen.queryByText('koszt 1k')).not.toBeInTheDocument();
-    expect(screen.queryByText('biuro 1k')).not.toBeInTheDocument();
-    expect(screen.queryByText('sprzed. 1k')).not.toBeInTheDocument();
-    expect(screen.queryByText('marża 1k')).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Allocation layers: labour cost 1k, office\/admin 1k, sales\/marketing 1k, margin\/target 1k/)).toBeInTheDocument();
+    expect(screen.getByTitle('labour cost: 1k')).toHaveTextContent('L1k');
+    expect(screen.getByTitle('office/admin: 1k')).toHaveTextContent('A1k');
+    expect(screen.getByTitle('sales/marketing: 1k')).toHaveTextContent('S1k');
+    expect(screen.getByTitle('margin/target: 1k')).toHaveTextContent('M1k');
+    expect(screen.queryByText('cost 1k')).not.toBeInTheDocument();
+    expect(screen.queryByText('office 1k')).not.toBeInTheDocument();
+    expect(screen.queryByText('sales 1k')).not.toBeInTheDocument();
+    expect(screen.queryByText('margin 1k')).not.toBeInTheDocument();
   });
 
   it('renders compact weekly hour slots on person allocation cards', () => {
@@ -256,14 +256,14 @@ describe('ScaledTileGrid', () => {
     const periods = [
       {
         id: '2026-06',
-        label: 'Czerwiec 2026',
+        label: 'June 2026',
         granularity: 'month' as const,
         startsOn: '2026-06-01',
         endsOn: '2026-06-30',
       },
       {
         id: '2026-06-w1',
-        label: 'Czerwiec 2026 W1',
+        label: 'June 2026 W1',
         granularity: 'week' as const,
         startsOn: '2026-06-01',
         endsOn: '2026-06-15',
@@ -271,7 +271,7 @@ describe('ScaledTileGrid', () => {
       },
       {
         id: '2026-06-w2',
-        label: 'Czerwiec 2026 W2',
+        label: 'June 2026 W2',
         granularity: 'week' as const,
         startsOn: '2026-06-16',
         endsOn: '2026-06-30',
@@ -301,9 +301,9 @@ describe('ScaledTileGrid', () => {
       />
     );
 
-    expect(screen.getByLabelText(/Rozkład tygodniowy osoby Avery: W1 24h ręcznie, W2 16h/)).toBeInTheDocument();
-    expect(screen.getByLabelText('W1: 24h, ustawione ręcznie')).toHaveClass('is-manual', 'is-heavy');
-    expect(screen.getByLabelText('W2: 16h, rozlane proporcjonalnie')).toHaveClass('is-auto');
+    expect(screen.getByLabelText(/Weekly breakdown for Avery: W1 24h manual, W2 16h/)).toBeInTheDocument();
+    expect(screen.getByLabelText('W1: 24h, set manually')).toHaveClass('is-manual', 'is-heavy');
+    expect(screen.getByLabelText('W2: 16h, distributed proportionally')).toHaveClass('is-auto');
   });
 
   it('compacts dense person tile clusters while keeping tile edit and drag affordances', () => {
@@ -342,8 +342,8 @@ describe('ScaledTileGrid', () => {
       />
     );
 
-    expect(screen.getByRole('note', { name: /Kompaktowy klaster kafelków osoby Avery: 8 kafelków, 8k, 56h/ })).toHaveTextContent('8 kaf.');
-    const compactCluster = screen.getByRole('group', { name: "Kafelki w kompaktowym klastrze osoby Avery" });
+    expect(screen.getByRole('note', { name: /Compact tile cluster for Avery: 8 tiles, 8k, 56h/ })).toHaveTextContent('8 tiles');
+    const compactCluster = screen.getByRole('group', { name: "Tiles in compact cluster for Avery" });
     expect(compactCluster).toHaveClass('is-compact-cluster');
 
     const tiles = within(compactCluster).getAllByRole('button', { name: /Avery: 1k PLN/ });

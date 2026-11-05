@@ -5,7 +5,7 @@ import { ProjectCard } from './ProjectCard';
 
 const period: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -92,14 +92,14 @@ describe('ProjectCard', () => {
   it('shows stable contract-frame behavior in the project header', () => {
     renderProjectCard('hourly');
 
-    expect(screen.getByLabelText('Zachowanie ramki projektu: ramka elastyczna. Typ kontraktu: T&M bez CAP')).toHaveTextContent('ramka elastyczna');
+    expect(screen.getByLabelText('Project frame behaviour: elastic frame. Contract type: Uncapped T&M')).toHaveTextContent('elastic frame');
   });
 
   it('distinguishes pooled fixed-price frames in the project header', () => {
     renderProjectCard('fixed_phase');
 
-    expect(screen.getByLabelText('Zachowanie ramki projektu: ramka z pulą. Typ kontraktu: fixed price / pula')).toHaveTextContent('ramka z pulą');
-    expect(screen.getByLabelText(/Mapa slotów ramki: okno\/pula 24k/)).toBeInTheDocument();
+    expect(screen.getByLabelText('Project frame behaviour: pooled frame. Contract type: Fixed price / pool')).toHaveTextContent('pooled frame');
+    expect(screen.getByLabelText(/Frame slot map: window\/pool 24k/)).toBeInTheDocument();
   });
 
   it('shows compact project inventory codes while preserving full state descriptions', () => {
@@ -123,11 +123,11 @@ describe('ProjectCard', () => {
       />
     );
 
-    const rail = screen.getByLabelText("Wizualne patterny projektu: Client 1");
-    const singlePersonState = within(rail).getByLabelText('jedna osoba: projekt jednoosobowy albo single point of failure');
+    const rail = screen.getByLabelText("Project visual patterns: Client 1");
+    const singlePersonState = within(rail).getByLabelText('one person: one-person project or single point of failure');
 
     expect(singlePersonState).toHaveTextContent('1P');
-    expect(singlePersonState).toHaveTextContent('projekt jednoosobowy');
+    expect(singlePersonState).toHaveTextContent('one-person project');
   });
 
   it('caps project inventory chips so the allocation canvas remains dominant', () => {
@@ -164,10 +164,10 @@ describe('ProjectCard', () => {
       />
     );
 
-    const rail = screen.getByLabelText("Wizualne patterny projektu: Client 1");
+    const rail = screen.getByLabelText("Project visual patterns: Client 1");
 
     expect(within(rail).getByText('+1')).toBeInTheDocument();
-    expect(within(rail).getByLabelText('1 dodatkowe patterny projektu: źródło/scope')).toHaveTextContent('więcej');
+    expect(within(rail).getByLabelText('1 additional project patterns: source/scope')).toHaveTextContent('more');
   });
 
   it('surfaces project-scoped Traffic Review triggers directly on the project card', () => {
@@ -187,26 +187,26 @@ describe('ProjectCard', () => {
             owner: 'TECH',
             severity: 'medium',
             title: "Client 1: single point of failure",
-            detail: "Tylko Avery jest przypisana do projektu.",
-            action: 'Zaplanować backup albo shadowing.',
+            detail: "Only Avery is allocated to the project.",
+            action: 'Plan backup or shadowing.',
             projectId: 'project-hourly',
           },
           {
             id: 'short-project-core-order-project-hourly',
             owner: 'TECH',
             severity: 'medium',
-            title: "Client 1: kolejność BE/FE/QA",
+            title: "Client 1: BE/FE/QA sequence",
             detail: 'Brakuje QA po frontendzie.',
-            action: 'Dodać QA albo zmienić kolejność prac.',
+            action: 'Add QA or change the work sequence.',
             projectId: 'project-hourly',
           },
           {
             id: 'short-project-team-cost-project-hourly',
             owner: 'FINANCE',
             severity: 'high',
-            title: "Client 1: koszt zespołu ponad budżet",
-            detail: 'Alokacje przekraczają ramkę.',
-            action: 'Zmniejszyć obsadę albo renegocjować finansowanie.',
+            title: "Client 1: team cost exceeds budget",
+            detail: 'Allocations exceed the frame.',
+            action: 'Reduce staffing or renegotiate funding.',
             projectId: 'project-hourly',
           },
         ]}
@@ -220,8 +220,8 @@ describe('ProjectCard', () => {
       />
     );
 
-    const pulse = screen.getByLabelText("Triggery Traffic Review projektu: Client 1");
-    const trigger = within(pulse).getByLabelText("TECH: Client 1: single point of failure. Tylko Avery jest przypisana do projektu. Zaplanować backup albo shadowing.");
+    const pulse = screen.getByLabelText("Traffic Review triggers for project: Client 1");
+    const trigger = within(pulse).getByLabelText("TECH: Client 1: single point of failure. Only Avery is allocated to the project. Plan backup or shadowing.");
 
     expect(trigger).toHaveTextContent('TECH');
     expect(trigger).toHaveTextContent('single point of failure');
@@ -245,8 +245,8 @@ describe('ProjectCard', () => {
             owner: 'TECH',
             severity: 'medium',
             title: "Client 1: single point of failure",
-            detail: "Tylko Avery jest przypisana do projektu.",
-            action: 'Zaplanować backup albo shadowing.',
+            detail: "Only Avery is allocated to the project.",
+            action: 'Plan backup or shadowing.',
             projectId: 'project-hourly',
           },
           {
@@ -254,26 +254,26 @@ describe('ProjectCard', () => {
             owner: 'TECH',
             severity: 'medium',
             title: "Client 1: single point of failure",
-            detail: "Tylko Avery jest przypisana do projektu.",
-            action: 'Zaplanować backup albo shadowing.',
+            detail: "Only Avery is allocated to the project.",
+            action: 'Plan backup or shadowing.',
             projectId: 'project-hourly',
           },
           {
             id: 'short-project-core-order-project-hourly',
             owner: 'TECH',
             severity: 'medium',
-            title: "Client 1: kolejność BE/FE/QA",
+            title: "Client 1: BE/FE/QA sequence",
             detail: 'Brakuje QA po frontendzie.',
-            action: 'Dodać QA albo zmienić kolejność prac.',
+            action: 'Add QA or change the work sequence.',
             projectId: 'project-hourly',
           },
           {
             id: 'short-project-team-cost-project-hourly',
             owner: 'FINANCE',
             severity: 'high',
-            title: "Client 1: koszt zespołu ponad budżet",
-            detail: 'Alokacje przekraczają ramkę.',
-            action: 'Zmniejszyć obsadę albo renegocjować finansowanie.',
+            title: "Client 1: team cost exceeds budget",
+            detail: 'Allocations exceed the frame.',
+            action: 'Reduce staffing or renegotiate funding.',
             projectId: 'project-hourly',
           },
         ]}
@@ -287,16 +287,16 @@ describe('ProjectCard', () => {
       />
     );
 
-    const pulse = screen.getByLabelText("Triggery Traffic Review projektu: Client 1");
+    const pulse = screen.getByLabelText("Traffic Review triggers for project: Client 1");
 
     expect(within(pulse).getByText('2x')).toBeInTheDocument();
     expect(within(pulse).getAllByText("Client 1: single point of failure")).toHaveLength(1);
-    expect(within(pulse).queryByText("Client 1: koszt zespołu ponad budżet")).not.toBeInTheDocument();
+    expect(within(pulse).queryByText("Client 1: team cost exceeds budget")).not.toBeInTheDocument();
 
-    fireEvent.click(within(pulse).getByRole('button', { name: 'Pokaż 1 ukryte triggery Traffic Review' }));
+    fireEvent.click(within(pulse).getByRole('button', { name: 'Show 1 hidden Traffic Review triggers' }));
 
-    expect(within(pulse).getByText("Client 1: koszt zespołu ponad budżet")).toBeInTheDocument();
-    expect(within(pulse).getByRole('button', { name: 'Zwiń dodatkowe triggery Traffic Review (1)' })).toBeInTheDocument();
+    expect(within(pulse).getByText("Client 1: team cost exceeds budget")).toBeInTheDocument();
+    expect(within(pulse).getByRole('button', { name: 'Collapse additional Traffic Review triggers (1)' })).toBeInTheDocument();
   });
 
   it('summarizes relationship signals before showing limited relationship details', () => {
@@ -335,12 +335,12 @@ describe('ProjectCard', () => {
       />
     );
 
-    const summary = screen.getByLabelText("Podsumowanie relacji i zmian alokacji: Client 1");
+    const summary = screen.getByLabelText("Allocation relationships and changes summary: Client 1");
     expect(within(summary).getByTitle("handoff: Avery")).toHaveTextContent('handoff1');
-    expect(within(summary).getByTitle("w kilku miejscach: Avery")).toHaveTextContent('w kilku miejscach1');
+    expect(within(summary).getByTitle("across multiple projects: Avery")).toHaveTextContent('across multiple projects1');
 
-    const detailRail = screen.getByLabelText("Relacje i zmiany alokacji: Client 1");
-    expect(within(detailRail).getByText('więcej')).toBeInTheDocument();
+    const detailRail = screen.getByLabelText("Allocation relationships and changes: Client 1");
+    expect(within(detailRail).getByText('more')).toBeInTheDocument();
     expect(within(detailRail).getByText('+3')).toBeInTheDocument();
   });
 
@@ -356,16 +356,16 @@ describe('ProjectCard', () => {
             estimatedHours: 40,
             required: true,
           }],
-          notes: 'Do weryfikacji po refinement.',
+          notes: 'Review after refinement.',
         }}
         activePeriodId="2026-06"
         allocations={[allocation('allocation-1', {
           hours: 8,
-          validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Brak skillu FE' }],
+          validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Missing FE skill' }],
         })]}
         allAllocations={[allocation('allocation-1', {
           hours: 8,
-          validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Brak skillu FE' }],
+          validation: [{ code: 'missing_required_skill', severity: 'warning', message: 'Missing FE skill' }],
         })]}
         peopleById={new Map([[person.id, person]])}
         periods={[period]}
@@ -386,17 +386,17 @@ describe('ProjectCard', () => {
       />
     );
 
-    const projectSummary = screen.getByText('Podsumowanie projektu').closest('summary');
+    const projectSummary = screen.getByText('Project summary').closest('summary');
     const projectDetails = projectSummary?.closest('details');
     expect((projectDetails as HTMLDetailsElement).open).toBe(false);
 
     fireEvent.click(projectSummary as HTMLElement);
     expect((projectDetails as HTMLDetailsElement).open).toBe(true);
-    expect(within(projectDetails as HTMLElement).getByText('1 wym. · 1 sygnałów · notatka')).toBeInTheDocument();
+    expect(within(projectDetails as HTMLElement).getByText('1 req. · 1 signals · note')).toBeInTheDocument();
 
-    const requirementSummary = screen.getByText('Wymagania').closest('summary');
-    const riskSummary = screen.getByText('Sygnały alokacji').closest('summary');
-    const noteSummary = screen.getByText('Notatka').closest('summary');
+    const requirementSummary = screen.getByText('Requirements').closest('summary');
+    const riskSummary = screen.getByText('Allocation signals').closest('summary');
+    const noteSummary = screen.getByText('Note').closest('summary');
     const requirementPanel = requirementSummary?.closest('details');
     const riskPanel = riskSummary?.closest('details');
     const notePanel = noteSummary?.closest('details');
@@ -411,10 +411,10 @@ describe('ProjectCard', () => {
 
     fireEvent.click(riskSummary as HTMLElement);
     expect((riskPanel as HTMLDetailsElement).open).toBe(true);
-    expect(screen.getByText(/Brak skillu FE/)).toBeInTheDocument();
+    expect(screen.getByText(/Missing FE skill/)).toBeInTheDocument();
 
     fireEvent.click(noteSummary as HTMLElement);
     expect((notePanel as HTMLDetailsElement).open).toBe(true);
-    expect(screen.getByText('Do weryfikacji po refinement.')).toBeInTheDocument();
+    expect(screen.getByText('Review after refinement.')).toBeInTheDocument();
   });
 });

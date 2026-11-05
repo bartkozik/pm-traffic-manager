@@ -32,7 +32,7 @@ const cappedProject = {
   workType: 'commercial',
   budgetK: 24,
   probability: 1,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: '2026-06',
   rateConfig: { companyTargetRatePlnH: 200 },
   requirements: [],
@@ -59,7 +59,7 @@ const researchProject = {
 const timeOffProject = {
   ...cappedProject,
   id: 'time-off',
-  client: 'URLOP',
+  client: 'TIME OFF',
   name: 'Urlopy',
   workType: 'time_off',
   budgetK: 4,

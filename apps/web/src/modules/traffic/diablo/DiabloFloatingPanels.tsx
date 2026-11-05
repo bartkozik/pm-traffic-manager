@@ -54,42 +54,42 @@ interface DiabloLegendTab {
 
 const coverageLabels: Record<DiabloLegendCoverage, string> = {
   supported: 'Diablo',
-  partial: 'część',
-  classic: 'klasyczny',
+  partial: 'partial',
+  classic: 'classic',
 };
 
 const frameTypeEntries: DiabloLegendEntry[] = [
-  { id: 'commercial', kind: 'frame', label: 'Komercyjny', className: 'is-work-commercial', detail: 'regularny projekt płatny, kolor obrysu ramki', coverage: 'supported' },
-  { id: 'rd', kind: 'frame', label: 'R&D', className: 'is-work-research_development', detail: 'eksperyment / inwestycja, kolor obrysu ramki', coverage: 'supported' },
-  { id: 'waiting', kind: 'frame', label: 'Poczekalnia', className: 'is-work-waiting_room', detail: 'deal lub temat bez pewności, kolor obrysu ramki', coverage: 'supported' },
-  { id: 'defensive', kind: 'frame', label: 'Defensive', className: 'is-work-defensive_maintenance', detail: 'maintenance / obrona relacji, kolor obrysu ramki', coverage: 'supported' },
-  { id: 'time-off', kind: 'frame', label: 'URLOP', className: 'is-work-time_off', detail: 'zaplanowana niedostępność; koszt nie pracuje na revenue', coverage: 'supported' },
-  { id: 'ghost', kind: 'frame', label: 'Ghost', className: 'is-ghost', detail: 'rezerwacja przyszłej sprzedaży, przerywany obrys', coverage: 'supported' },
+  { id: 'commercial', kind: 'frame', label: 'Commercial', className: 'is-work-commercial', detail: 'regular paid project, frame outline colour', coverage: 'supported' },
+  { id: 'rd', kind: 'frame', label: 'R&D', className: 'is-work-research_development', detail: 'experiment / investment, frame outline colour', coverage: 'supported' },
+  { id: 'waiting', kind: 'frame', label: 'Waiting room', className: 'is-work-waiting_room', detail: 'uncertain deal or opportunity, frame outline colour', coverage: 'supported' },
+  { id: 'defensive', kind: 'frame', label: 'Defensive', className: 'is-work-defensive_maintenance', detail: 'maintenance / relationship protection, frame outline colour', coverage: 'supported' },
+  { id: 'time-off', kind: 'frame', label: 'TIME OFF', className: 'is-work-time_off', detail: 'planned unavailability; cost does not generate revenue', coverage: 'supported' },
+  { id: 'ghost', kind: 'frame', label: 'Ghost', className: 'is-ghost', detail: 'future sales reservation, dashed outline', coverage: 'supported' },
 ];
 
 const benchLegendEntries: DiabloLegendEntry[] = [
-  { id: 'bench-critical', kind: 'person', label: 'Ławka krytyczna', className: 'is-bench-critical', detail: 'senior/lead albo wysoki koszt bez projektu', coverage: 'supported' },
-  { id: 'bench-warning', kind: 'person', label: 'Ławka warning', className: 'is-bench-warning', detail: 'osoba bez projektu wymaga decyzji', coverage: 'supported' },
-  { id: 'bench-watch', kind: 'person', label: 'Ławka watch', className: 'is-bench-watch', detail: 'niższy poziom obserwacji ławki', coverage: 'supported' },
-  { id: 'low-value-assignment', kind: 'person', label: 'Niska wartość', className: 'is-suspicious-assignment', detail: 'przypisanie nie domyka kosztu lub targetu osoby', coverage: 'supported' },
-  { id: 'bench-footprint', kind: 'person', label: 'Footprint', className: 'is-bench-footprint', detail: 'liczba kwadratów osoby na ławce pokazuje skalę problemu', coverage: 'supported' },
+  { id: 'bench-critical', kind: 'person', label: 'Critical bench', className: 'is-bench-critical', detail: 'senior/lead or high cost without a project', coverage: 'supported' },
+  { id: 'bench-warning', kind: 'person', label: 'Bench warning', className: 'is-bench-warning', detail: 'person without a project needs a decision', coverage: 'supported' },
+  { id: 'bench-watch', kind: 'person', label: 'Bench watch', className: 'is-bench-watch', detail: 'lower-priority bench monitoring', coverage: 'supported' },
+  { id: 'low-value-assignment', kind: 'person', label: 'Low value', className: 'is-suspicious-assignment', detail: 'allocation does not cover the person\'s cost or target', coverage: 'supported' },
+  { id: 'bench-footprint', kind: 'person', label: 'Footprint', className: 'is-bench-footprint', detail: 'the number of a person\'s bench squares shows the scale of the issue', coverage: 'supported' },
 ];
 
 const layerLegendEntries: DiabloLegendEntry[] = [
-  { id: 'layer-work', kind: 'glyph', label: 'Work', code: 'K', className: 'is-layer-work', detail: 'koszt pracy / delivery', coverage: 'supported' },
-  { id: 'layer-admin', kind: 'glyph', label: 'Admin', code: 'B', className: 'is-layer-admin', detail: 'biuro, administracja, overhead', coverage: 'supported' },
-  { id: 'layer-sales', kind: 'glyph', label: 'Sales', code: 'S', className: 'is-layer-sales', detail: 'sprzedaż / marketing', coverage: 'supported' },
-  { id: 'layer-margin', kind: 'glyph', label: 'Margin', code: 'M', className: 'is-layer-margin', detail: 'target/marża osoby', coverage: 'supported' },
+  { id: 'layer-work', kind: 'glyph', label: 'Work', code: 'K', className: 'is-layer-work', detail: 'labour / delivery cost', coverage: 'supported' },
+  { id: 'layer-admin', kind: 'glyph', label: 'Admin', code: 'B', className: 'is-layer-admin', detail: 'office, administration, overhead', coverage: 'supported' },
+  { id: 'layer-sales', kind: 'glyph', label: 'Sales', code: 'S', className: 'is-layer-sales', detail: 'sales / marketing', coverage: 'supported' },
+  { id: 'layer-margin', kind: 'glyph', label: 'Margin', code: 'M', className: 'is-layer-margin', detail: 'person\'s target/margin', coverage: 'supported' },
 ];
 
 const legendTabs: DiabloLegendTab[] = [
   {
     id: 'colors',
-    label: 'Kolory',
-    description: 'Ramki i główne sygnały skanowania z inventory view.',
+    label: 'Colours',
+    description: 'Frames and key visual signals in the inventory view.',
     groups: [
       {
-        title: 'Patterny',
+        title: 'Patterns',
         entries: visualPatterns.map((pattern) => ({
           id: pattern.id,
           kind: 'tone',
@@ -99,13 +99,13 @@ const legendTabs: DiabloLegendTab[] = [
           coverage: pattern.id === 'mixed' ? 'partial' : 'supported',
         })),
       },
-      { title: 'Typ ramki', entries: frameTypeEntries },
+      { title: 'Frame type', entries: frameTypeEntries },
     ],
   },
   {
     id: 'tiles',
-    label: 'Kafelki',
-    description: 'Znaczenie kwadratów, inicjałów, warstw kosztu i mikro-badge.',
+    label: 'Tiles',
+    description: 'Meaning of squares, initials, cost layers and micro-badges.',
     groups: [
       {
         title: 'Skill / seniority',
@@ -115,22 +115,22 @@ const legendTabs: DiabloLegendTab[] = [
             kind: 'glyph' as const,
             label: item.label,
             code: item.glyph,
-            detail: 'mikro-badge na kafelku przypisanej osoby',
+            detail: 'micro-badge on an allocated person\'s tile',
             coverage: 'supported' as const,
           })),
           ...visualSeniorityLegend.map((item) => ({
             id: `seniority-${item}`,
             kind: 'glyph' as const,
-            label: `Poziom ${item}`,
+            label: `Level ${item}`,
             code: item,
-            detail: 'seniority osoby na kafelku',
+            detail: 'person\'s seniority on the tile',
             coverage: 'supported' as const,
           })),
         ],
       },
-      { title: 'Warstwy osoby', entries: layerLegendEntries },
+      { title: 'Person layers', entries: layerLegendEntries },
       {
-        title: 'Geometria ramki',
+        title: 'Frame geometry',
         entries: frameGeometryLegend.map((item) => ({
           id: item.id,
           kind: 'frame',
@@ -144,12 +144,12 @@ const legendTabs: DiabloLegendTab[] = [
   },
   {
     id: 'people',
-    label: 'Ludzie',
-    description: 'Ławka, niedociążenie i widoczność osób poza projektem.',
+    label: 'People',
+    description: 'Bench, underutilisation and visibility of people without projects.',
     groups: [
-      { title: 'Ławka Diablo', entries: benchLegendEntries },
+      { title: 'Diablo bench', entries: benchLegendEntries },
       {
-        title: 'Stany osoby z klasycznego inventory',
+        title: 'Person states from the classic inventory',
         entries: personCardStateLegend.map((item) => ({
           id: item.id,
           kind: 'person',
@@ -165,11 +165,11 @@ const legendTabs: DiabloLegendTab[] = [
   },
   {
     id: 'traffic',
-    label: 'Ruch',
-    description: 'Zmiany, handoffy, Plan B i inne markery spotkania.',
+    label: 'Moves',
+    description: 'Changes, handoffs, Plan B and other meeting markers.',
     groups: [
       {
-        title: 'Markery spotkania',
+        title: 'Meeting markers',
         entries: meetingMarkerLegend.map((item) => ({
           id: item.id,
           kind: 'marker',
@@ -184,7 +184,7 @@ const legendTabs: DiabloLegendTab[] = [
         })),
       },
       {
-        title: 'Relacje',
+        title: 'Relationships',
         entries: relationshipLegend.map((item) => ({
           id: item.id,
           kind: 'relationship',
@@ -200,11 +200,11 @@ const legendTabs: DiabloLegendTab[] = [
   },
   {
     id: 'project',
-    label: 'Projekt',
-    description: 'Project-state chips z klasycznego boardu i ich status w Diablo.',
+    label: 'Project',
+    description: 'Project status badges from the classic board and their status in Diablo.',
     groups: [
       {
-        title: 'Stan projektu',
+        title: 'Project status',
         entries: projectInventoryStateLegend.map((item) => ({
           id: item.id,
           kind: 'project',
@@ -216,7 +216,7 @@ const legendTabs: DiabloLegendTab[] = [
         })),
       },
       {
-        title: 'Tygodnie',
+        title: 'Weeks',
         entries: weeklySlotLegend.map((item) => ({
           id: item.id,
           kind: 'week',
@@ -249,26 +249,26 @@ export function DiabloFloatingPanels({
       >
         <header onPointerDown={(event) => onPanelPointerDown(event, 'legend')}>
           <div>
-            <strong>Legenda</strong>
-            <span>{isLegendCollapsed ? 'zwinięta / status zapamiętany' : 'pełny inventory view / status Diablo'}</span>
+            <strong>Legend</strong>
+            <span>{isLegendCollapsed ? 'collapsed / state saved' : 'full inventory view / Diablo status'}</span>
           </div>
           <div className="diablo-panel-actions">
-            <TrafficTooltip label={isLegendCollapsed ? 'Rozwiń legendę Diablo' : 'Zwiń legendę Diablo'} placement="top">
+            <TrafficTooltip label={isLegendCollapsed ? 'Expand Diablo legend' : 'Collapse Diablo legend'} placement="top">
               <button
                 aria-controls="diablo-legend-content"
                 aria-expanded={!isLegendCollapsed}
                 type="button"
                 onClick={onToggleLegendCollapsed}
               >
-                {isLegendCollapsed ? 'Rozwiń' : 'Zwiń'}
+                {isLegendCollapsed ? 'Expand' : 'Collapse'}
               </button>
             </TrafficTooltip>
-            <HelpButton label="Wyjaśnij legendę" topicId="visual-inventory" onOpenHelp={onOpenHelp} />
+            <HelpButton label="Explain the legend" topicId="visual-inventory" onOpenHelp={onOpenHelp} />
           </div>
         </header>
         {!isLegendCollapsed ? (
           <div id="diablo-legend-content" className="diablo-legend-content">
-            <div className="diablo-legend-tabs" aria-label="Sekcje legendy Diablo">
+            <div className="diablo-legend-tabs" aria-label="Diablo legend sections">
               {legendTabs.map((tab) => (
                 <button
                   aria-pressed={activeLegendTab.id === tab.id}
@@ -281,7 +281,7 @@ export function DiabloFloatingPanels({
                 </button>
               ))}
             </div>
-            <div className="diablo-legend-list" aria-label={`Legenda Diablo: ${activeLegendTab.label}`}>
+            <div className="diablo-legend-list" aria-label={`Diablo legend: ${activeLegendTab.label}`}>
               <p className="diablo-legend-description">{activeLegendTab.description}</p>
               {activeLegendTab.groups.map((group) => (
                 <section className="diablo-legend-group" key={group.title}>

@@ -4,7 +4,7 @@ import { generateReviewSnapshot } from './reviewSnapshot';
 
 const period = {
   id: '2026-03',
-  label: 'Marzec 2026',
+  label: 'March 2026',
   granularity: 'month',
   startsOn: '2026-03-01',
   endsOn: '2026-03-31',
@@ -35,7 +35,7 @@ const project = {
   stage: 'signed',
   budgetK: 10,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: period.id,
   rateConfig: { companyTargetRatePlnH: 250 },
   requirements: [],
@@ -74,19 +74,19 @@ describe('review snapshot', () => {
         id: 'risk-1',
         severity: 'medium',
         title: 'Target pressure',
-        detail: 'Brakuje 5k.',
+        detail: '5k short.',
       }],
     });
 
     expect(snapshot).toContain('PM Traffic Management review snapshot');
-    expect(snapshot).toContain('Period: Marzec 2026');
+    expect(snapshot).toContain('Period: March 2026');
     expect(snapshot).toContain('- Target revenue: 15k');
-    expect(snapshot).toContain('- [medium] Target pressure: Brakuje 5k.');
+    expect(snapshot).toContain('- [medium] Target pressure: 5k short.');
     expect(snapshot).toContain('- Client / Build: 10/10k allocated');
     expect(snapshot).toContain("- Oakley: 40/160h");
   });
 
-  it('includes AI Assisted Planning results when available', () => {
+  it('includes AI planning assistant results when available', () => {
     const snapshot = generateReviewSnapshot({
       allocations: [allocation],
       aiOpportunityCheck: {
@@ -150,8 +150,8 @@ describe('review snapshot', () => {
       risks: [],
     });
 
-    expect(snapshot).toContain('AI Assisted Planning');
-    expect(snapshot).toContain('Werdykt: pursue_with_changes (Pewność: średnia, źródło: analiza testowa)');
+    expect(snapshot).toContain('AI planning assistant');
+    expect(snapshot).toContain('Verdict: pursue_with_changes (Confidence: medium, source: test analysis)');
     expect(snapshot).toContain('- Backend is the bottleneck.');
     expect(snapshot).toContain('Next scenario: Duplicate the month and move backend hours.');
   });

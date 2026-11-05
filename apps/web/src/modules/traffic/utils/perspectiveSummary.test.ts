@@ -4,7 +4,7 @@ import { generatePerspectiveSummary } from './perspectiveSummary';
 
 const month = {
   id: '2026-03',
-  label: 'Marzec 2026',
+  label: 'March 2026',
   granularity: 'month',
   startsOn: '2026-03-01',
   endsOn: '2026-03-31',
@@ -35,7 +35,7 @@ const project = {
   stage: 'signed',
   budgetK: 10,
   probability: 1,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: month.id,
   rateConfig: { companyTargetRatePlnH: 250 },
   requirements: [],
@@ -71,7 +71,7 @@ describe('perspective summary weekly warnings', () => {
     expect(summary[0]).toMatchObject({
       id: 'weekly-delivery-overload',
       severity: 'high',
-      title: 'Tygodniowe przeciążenie realizacji',
+      title: 'Weekly delivery overload',
     });
     expect(summary[0].detail).toContain('Client');
   });
@@ -89,7 +89,7 @@ describe('perspective summary weekly warnings', () => {
     expect(summary[0]).toMatchObject({
       id: 'weekly-people-overload',
       severity: 'high',
-      title: 'Tygodniowe przeciążenie ludzi',
+      title: 'Weekly people overload',
     });
     expect(summary[0].detail).toContain("Oakley");
   });
@@ -106,7 +106,7 @@ describe('perspective summary weekly warnings', () => {
 
     expect(summary[0]).toMatchObject({
       id: 'finance-no-validation-warnings',
-      title: 'Brak zapisanych ostrzeżeń',
+      title: 'No saved warnings',
     });
     expect(summary).toHaveLength(1);
     expect(summary.map((item) => item.id)).not.toContain('weekly-delivery-overload');
@@ -140,9 +140,9 @@ describe('perspective summary weekly warnings', () => {
 
     expect(summary[0]).toMatchObject({
       id: 'ghost-pipeline-capacity',
-      title: 'Rezerwacja pod pipeline',
+      title: 'Pipeline reservation',
     });
-    expect(summary[0].detail).toContain('20k w planie');
-    expect(summary[0].detail).toContain('8k zarezerwowane');
+    expect(summary[0].detail).toContain('20k planned');
+    expect(summary[0].detail).toContain('8k reserved');
   });
 });

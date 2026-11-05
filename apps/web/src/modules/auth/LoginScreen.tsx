@@ -12,12 +12,12 @@ interface LoginScreenProps {
 }
 
 const errorMessages: Record<string, string> = {
-  auth_not_configured: 'Logowanie firmowe nie jest obecnie dostępne. Skontaktuj się z administratorem PTM.',
-  invalid_response: 'Odpowiedź logowania była niepełna albo wygasła. Spróbuj ponownie.',
-  saml_disabled: 'Logowanie firmowe jest obecnie wyłączone przez administratora.',
-  saml_failed: 'Nie udało się potwierdzić logowania w Google Workspace. Spróbuj ponownie lub skontaktuj się z administratorem.',
-  unauthorized_email: 'To konto należy do organizacji, ale nie ma dostępu do PTM.',
-  wrong_workspace: 'Użyj konta należącego do właściwej organizacji Google Workspace.',
+  auth_not_configured: 'Company sign-in is currently unavailable. Contact your PTM administrator.',
+  invalid_response: 'The sign-in response was incomplete or expired. Please try again.',
+  saml_disabled: 'Company sign-in is currently disabled by your administrator.',
+  saml_failed: 'Could not verify your Google Workspace sign-in. Try again or contact your administrator.',
+  unauthorized_email: 'This account belongs to the organization but does not have access to PTM.',
+  wrong_workspace: 'Use an account from the correct Google Workspace organization.',
 };
 
 export function LoginScreen({ mode, onRetry, workspaceDomain }: LoginScreenProps) {
@@ -49,17 +49,17 @@ export function LoginScreen({ mode, onRetry, workspaceDomain }: LoginScreenProps
         </div>
 
         <div className="ptm-login-card">
-          <p className="ptm-login-eyebrow">Wewnętrzna tablica planowania</p>
-          <h1 id="ptm-login-title">Zaloguj się do PTM</h1>
+          <p className="ptm-login-eyebrow">Internal planning board</p>
+          <h1 id="ptm-login-title">Sign in to PTM</h1>
           <p className="ptm-login-intro">
-            Użyj firmowego konta Google Workspace.
-            {workspaceDomain ? ` Konto powinno należeć do domeny @${workspaceDomain}.` : ''}
+            Use your company Google Workspace account.
+            {workspaceDomain ? ` Your account must belong to the domain @${workspaceDomain}.` : ''}
           </p>
 
           {mode === 'loading' ? (
             <div className="ptm-login-status" role="status">
               <span className="ptm-login-spinner" />
-              Sprawdzamy bezpieczną sesję…
+              Checking your secure session…
             </div>
           ) : null}
 
@@ -68,7 +68,7 @@ export function LoginScreen({ mode, onRetry, workspaceDomain }: LoginScreenProps
               {authError || startError ? (
                 <div className="ptm-login-alert" role="alert">
                   {startError
-                    ? 'Nie udało się rozpocząć logowania. Spróbuj ponownie.'
+                    ? 'Could not start sign-in. Please try again.'
                     : errorMessages[authError || ''] || errorMessages.saml_failed}
                 </div>
               ) : null}
@@ -79,10 +79,10 @@ export function LoginScreen({ mode, onRetry, workspaceDomain }: LoginScreenProps
                 onClick={() => void handleLogin()}
               >
                 <span className="ptm-saml-login-mark" aria-hidden="true">SSO</span>
-                {isStarting ? 'Przekierowujemy…' : 'Zaloguj przez Google Workspace'}
+                {isStarting ? 'Redirecting…' : 'Sign in with Google Workspace'}
               </button>
               <p className="ptm-login-note">
-                Jeśli nie masz dostępu, skontaktuj się z administratorem PTM.
+                If you do not have access, contact your PTM administrator.
               </p>
             </>
           ) : null}
@@ -91,38 +91,38 @@ export function LoginScreen({ mode, onRetry, workspaceDomain }: LoginScreenProps
             <>
               <div className="ptm-login-alert" role="alert">
                 {mode === 'configuration_error'
-                  ? 'Logowanie firmowe nie jest obecnie dostępne. Skontaktuj się z administratorem PTM.'
-                  : 'Nie udało się połączyć z usługą logowania PTM.'}
+                  ? 'Company sign-in is currently unavailable. Contact your PTM administrator.'
+                  : 'Could not connect to the PTM sign-in service.'}
               </div>
               <button className="ptm-login-retry" type="button" onClick={onRetry}>
-                Spróbuj ponownie
+                Try again
               </button>
             </>
           ) : null}
         </div>
 
-        <p className="ptm-login-footer">Dostęp tylko dla zatwierdzonych członków organizacji.</p>
+        <p className="ptm-login-footer">Access is limited to approved organization members.</p>
       </section>
 
       <aside className="ptm-login-preview" aria-hidden="true">
         <div className="ptm-login-preview-copy">
-          <span>Plan tygodnia</span>
-          <h2>Wspólny obraz ludzi, projektów i ryzyka.</h2>
-          <p>Jedna bezpieczna przestrzeń do operacyjnego planowania capacity i przychodu.</p>
+          <span>Weekly plan</span>
+          <h2>A shared view of people, projects and risk.</h2>
+          <p>One secure space for operational capacity and revenue planning.</p>
         </div>
         <div className="ptm-login-board-preview">
           <div className="ptm-login-frame ptm-login-frame-people">
-            <span>Ludzie</span>
+            <span>People</span>
             <div className="ptm-login-person-row"><i>AK</i><b /><b /><b /></div>
             <div className="ptm-login-person-row"><i>MK</i><b /><b /></div>
           </div>
           <div className="ptm-login-frame ptm-login-frame-project">
-            <span>Projekt / Delivery</span>
+            <span>Project / Delivery</span>
             <div className="ptm-login-tile-grid">
               <i>AK</i><i>AK</i><i>MK</i><i>MK</i><i /><i />
             </div>
           </div>
-          <div className="ptm-login-signal"><strong>Bezpieczny plan</strong><span>Przychód i capacity pod kontrolą</span></div>
+          <div className="ptm-login-signal"><strong>A reliable plan</strong><span>Revenue and capacity under control</span></div>
         </div>
       </aside>
     </main>

@@ -51,8 +51,8 @@ export function createProjectDraft(periodId: string, periods: Period[], nextNumb
 
   return {
     id: `project-${Date.now()}`,
-    name: `Nowy projekt ${nextNumber}`,
-    client: `Klient ${nextNumber}`,
+    name: `New project ${nextNumber}`,
+    client: `Client ${nextNumber}`,
     contractType: 'time_materials_capped',
     stage: 'possible',
     planningStatus: 'ghost',
@@ -64,7 +64,7 @@ export function createProjectDraft(periodId: string, periods: Period[], nextNumb
     },
     budgetK: 10,
     probability: 0.5,
-    startMonth: targetPeriod?.label || 'Nowy miesiac',
+    startMonth: targetPeriod?.label || 'New month',
     startPeriodId: periodId,
     endPeriodId: periodId,
     rateConfig: {
@@ -90,7 +90,7 @@ export function createProjectDraft(periodId: string, periods: Period[], nextNumb
 }
 
 export function createPersonDraft(nextNumber: number, options?: { monthlyCostK?: number }): Person {
-  const name = `Nowa osoba ${nextNumber}`;
+  const name = `New person ${nextNumber}`;
   const monthlyCostK = Math.max(1, Math.round(options?.monthlyCostK || 16));
   const workK = Math.max(1, Math.round(monthlyCostK * 0.625));
   const adminK = Math.max(workK, Math.round(monthlyCostK * 0.8125));

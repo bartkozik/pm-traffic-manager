@@ -60,16 +60,16 @@ import {
 import './AnalyticBoard.css';
 
 const roomPresets = [
-  { id: 'ptm-mvp', label: 'Plan bazowy' },
-  { id: 'ptm-sales-scenario', label: 'Scenariusz sprzedaży' },
-  { id: 'ptm-delivery-risk', label: 'Ryzyko realizacji' },
+  { id: 'ptm-mvp', label: 'Baseline plan' },
+  { id: 'ptm-sales-scenario', label: 'Sales scenario' },
+  { id: 'ptm-delivery-risk', label: 'Delivery risk' },
 ];
 
 type AnalyticPeriodRangeMonths = Extract<PeriodRangeMonths, 1 | 3>;
 
 const rangeOptions: Array<{ label: string; value: AnalyticPeriodRangeMonths }> = [
-  { label: 'Miesiąc', value: 1 },
-  { label: 'Kwartał', value: 3 },
+  { label: 'Month', value: 1 },
+  { label: 'Quarter', value: 3 },
 ];
 
 const filterOrder: AnalyticFilterId[] = [
@@ -211,9 +211,9 @@ export default function AnalyticBoard() {
       lens,
       lensLabel: lensLabels[lens],
       revenueView,
-      revenueViewLabel: revenueView === 'expected' ? 'Prognoza' : 'Tylko podpisane',
+      revenueViewLabel: revenueView === 'expected' ? 'Forecast' : 'Committed only',
       focusMode: periodRangeMonths === 3 ? 'quarter-table' : 'month-table',
-      focusModeLabel: periodRangeMonths === 3 ? 'Tabela kwartalna' : 'Tabela miesięczna',
+      focusModeLabel: periodRangeMonths === 3 ? 'Quarterly table' : 'Monthly table',
     });
     setCollaborationEditingTarget(null);
   }, [
@@ -265,7 +265,7 @@ export default function AnalyticBoard() {
   const archivedPeople = useMemo(() => (
     people
       .filter((person) => person.archivedAt)
-      .sort((first, second) => first.name.localeCompare(second.name, 'pl'))
+      .sort((first, second) => first.name.localeCompare(second.name, 'en-GB'))
   ), [people]);
   const visibleArchivePeriodIds = useMemo(
     () => visibleMonthPeriods.map((period) => period.id),
@@ -307,7 +307,7 @@ export default function AnalyticBoard() {
   const columns = useMemo<DataTableColumn<AnalyticBoardRow>[]>(() => [
     {
       accessor: 'personName',
-      title: 'Osoba',
+      title: 'Person',
       sortable: true,
       width: shouldUseDetailedTable ? 260 : 220,
       render: (row) => <PersonCell row={row} />,
@@ -315,7 +315,7 @@ export default function AnalyticBoard() {
     ...(shouldUseDetailedTable ? [
       {
         accessor: 'rangeUtilizationPercent',
-        title: 'Utyl.',
+        title: 'Util.',
         sortable: true,
         width: 92,
         textAlign: 'right',
@@ -331,7 +331,7 @@ export default function AnalyticBoard() {
       },
       {
         accessor: 'rangeHours',
-        title: 'Godz.',
+        title: 'Hours',
         sortable: true,
         width: 96,
         textAlign: 'right',
@@ -339,7 +339,7 @@ export default function AnalyticBoard() {
       },
       {
         accessor: 'rangeProjectCount',
-        title: 'Projekty',
+        title: 'Projects',
         sortable: true,
         width: 104,
         textAlign: 'right',
@@ -355,7 +355,7 @@ export default function AnalyticBoard() {
       },
       {
         accessor: 'rangeRiskCount',
-        title: 'Sygnały',
+        title: 'Signals',
         sortable: true,
         width: 172,
         render: (row: AnalyticBoardRow) => <SignalStrip codes={row.signalCodes} />,
@@ -381,11 +381,11 @@ export default function AnalyticBoard() {
   ], [periodRangeMonths, shouldUseDetailedTable, visibleMonthPeriods]);
 
   const canOpenCustomRoom = sanitizeRoomName(customRoomName) !== '' && sanitizeRoomName(customRoomName) !== roomName;
-  const headerSyncLabel = isConnected && isSynced ? 'Online' : isConnected ? 'Łączenie' : 'Offline';
-  const headerSyncDetail = isConnected && isSynced ? 'współpraca' : isConnected ? 'sync' : 'lokalnie';
+  const headerSyncLabel = isConnected && isSynced ? 'Online' : isConnected ? 'Connecting' : 'Offline';
+  const headerSyncDetail = isConnected && isSynced ? 'collaboration' : isConnected ? 'sync' : 'local';
   const syncDetail = isConnected && isSynced
-    ? 'Współpraca online działa. Analytic Board używa tych samych danych trwałych co Diablo Board.'
-    : 'Możesz analizować lokalny snapshot; dane zostaną zsynchronizowane, gdy połączenie wróci.';
+    ? 'Online collaboration is active. Analytic Board uses the same saved data as Diablo Board.'
+    : 'You can analyse the local snapshot; data will sync when the connection returns.';
   const isBackendBusy = durableLoadStatus === 'loading' || durableSaveStatus === 'saving';
   const shouldShowBackendPanel = isBackendBusy || durableLoadStatus === 'failed' || durableSaveStatus === 'failed';
   const diabloBoardPath = host && wsPort
@@ -489,7 +489,7 @@ export default function AnalyticBoard() {
 
   const handleRestorePerson = (personId: string, personName: string) => {
     restorePerson(personId, visibleArchivePeriodIds);
-    publishPresenceAction('edit', `Przywrócił osobę: ${personName}`, {
+    publishPresenceAction('edit', `Restored person: ${personName}`, {
       type: 'person',
       id: personId,
       label: personName,
@@ -505,7 +505,7 @@ export default function AnalyticBoard() {
       <MantineProvider forceColorScheme={theme === 'day' ? 'light' : 'dark'}>
         <div className={`traffic-app analytic-app is-${theme}`}>
           <Helmet><title>Analytic Board</title></Helmet>
-          <div className="analytic-empty-state">Ładuję zakres planowania...</div>
+          <div className="analytic-empty-state">Loading planning range...</div>
         </div>
       </MantineProvider>
     );
@@ -526,7 +526,7 @@ export default function AnalyticBoard() {
         <TrafficHeader
           boardViewLink={{
             label: 'Diablo Board',
-            title: 'Przejdź do Diablo Board dla tej samej tablicy',
+            title: 'Open Diablo Board for the same board',
             to: diabloBoardPath,
           }}
           canOpenCustomRoom={canOpenCustomRoom}
@@ -568,25 +568,25 @@ export default function AnalyticBoard() {
 
         {shouldShowBackendPanel ? (
           <section className={`traffic-backend-panel is-${durableLoadStatus === 'failed' || durableSaveStatus === 'failed' ? 'danger' : 'loading'}`}>
-            {durableLoadStatus === 'loading' ? 'Ładuję trwały snapshot z API.' : durableSaveStatus === 'saving' ? 'Synchronizuję ostatnie zmiany.' : 'Backend nie potwierdził aktualnego stanu.'}
+            {durableLoadStatus === 'loading' ? 'Loading the saved snapshot from the API.' : durableSaveStatus === 'saving' ? 'Syncing recent changes.' : 'The backend has not confirmed the current state.'}
           </section>
         ) : null}
 
         <main className="analytic-main">
           <section
             className="analytic-toolbar"
-            aria-label="Zakres Analytic Board"
+            aria-label="Analytic Board range"
             data-collaboration-target-id="analytic-toolbar"
-            data-collaboration-target-label="Zakres Analytic Board"
+            data-collaboration-target-label="Analytic Board range"
             data-collaboration-target-type="section"
           >
             <PeriodTimelineNavigator
               activePeriodId={activePeriodId}
-              ariaLabel="Zakres czasu Analytic Board"
+              ariaLabel="Analytic Board time range"
               className="analytic-period-timeline"
               collapsible
               defaultOpen
-              description={`Read-only podgląd alokacji ludzi: ${periodRangeMonths === 3 ? '3 miesiące' : '1 miesiąc'}`}
+              description={`Read-only view of people allocations: ${periodRangeMonths === 3 ? '3 months' : '1 month'}`}
               heading="Analytic Board"
               monthPeriods={monthPeriods}
               rangeMonths={periodRangeMonths}
@@ -605,42 +605,42 @@ export default function AnalyticBoard() {
           >
             <summary>
               <div className="analytic-context-copy">
-                <strong>Ustawienia i sygnały</strong>
+                <strong>Settings and signals</strong>
                 <span>
                   {activeFilters.length || searchQuery.trim()
-                    ? `${activeFilters.length} filtrów${searchQuery.trim() ? ' + szukanie' : ''}`
-                    : 'podsumowanie, filtry i legenda'}
+                    ? `${activeFilters.length} filters${searchQuery.trim() ? ' + search' : ''}`
+                    : 'summary, filters, and legend'}
                 </span>
               </div>
               <div className="analytic-context-summary">
-                <span>{visibleRows.length}/{analyticRows.length} osób</span>
+                <span>{visibleRows.length}/{analyticRows.length} people</span>
                 <span>{formatMoneyK(summary.revenueK)}</span>
-                <span>{summary.signalCount} sygnałów</span>
+                <span>{summary.signalCount} signals</span>
               </div>
-              <span className="analytic-context-toggle">{isContextPanelOpen ? 'Zwiń' : 'Rozwiń'}</span>
+              <span className="analytic-context-toggle">{isContextPanelOpen ? 'Collapse' : 'Expand'}</span>
             </summary>
 
             <div className="analytic-context-panel-body">
               <section
                 className="analytic-summary"
-                aria-label="Podsumowanie widocznej tabeli"
+                aria-label="Visible table summary"
                 data-collaboration-target-id="analytic-summary"
-                data-collaboration-target-label="Podsumowanie Analytic Board"
+                data-collaboration-target-label="Analytic Board summary"
                 data-collaboration-target-type="section"
               >
-                <SummaryMetric label="Osoby" value={`${visibleRows.length}/${analyticRows.length}`} />
+                <SummaryMetric label="People" value={`${visibleRows.length}/${analyticRows.length}`} />
                 <SummaryMetric label="Revenue" value={formatMoneyK(summary.revenueK)} />
-                <SummaryMetric label="Godziny" value={`${formatNumber(summary.hours)}h`} />
-                <SummaryMetric label="Utylizacja" value={`${summary.utilizationPercent}%`} />
+                <SummaryMetric label="Hours" value={`${formatNumber(summary.hours)}h`} />
+                <SummaryMetric label="Utilization" value={`${summary.utilizationPercent}%`} />
                 <SummaryMetric label="Bench" value={formatMoneyK(summary.benchK)} />
-                <SummaryMetric label="Sygnały" value={String(summary.signalCount)} />
+                <SummaryMetric label="Signals" value={String(summary.signalCount)} />
               </section>
 
               <section
                 className="analytic-filters"
-                aria-label="Filtry wzorców"
+                aria-label="Pattern filters"
                 data-collaboration-target-id="analytic-filters"
-                data-collaboration-target-label="Filtry wzorców Analytic Board"
+                data-collaboration-target-label="Analytic Board pattern filters"
                 data-collaboration-target-type="section"
               >
                 <div className="analytic-filter-list">
@@ -662,7 +662,7 @@ export default function AnalyticBoard() {
                       setActiveFilters([]);
                       setSearchQuery('');
                     }}>
-                      Wyczyść filtry
+                      Clear filters
                     </button>
                   </div>
                 ) : null}
@@ -679,16 +679,16 @@ export default function AnalyticBoard() {
 
           <section
             className="analytic-table-controls"
-            aria-label="Wyszukiwarka tabeli Analytic Board"
+            aria-label="Analytic Board table search"
             data-collaboration-target-id="analytic-table-search"
-            data-collaboration-target-label="Wyszukiwarka tabeli Analytic Board"
+            data-collaboration-target-label="Analytic Board table search"
             data-collaboration-target-type="section"
           >
             <label className="analytic-search">
-              <span>Szukaj</span>
+              <span>Search</span>
               <input
                 type="search"
-                placeholder="osoba, projekt, skill, sygnał"
+                placeholder="person, project, skill, signal"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
@@ -701,7 +701,7 @@ export default function AnalyticBoard() {
                 type="button"
                 onClick={() => setIsArchiveModalOpen(true)}
               >
-                Zarchiwizowani
+                Archived people
                 <span>{archivedPeople.length}</span>
               </button>
             </div>
@@ -717,9 +717,9 @@ export default function AnalyticBoard() {
 
           <section
             className={`analytic-table-shell ${shouldUseDetailedTable ? 'is-detailed' : 'is-compact'}`}
-            aria-label="Tabela Analytic Board"
+            aria-label="Analytic Board table"
             data-collaboration-target-id="analytic-table"
-            data-collaboration-target-label="Tabela alokacji Analytic Board"
+            data-collaboration-target-label="Analytic Board allocation table"
             data-collaboration-target-type="section"
           >
             <DataTable
@@ -730,7 +730,7 @@ export default function AnalyticBoard() {
               horizontalSpacing="sm"
               idAccessor="id"
               minHeight={420}
-              noRecordsText="Brak osób spełniających filtry."
+              noRecordsText="No people match the filters."
               pinFirstColumn
               records={visibleRows}
               rowClassName={(row) => getRowClassName(row)}
@@ -826,7 +826,7 @@ function PeriodCell({ cell, compact = false }: { cell: AnalyticPeriodCell; compa
       <div className="analytic-assignment-list">
         {cell.assignments.length ? cell.assignments.map((assignment) => (
           <AssignmentChip key={assignment.id} assignment={assignment} compact={compact} />
-        )) : <span className="analytic-empty-cell">Brak alokacji</span>}
+        )) : <span className="analytic-empty-cell">No allocations</span>}
       </div>
     </div>
   );
@@ -904,26 +904,26 @@ function ArchivedPeopleModal({
         id="analytic-archive-modal"
         role="dialog"
         data-collaboration-target-id="analytic-archive-modal"
-        data-collaboration-target-label="Zarchiwizowane osoby Analytic Board"
+        data-collaboration-target-label="Analytic Board archived people"
         data-collaboration-target-type="section"
       >
         <header>
           <div>
-            <strong id="analytic-archive-modal-title">Zarchiwizowane osoby</strong>
-            <span>{people.length ? `${people.length} poza aktywnymi KPI i tabelą` : 'Archiwum jest puste'}</span>
+            <strong id="analytic-archive-modal-title">Archived people</strong>
+            <span>{people.length ? `${people.length} excluded from active KPIs and the table` : 'Archive is empty'}</span>
           </div>
           <button className="analytic-archive-close" type="button" onClick={onClose}>
-            Zamknij
+            Close
           </button>
         </header>
         {people.length ? (
           <div className="analytic-archive-search">
             <label htmlFor="analytic-archive-search-input">
-              Szukaj
+              Search
               <input
                 autoComplete="off"
                 id="analytic-archive-search-input"
-                placeholder="Imię, rola, skill..."
+                placeholder="Name, role, skill..."
                 type="search"
                 value={archiveSearchQuery}
                 onChange={(event) => setArchiveSearchQuery(event.target.value)}
@@ -931,8 +931,8 @@ function ArchivedPeopleModal({
             </label>
             <span>
               {normalizedArchiveSearchQuery
-                ? `${filteredPeople.length} z ${people.length} pasuje`
-                : `${people.length} w archiwum`}
+                ? `${filteredPeople.length} of ${people.length} match`
+                : `${people.length} in archive`}
             </span>
           </div>
         ) : null}
@@ -941,11 +941,11 @@ function ArchivedPeopleModal({
             <table className="analytic-archive-table">
               <thead>
                 <tr>
-                  <th>Osoba</th>
-                  <th>Rola</th>
-                  <th>Skille</th>
+                  <th>Person</th>
+                  <th>Role</th>
+                  <th>Skills</th>
                   <th>Status</th>
-                  <th aria-label="Akcje" />
+                  <th aria-label="Actions" />
                 </tr>
               </thead>
               <tbody>
@@ -969,12 +969,12 @@ function ArchivedPeopleModal({
                       <div className="analytic-skill-strip">
                         {person.skillIds.length
                           ? person.skillIds.map((skillId) => <em key={skillId}>{skillId}</em>)
-                          : <span className="analytic-muted">Brak</span>}
+                          : <span className="analytic-muted">None</span>}
                       </div>
                     </td>
                     <td>
                       <span className="analytic-archive-badge">
-                        Zarchiwizowana{person.archivedAt ? ` ${formatArchivedAt(person.archivedAt)}` : ''}
+                        Archived{person.archivedAt ? ` ${formatArchivedAt(person.archivedAt)}` : ''}
                       </span>
                     </td>
                     <td>
@@ -983,7 +983,7 @@ function ArchivedPeopleModal({
                         type="button"
                         onClick={() => onRestorePerson(person.id, person.name)}
                       >
-                        Przywróć
+                        Restore
                       </button>
                     </td>
                   </tr>
@@ -994,8 +994,8 @@ function ArchivedPeopleModal({
         ) : (
           <div className="analytic-archive-empty">
             {people.length
-              ? 'Brak zarchiwizowanych osób pasujących do wyszukiwania.'
-              : 'Nie ma żadnych zarchiwizowanych osób w tej tablicy.'}
+              ? 'No archived people match the search.'
+              : 'There are no archived people on this board.'}
           </div>
         )}
       </section>
@@ -1005,7 +1005,7 @@ function ArchivedPeopleModal({
 
 function AnalyticCardList({ rows, periods }: { rows: AnalyticBoardRow[]; periods: AnalyticPeriodCell['period'][] }) {
   return (
-    <section className="analytic-card-list" aria-label="Lista Analytic Board">
+    <section className="analytic-card-list" aria-label="Analytic Board list">
       {rows.length ? rows.map((row) => (
         <article className={`analytic-row-card ${getRowClassName(row)}`} key={row.id}>
           <header>
@@ -1025,7 +1025,7 @@ function AnalyticCardList({ rows, periods }: { rows: AnalyticBoardRow[]; periods
           </div>
         </article>
       )) : (
-        <div className="analytic-empty-state">Brak osób spełniających filtry.</div>
+        <div className="analytic-empty-state">No people match the filters.</div>
       )}
     </section>
   );
@@ -1035,7 +1035,7 @@ function SignalStrip({ codes, compact = false }: { codes: string[]; compact?: bo
   if (!codes.length) return <span className="analytic-muted">OK</span>;
   const visibleCodeLimit = compact ? 4 : 6;
   const hiddenCodes = codes.slice(visibleCodeLimit);
-  const hiddenSignalSummary = ['Ukryte sygnały:', ...hiddenCodes.map(formatHiddenSignalCode)].join('\n');
+  const hiddenSignalSummary = ['Hidden signals:', ...hiddenCodes.map(formatHiddenSignalCode)].join('\n');
   const hiddenSignalAriaLabel = hiddenCodes.map(formatHiddenSignalCode).join('; ');
 
   return (
@@ -1056,7 +1056,7 @@ function SignalStrip({ codes, compact = false }: { codes: string[]; compact?: bo
           placement="top"
         >
           <button
-            aria-label={`Ukryte sygnały: ${hiddenSignalAriaLabel}`}
+            aria-label={`Hidden signals: ${hiddenSignalAriaLabel}`}
             className="analytic-signal-overflow-button"
             type="button"
           >
@@ -1089,15 +1089,15 @@ function AnalyticLegend({
   return (
     <section
       className={`analytic-legend ${isCollapsed ? 'is-collapsed' : ''}`}
-      aria-label="Legenda sygnałów Analytic Board"
+      aria-label="Analytic Board signal legend"
       data-collaboration-target-id="analytic-legend"
-      data-collaboration-target-label="Legenda Analytic Board"
+      data-collaboration-target-label="Analytic Board legend"
       data-collaboration-target-type="section"
     >
       <header>
         <div>
           <strong>Legenda</strong>
-          <span>{isCollapsed ? 'zwinięta' : activeSection.description}</span>
+          <span>{isCollapsed ? 'collapsed' : activeSection.description}</span>
         </div>
         <button
           aria-controls="analytic-legend-content"
@@ -1106,12 +1106,12 @@ function AnalyticLegend({
           type="button"
           onClick={onToggleCollapsed}
         >
-          {isCollapsed ? 'Rozwiń' : 'Zwiń'}
+          {isCollapsed ? 'Expand' : 'Collapse'}
         </button>
       </header>
       {!isCollapsed ? (
         <div id="analytic-legend-content" className="analytic-legend-content">
-          <div className="analytic-legend-tabs" role="tablist" aria-label="Sekcje legendy Analytic Board">
+          <div className="analytic-legend-tabs" role="tablist" aria-label="Analytic Board legend sections">
             {analyticLegendSections.map((section) => (
               <button
                 aria-selected={activeSection.id === section.id}
@@ -1125,7 +1125,7 @@ function AnalyticLegend({
               </button>
             ))}
           </div>
-          <div className="analytic-legend-items" role="tabpanel" aria-label={`Legenda: ${activeSection.label}`}>
+          <div className="analytic-legend-items" role="tabpanel" aria-label={`Legend: ${activeSection.label}`}>
             {activeSection.items.map((item) => (
               <article className={`analytic-legend-item is-kind-${item.kind} ${item.className}`} key={item.id}>
                 <i aria-hidden="true">{item.code}</i>
@@ -1193,7 +1193,7 @@ function formatNumber(value: number) {
 function formatArchivedAt(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleDateString('pl-PL', {
+  return date.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -1202,7 +1202,7 @@ function formatArchivedAt(value: string) {
 
 function normalizeArchiveSearchValue(value: string) {
   return value
-    .toLocaleLowerCase('pl-PL')
+    .toLocaleLowerCase('en-GB')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim();

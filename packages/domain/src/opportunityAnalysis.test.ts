@@ -555,7 +555,7 @@ describe('generateMonthOpportunityAnalysis', () => {
       ...baseSnapshot.projects[0],
       id: 'senior-time-off',
       name: 'Senior URLop',
-      client: 'URLOP',
+      client: 'TIME OFF',
       workType: 'time_off' as const,
       requirements: [],
       revenuePlan: [{ periodId: '2026-03', revenueK: 8, probability: 1 }],

@@ -332,54 +332,54 @@ export function getTileLayer(person: Person, tileIndex: number, periodId?: strin
 export function getContractTypeLabel(type: ContractType) {
   switch (type) {
     case 'hourly':
-      return 'T&M bez CAP';
+      return 'Uncapped T&M';
     case 'time_materials_capped':
-      return 'T&M z CAP';
+      return 'Capped T&M';
     case 'fixed_monthly':
-      return 'Stała kwota / miesiąc';
+      return 'Fixed monthly fee';
     case 'fixed_phase':
-      return 'Stała kwota / etap';
+      return 'Fixed phase fee';
     case 'multi_month_fixed':
-      return 'Stała kwota wielomiesięczna';
+      return 'Multi-month fixed fee';
   }
 }
 
 export function getStageLabel(stage: ProjectStage) {
   switch (stage) {
     case 'signed':
-      return 'Pewne';
+      return 'Confirmed';
     case 'likely':
-      return 'Prawdopodobne';
+      return 'Likely';
     case 'possible':
-      return 'Możliwe';
+      return 'Possible';
     case 'defensive':
-      return 'Defensywny';
+      return 'Defensive';
   }
 }
 
 export function getProjectPlanningStatusLabel(status: ProjectPlanningStatus | undefined) {
   switch (status) {
     case 'ghost':
-      return 'Szansa sprzedażowa';
+      return 'Sales opportunity';
     case 'active':
     default:
-      return 'Aktywny projekt';
+      return 'Active project';
   }
 }
 
 export function getProjectWorkTypeLabel(workType: ProjectWorkType | undefined) {
   switch (workType) {
     case 'research_development':
-      return 'R&D / eksperyment';
+      return 'R&D / experiment';
     case 'waiting_room':
-      return 'Poczekalnia';
+      return 'Waiting room';
     case 'defensive_maintenance':
-      return 'Defensywny maintenance';
+      return 'Defensive maintenance';
     case 'time_off':
-      return 'URLOP';
+      return 'TIME OFF';
     case 'commercial':
     default:
-      return 'Komercyjny';
+      return 'Commercial';
   }
 }
 

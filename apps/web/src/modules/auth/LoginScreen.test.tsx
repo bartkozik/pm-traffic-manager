@@ -10,9 +10,9 @@ describe('LoginScreen', () => {
   it('shows the Workspace domain and the single SSO action', () => {
     render(<LoginScreen mode="login" workspaceDomain="example.test" />);
 
-    expect(screen.getByRole('heading', { name: 'Zaloguj się do PTM' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Sign in to PTM' })).toBeInTheDocument();
     expect(screen.getByText(/@example.test/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Zaloguj przez Google Workspace' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sign in with Google Workspace' })).toBeInTheDocument();
     expect(screen.queryByText(/SAML|frontend|API/i)).not.toBeInTheDocument();
   });
 
@@ -21,6 +21,6 @@ describe('LoginScreen', () => {
 
     render(<LoginScreen mode="login" workspaceDomain="example.test" />);
 
-    expect(screen.getByRole('alert')).toHaveTextContent('nie ma dostępu do PTM');
+    expect(screen.getByRole('alert')).toHaveTextContent('does not have access to PTM');
   });
 });

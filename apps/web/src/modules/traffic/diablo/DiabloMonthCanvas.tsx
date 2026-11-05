@@ -388,13 +388,13 @@ export function DiabloMonthCanvas({
     monthClipboard.mode === 'projects_without_allocations'
   );
   const peopleClipboardSourceLabel = canPastePeopleClipboard && monthClipboard
-    ? `z: ${monthClipboard.sourcePeriodLabel}`
+    ? `from: ${monthClipboard.sourcePeriodLabel}`
     : null;
   const projectsClipboardSourceLabel = canPasteProjectsClipboard && monthClipboard
-    ? `z: ${monthClipboard.sourcePeriodLabel}`
+    ? `from: ${monthClipboard.sourcePeriodLabel}`
     : null;
-  const peoplePasteTitle = getClipboardPasteTitle(monthClipboard, canPastePeopleClipboard, 'ludzi');
-  const projectsPasteTitle = getClipboardPasteTitle(monthClipboard, canPasteProjectsClipboard, 'projektów');
+  const peoplePasteTitle = getClipboardPasteTitle(monthClipboard, canPastePeopleClipboard, 'people');
+  const projectsPasteTitle = getClipboardPasteTitle(monthClipboard, canPasteProjectsClipboard, 'projects');
   const hasProjectAllocations = useMemo(
     () => periodAllocations.some((allocation) => allocation.target !== 'bench' && projectsById.has(allocation.target)),
     [periodAllocations, projectsById]
@@ -558,26 +558,26 @@ export function DiabloMonthCanvas({
   const handleCopyPeopleWithAllocations = useCallback(() => {
     onCopyPeopleWithAllocations();
     closePeopleCopyMenu();
-    showToolbarFeedback('people', 'Skopiowano ludzi z alokacją');
+    showToolbarFeedback('people', 'Copied people with allocations');
   }, [closePeopleCopyMenu, onCopyPeopleWithAllocations, showToolbarFeedback]);
   const handleCopyPeopleWithoutAllocations = useCallback(() => {
     onCopyPeopleWithoutAllocations();
     closePeopleCopyMenu();
-    showToolbarFeedback('people', 'Skopiowano ludzi bez alokacji');
+    showToolbarFeedback('people', 'Copied people without allocations');
   }, [closePeopleCopyMenu, onCopyPeopleWithoutAllocations, showToolbarFeedback]);
   const handleCopyProjectsWithoutAllocations = useCallback(() => {
     onCopyProjectsWithoutAllocations();
-    showToolbarFeedback('projects', 'Skopiowano projekty');
+    showToolbarFeedback('projects', 'Copied projects');
   }, [onCopyProjectsWithoutAllocations, showToolbarFeedback]);
   const handlePastePeopleClipboard = useCallback(() => {
     const didPaste = onPastePeopleClipboard(period.id);
     if (didPaste === false) return;
-    showToolbarFeedback('people', 'Wklejono ludzi');
+    showToolbarFeedback('people', 'Pasted people');
   }, [onPastePeopleClipboard, period.id, showToolbarFeedback]);
   const handlePasteProjectsClipboard = useCallback(() => {
     const didPaste = onPasteProjectsClipboard(period.id);
     if (didPaste === false) return;
-    showToolbarFeedback('projects', 'Wklejono projekty');
+    showToolbarFeedback('projects', 'Pasted projects');
   }, [onPasteProjectsClipboard, period.id, showToolbarFeedback]);
   const handleResetProjectAllocations = useCallback(() => {
     if (!hasProjectAllocations) return;
@@ -590,8 +590,8 @@ export function DiabloMonthCanvas({
     setSelectedAllocationIds([]);
     setProjectAllocationResetConfirmationPending(false);
     showToolbarFeedback('projects', allocationResetScope === 'week'
-      ? 'Cofnięto przydziały tygodnia'
-      : 'Cofnięto przydziały');
+      ? 'Weekly allocations undone'
+      : 'Allocations undone');
   }, [
     allocationResetScope,
     hasProjectAllocations,
@@ -1801,7 +1801,7 @@ export function DiabloMonthCanvas({
       <div className="diablo-canvas-layout">
         <div
           ref={viewportRef}
-          aria-label="Zoomowalny canvas planowania Diablo"
+          aria-label="Zoomable Diablo planning canvas"
           className={`diablo-canvas-viewport ${scrollProxy.hasOverflow ? 'has-horizontal-scroll' : 'has-no-horizontal-scroll'} ${canvasInteractionClassName}`}
           role="region"
           tabIndex={0}
@@ -1822,35 +1822,35 @@ export function DiabloMonthCanvas({
           />
           <div
             ref={peopleControlPanelRef}
-            aria-label="Panel ludzi na canvasie"
+            aria-label="People panel on canvas"
             aria-hidden={isPeopleControlPanelHidden}
             className={`diablo-people-control-panel ${isPeopleControlPanelHidden ? 'is-hidden' : ''}`}
             style={peopleControlPanelStyle}
           >
-            <strong>Ludzie</strong>
-            <span>{activePeople.length} osób</span>
-            <span>{benchAlertSummary.severeCount} alertów</span>
+            <strong>People</strong>
+            <span>{activePeople.length} people</span>
+            <span>{benchAlertSummary.severeCount} alerts</span>
             <span>{benchAlertSummary.idleCostK}k idle</span>
             <details ref={peopleCopyMenuRef} className="diablo-control-menu">
-              <summary aria-label="Kopiuj sekcję ludzi">Kopiuj</summary>
+              <summary aria-label="Copy people section">Copy</summary>
               <div className="diablo-control-menu-options" role="menu">
-                <button type="button" role="menuitem" onClick={handleCopyPeopleWithAllocations}>Z alokacją</button>
-                <button type="button" role="menuitem" onClick={handleCopyPeopleWithoutAllocations}>Bez alokacji</button>
+                <button type="button" role="menuitem" onClick={handleCopyPeopleWithAllocations}>With allocations</button>
+                <button type="button" role="menuitem" onClick={handleCopyPeopleWithoutAllocations}>Without allocations</button>
               </div>
             </details>
             <button
               type="button"
-              aria-label="Wklej skopiowaną sekcję ludzi"
+              aria-label="Paste copied people section"
               disabled={!canPastePeopleClipboard}
               title={peoplePasteTitle}
               onClick={handlePastePeopleClipboard}
             >
-              Wklej
+              Paste
             </button>
             {peopleClipboardSourceLabel ? (
               <span
                 className="diablo-clipboard-source"
-                title={`Schowek ludzi: ${monthClipboard?.sourcePeriodLabel}`}
+                title={`People clipboard: ${monthClipboard?.sourcePeriodLabel}`}
               >
                 {peopleClipboardSourceLabel}
               </span>
@@ -1865,47 +1865,47 @@ export function DiabloMonthCanvas({
                 {toolbarFeedback.message}
               </output>
             ) : null}
-            <button type="button" aria-label="Sortuj osoby po skillach i nazwie" onClick={handleSortPeopleGrid}>Sortuj</button>
-            <button type="button" onClick={() => onCreatePerson()}>+ Osoba</button>
-            <button type="button" aria-label="Wyjaśnij paletę ludzi" onClick={() => onOpenHelp('people-palette')}>?</button>
+            <button type="button" aria-label="Sort people by skills and name" onClick={handleSortPeopleGrid}>Sort</button>
+            <button type="button" onClick={() => onCreatePerson()}>+ Person</button>
+            <button type="button" aria-label="Explain the people palette" onClick={() => onOpenHelp('people-palette')}>?</button>
           </div>
           <div
             ref={projectControlPanelRef}
-            aria-label="Panel projektów na canvasie"
+            aria-label="Projects panel on canvas"
             aria-hidden={isProjectControlPanelHidden}
             className={`diablo-project-control-panel ${isProjectControlPanelHidden ? 'is-hidden' : ''}`}
             style={projectControlPanelStyle}
           >
-            <strong>Projekty</strong>
+            <strong>Projects</strong>
             <span>{formatProjectFrameCount(projects.length)}</span>
             <span>{formatProjectMetricK(projectToolbarSummary.plannedCapacityK)} plan</span>
-            <span>{formatProjectMetricK(projectToolbarSummary.allocatedCapacityK)} alok.</span>
+            <span>{formatProjectMetricK(projectToolbarSummary.allocatedCapacityK)} allocated</span>
             <span className={projectToolbarSummary.gapK > 0 ? 'is-warning' : undefined}>
-              {formatProjectMetricK(projectToolbarSummary.gapK)} luka
+              {formatProjectMetricK(projectToolbarSummary.gapK)} gap
             </span>
             <span className={projectToolbarSummary.overflowK > 0 ? 'is-danger' : undefined}>
-              {projectToolbarSummary.overflowK > 0 ? '+' : ''}{formatProjectMetricK(projectToolbarSummary.overflowK)} poza
+              {projectToolbarSummary.overflowK > 0 ? '+' : ''}{formatProjectMetricK(projectToolbarSummary.overflowK)} uncovered
             </span>
             <button
               type="button"
-              aria-label="Kopiuj projekty bez alokacji"
+              aria-label="Copy projects without allocations"
               onClick={handleCopyProjectsWithoutAllocations}
             >
-              Kopiuj
+              Copy
             </button>
             <button
               type="button"
-              aria-label="Wklej skopiowane projekty bez alokacji"
+              aria-label="Paste copied projects without allocations"
               disabled={!canPasteProjectsClipboard}
               title={projectsPasteTitle}
               onClick={handlePasteProjectsClipboard}
             >
-              Wklej
+              Paste
             </button>
             {projectsClipboardSourceLabel ? (
               <span
                 className="diablo-clipboard-source"
-                title={`Schowek projektów: ${monthClipboard?.sourcePeriodLabel}`}
+                title={`Projects clipboard: ${monthClipboard?.sourcePeriodLabel}`}
               >
                 {projectsClipboardSourceLabel}
               </span>
@@ -1920,32 +1920,32 @@ export function DiabloMonthCanvas({
                 {toolbarFeedback.message}
               </output>
             ) : null}
-            <button type="button" aria-label="Sortuj projekty w siatce po kliencie i nazwie" onClick={handleSortProjectsGrid}>Sortuj</button>
+            <button type="button" aria-label="Sort projects in a grid by client and name" onClick={handleSortProjectsGrid}>Sort</button>
             <button
               type="button"
               aria-label={projectAllocationResetConfirmationPending
                 ? allocationResetScope === 'week'
-                  ? 'Potwierdź reset przydziałów do projektów w tym tygodniu'
-                  : 'Potwierdź reset przydziałów do projektów w tym miesiącu'
+                  ? 'Confirm resetting project allocations this week'
+                  : 'Confirm resetting project allocations this month'
                 : allocationResetScope === 'week'
-                  ? 'Resetuj przydziały do projektów w tym tygodniu'
-                  : 'Resetuj przydziały do projektów w tym miesiącu'}
+                  ? 'Reset project allocations this week'
+                  : 'Reset project allocations this month'}
               className={projectAllocationResetConfirmationPending ? 'is-confirming' : undefined}
               disabled={!hasProjectAllocations}
               title={hasProjectAllocations
                 ? projectAllocationResetConfirmationPending
                   ? allocationResetScope === 'week'
-                    ? 'Kliknij ponownie, aby cofnąć kafelki z aktywnego tygodnia na ławkę'
-                    : 'Kliknij ponownie, aby cofnąć wszystkie kafelki z projektów na ławkę'
+                    ? 'Click again to return tiles from the active week to the bench'
+                    : 'Click again to return all project tiles to the bench'
                   : allocationResetScope === 'week'
-                    ? 'Cofnij kafelki z aktywnego tygodnia na ławkę'
-                    : 'Cofnij wszystkie kafelki z projektów na ławkę'
+                    ? 'Return tiles from the active week to the bench'
+                    : 'Return all project tiles to the bench'
                 : allocationResetScope === 'week'
-                  ? 'Brak przydziałów do projektów w tym tygodniu'
-                  : 'Brak przydziałów do projektów w tym miesiącu'}
+                  ? 'No project allocations this week'
+                  : 'No project allocations this month'}
               onClick={handleResetProjectAllocations}
             >
-              {projectAllocationResetConfirmationPending ? 'Potwierdź' : 'Reset alok.'}
+              {projectAllocationResetConfirmationPending ? 'Confirm' : 'Reset allocations'}
             </button>
           </div>
           <div ref={worldRef} className="diablo-canvas-scale-shell" style={canvasScaleShellStyle}>
@@ -2006,7 +2006,7 @@ export function DiabloMonthCanvas({
                   }}
                 >
                   <strong>{formatSelectionCapacityLabel(selection)}</strong>
-                  <span>{interaction?.type === 'selection' && interaction.zone === 'people' ? 'nowa osoba' : 'nowa ramka'}</span>
+                  <span>{interaction?.type === 'selection' && interaction.zone === 'people' ? 'new person' : 'new frame'}</span>
                 </div>
               ) : null}
 
@@ -2061,10 +2061,10 @@ export function DiabloMonthCanvas({
           </div>
         </div>
       </div>
-      <div ref={toolIslandRef} className="diablo-tool-island" style={toolIslandStyle} aria-label="Tryb pracy na canvasie">
-        <TrafficTooltip label="Tworzenie projektów przez zaznaczenie obszaru" placement="top" delayMs={90}>
+      <div ref={toolIslandRef} className="diablo-tool-island" style={toolIslandStyle} aria-label="Canvas mode">
+        <TrafficTooltip label="Create projects by selecting an area" placement="top" delayMs={90}>
           <button
-            aria-label="Tworzenie projektów przez zaznaczenie obszaru"
+            aria-label="Create projects by selecting an area"
             aria-pressed={canvasTool === 'create'}
             className={canvasTool === 'create' ? 'is-active' : ''}
             type="button"
@@ -2073,9 +2073,9 @@ export function DiabloMonthCanvas({
             <span aria-hidden="true">+</span>
           </button>
         </TrafficTooltip>
-        <TrafficTooltip label="Przesuwanie ramek i legendy" placement="top" delayMs={90}>
+        <TrafficTooltip label="Move frames and legend" placement="top" delayMs={90}>
           <button
-            aria-label="Przesuwanie ramek i legendy"
+            aria-label="Move frames and legend"
             aria-pressed={canvasTool === 'move'}
             className={canvasTool === 'move' ? 'is-active' : ''}
             type="button"
@@ -2084,9 +2084,9 @@ export function DiabloMonthCanvas({
             <span aria-hidden="true">↕</span>
           </button>
         </TrafficTooltip>
-        <TrafficTooltip label={`Oddal canvas (${canvasZoomPercent}%)`} placement="top" delayMs={90}>
+        <TrafficTooltip label={`Zoom out canvas (${canvasZoomPercent}%)`} placement="top" delayMs={90}>
           <button
-            aria-label={`Oddal canvas (${canvasZoomPercent}%)`}
+            aria-label={`Zoom out canvas (${canvasZoomPercent}%)`}
             disabled={isMinCanvasZoom}
             type="button"
             onClick={() => handleCanvasZoomChange(-1)}
@@ -2094,9 +2094,9 @@ export function DiabloMonthCanvas({
             <span aria-hidden="true">−</span>
           </button>
         </TrafficTooltip>
-        <TrafficTooltip label={`Przybliż canvas (${canvasZoomPercent}%)`} placement="top" delayMs={90}>
+        <TrafficTooltip label={`Zoom in canvas (${canvasZoomPercent}%)`} placement="top" delayMs={90}>
           <button
-            aria-label={`Przybliż canvas (${canvasZoomPercent}%)`}
+            aria-label={`Zoom in canvas (${canvasZoomPercent}%)`}
             disabled={isMaxCanvasZoom}
             type="button"
             onClick={() => handleCanvasZoomChange(1)}
@@ -2104,27 +2104,27 @@ export function DiabloMonthCanvas({
             <span aria-hidden="true">+</span>
           </button>
         </TrafficTooltip>
-        <TrafficTooltip label="Dopasuj widok do ludzi i projektów" placement="top" delayMs={90}>
+        <TrafficTooltip label="Fit view to people and projects" placement="top" delayMs={90}>
           <button
-            aria-label="Dopasuj widok do ludzi i projektów"
+            aria-label="Fit view to people and projects"
             type="button"
             onClick={handleFitCanvasToContent}
           >
             <span aria-hidden="true">□</span>
           </button>
         </TrafficTooltip>
-        <TrafficTooltip label="Reset layoutu ramek w aktualnym miesiącu" placement="top" delayMs={90}>
+        <TrafficTooltip label="Reset frame layout in the current month" placement="top" delayMs={90}>
           <button
-            aria-label="Reset layoutu ramek w aktualnym miesiącu"
+            aria-label="Reset frame layout in the current month"
             type="button"
             onClick={onResetLayout}
           >
             <span aria-hidden="true">↺</span>
           </button>
         </TrafficTooltip>
-        <TrafficTooltip label="Sortuj projekty per ludzie" placement="top" delayMs={90}>
+        <TrafficTooltip label="Sort projects by people" placement="top" delayMs={90}>
           <button
-            aria-label="Sortuj projekty per ludzie"
+            aria-label="Sort projects by people"
             className="diablo-project-people-sort-trigger"
             type="button"
             onClick={handleSortProjectsByPeople}
@@ -2133,38 +2133,38 @@ export function DiabloMonthCanvas({
           </button>
         </TrafficTooltip>
         <TrafficTooltip
-          label={hiddenProjectCount ? `Ukryte projekty w tym miesiącu: ${hiddenProjectCount}` : 'Brak ukrytych projektów w tym miesiącu'}
+          label={hiddenProjectCount ? `Hidden projects this month: ${hiddenProjectCount}` : 'No hidden projects this month'}
           placement="top"
           delayMs={90}
         >
           <button
-            aria-label={`Pokaż ukryte projekty w miesiącu: ${hiddenProjectCount}`}
+            aria-label={`Show hidden projects this month: ${hiddenProjectCount}`}
             className="diablo-hidden-projects-trigger"
             disabled={!hiddenProjectCount}
             type="button"
             onClick={onOpenHiddenProjects}
           >
-            <span>Ukryte</span>
+            <span>Hidden</span>
             <b aria-hidden="true">{hiddenProjectCount}</b>
           </button>
         </TrafficTooltip>
         <TrafficTooltip
           label={clearMonthConfirmationPending
-            ? 'Kliknij ponownie, aby wyczyścić ludzi i projekty tylko w tym miesiącu'
-            : 'Wyczyść ludzi i projekty tylko z aktualnego miesiąca'}
+            ? 'Click again to clear people and projects for this month only'
+            : 'Clear people and projects from the current month only'}
           placement="top"
           delayMs={90}
         >
           <button
             aria-label={clearMonthConfirmationPending
-              ? 'Potwierdź wyczyszczenie aktualnego miesiąca'
-              : 'Wyczyść aktualny miesiąc'}
+              ? 'Confirm clearing the current month'
+              : 'Clear current month'}
             className={`diablo-clear-month-trigger ${clearMonthConfirmationPending ? 'is-confirming' : ''}`}
             disabled={!hasVisibleMonthContent}
             type="button"
             onClick={handleClearMonthPlan}
           >
-            <span>{clearMonthConfirmationPending ? 'Potwierdź' : 'Wyczyść miesiąc'}</span>
+            <span>{clearMonthConfirmationPending ? 'Confirm' : 'Clear month'}</span>
           </button>
         </TrafficTooltip>
       </div>
@@ -2556,12 +2556,12 @@ function formatProjectMetricK(value: number) {
 }
 
 function formatProjectFrameCount(count: number) {
-  if (count === 1) return '1 ramka';
+  if (count === 1) return '1 frame';
   const lastDigit = count % 10;
   const lastTwoDigits = count % 100;
   const noun = lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14)
-    ? 'ramki'
-    : 'ramek';
+    ? 'frames'
+    : 'frames';
 
   return `${count} ${noun}`;
 }
@@ -2571,9 +2571,9 @@ function getClipboardPasteTitle(
   canPaste: boolean,
   sectionLabel: string
 ) {
-  if (canPaste && clipboard) return `Wklej ${sectionLabel} ze schowka: ${clipboard.sourcePeriodLabel}`;
-  if (clipboard?.sourcePeriodId) return `Schowek z ${clipboard.sourcePeriodLabel} nie pasuje do tej sekcji albo miesiąca.`;
-  return 'Najpierw skopiuj wybraną sekcję z innego miesiąca.';
+  if (canPaste && clipboard) return `Paste ${sectionLabel} from clipboard: ${clipboard.sourcePeriodLabel}`;
+  if (clipboard?.sourcePeriodId) return `Clipboard from ${clipboard.sourcePeriodLabel} does not match this section or month.`;
+  return 'First copy the selected section from another month.';
 }
 
 function snapPersonFramePreviewLayout(
@@ -2674,16 +2674,16 @@ function comparePeopleForCanvasSort(firstPerson: Person, secondPerson: Person, s
 
   if (firstKey.hasSkills !== secondKey.hasSkills) return firstKey.hasSkills ? -1 : 1;
 
-  const primarySkillComparison = firstKey.primarySkill.localeCompare(secondKey.primarySkill, 'pl', { sensitivity: 'base' });
+  const primarySkillComparison = firstKey.primarySkill.localeCompare(secondKey.primarySkill, 'en-GB', { sensitivity: 'base' });
   if (primarySkillComparison !== 0) return primarySkillComparison;
 
-  const nameComparison = firstKey.name.localeCompare(secondKey.name, 'pl', { sensitivity: 'base' });
+  const nameComparison = firstKey.name.localeCompare(secondKey.name, 'en-GB', { sensitivity: 'base' });
   if (nameComparison !== 0) return nameComparison;
 
-  const skillComparison = firstKey.skillKey.localeCompare(secondKey.skillKey, 'pl', { sensitivity: 'base' });
+  const skillComparison = firstKey.skillKey.localeCompare(secondKey.skillKey, 'en-GB', { sensitivity: 'base' });
   if (skillComparison !== 0) return skillComparison;
 
-  return firstPerson.id.localeCompare(secondPerson.id, 'pl', { sensitivity: 'base' });
+  return firstPerson.id.localeCompare(secondPerson.id, 'en-GB', { sensitivity: 'base' });
 }
 
 function isDiabloPersonLayoutCoveredByExpandedDetails(
@@ -2704,13 +2704,13 @@ function isDiabloPersonLayoutCoveredByExpandedDetails(
 
 function formatSelectionCapacityLabel(selection: DiabloSelection) {
   const squareCount = selection.width * selection.height;
-  return `${squareCount} kw. / ${squareCount}k`;
+  return `${squareCount} sq. / ${squareCount}k`;
 }
 
 function getPersonCanvasSortKey(person: Person, skillsById: Map<string, Skill>) {
   const skillLabels = person.skillIds
     .map((skillId) => skillsById.get(skillId)?.label || skillId)
-    .sort((firstLabel, secondLabel) => firstLabel.localeCompare(secondLabel, 'pl', { sensitivity: 'base' }));
+    .sort((firstLabel, secondLabel) => firstLabel.localeCompare(secondLabel, 'en-GB', { sensitivity: 'base' }));
 
   return {
     hasSkills: skillLabels.length > 0,
@@ -2724,8 +2724,8 @@ function compareProjectsForCanvasSort(firstProject: ProjectFrame, secondProject:
   const firstLabel = `${firstProject.client} ${firstProject.name}`;
   const secondLabel = `${secondProject.client} ${secondProject.name}`;
 
-  return firstLabel.localeCompare(secondLabel, 'pl', { sensitivity: 'base' }) ||
-    firstProject.id.localeCompare(secondProject.id, 'pl', { sensitivity: 'base' });
+  return firstLabel.localeCompare(secondLabel, 'en-GB', { sensitivity: 'base' }) ||
+    firstProject.id.localeCompare(secondProject.id, 'en-GB', { sensitivity: 'base' });
 }
 
 function setAllocationGroupDragImage(
@@ -2755,7 +2755,7 @@ function setAllocationGroupDragImage(
   }
 
   const label = document.createElement('strong');
-  label.textContent = `${allocations.length} kaf.`;
+  label.textContent = `${allocations.length} tiles`;
   preview.appendChild(label);
   document.body.appendChild(preview);
   event.dataTransfer.setDragImage(preview, 28, 28);

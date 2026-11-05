@@ -25,7 +25,7 @@ export function HelpSectionHeader({
       </div>
       {actions ? <div className="traffic-editor-section-actions">{actions}</div> : null}
       <div className="traffic-editor-section-help">
-        <HelpButton label={`Wyjasnij sekcje: ${title}`} topicId={topicId} onOpenHelp={onOpenHelp} />
+        <HelpButton label={`Explain section: ${title}`} topicId={topicId} onOpenHelp={onOpenHelp} />
       </div>
     </div>
   );

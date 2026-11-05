@@ -34,7 +34,7 @@ export async function registerAuthRoutes(app: FastifyInstance, authService: Auth
       request.log.warn(getAuthLogContext(error), 'Unable to start SAML authentication');
       return reply.status(code === 'saml_failed' ? 502 : 503).send({
         code: code.toUpperCase(),
-        message: 'Nie udało się rozpocząć logowania SAML.',
+        message: 'Could not start SAML sign-in.',
       });
     }
   });
@@ -47,7 +47,7 @@ export async function registerAuthRoutes(app: FastifyInstance, authService: Auth
       request.log.warn(getAuthLogContext(error), 'Unable to generate SAML service provider metadata');
       return reply.status(503).send({
         code: code.toUpperCase(),
-        message: 'Metadane SAML nie są dostępne.',
+        message: 'SAML metadata is unavailable.',
       });
     }
   });

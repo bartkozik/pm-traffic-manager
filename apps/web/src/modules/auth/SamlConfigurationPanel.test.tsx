@@ -17,12 +17,12 @@ describe('SamlConfigurationPanel', () => {
     });
 
     render(<SamlConfigurationPanel configuration={samlConfigurationFixture} isSaving={false} onSave={onSave} />);
-    fireEvent.click(screen.getAllByRole('button', { name: 'Kopiuj' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Copy' })[0]);
 
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(samlConfigurationFixture.metadataUrl));
-    fireEvent.change(screen.getByLabelText(/Ważność żądania/), { target: { value: '10' } });
-    fireEvent.click(screen.getByRole('checkbox', { name: /Włącz logowanie SAML/ }));
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz konfigurację SAML' }));
+    fireEvent.change(screen.getByLabelText(/Request validity/), { target: { value: '10' } });
+    fireEvent.click(screen.getByRole('checkbox', { name: /Enable SAML sign-in/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save SAML configuration' }));
 
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({
       idpCertificate: samlConfigurationFixture.idpCertificate,

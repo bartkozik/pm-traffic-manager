@@ -45,12 +45,12 @@ describe('AccessManagementDialog', () => {
     renderDialog();
 
     expect(await screen.findByText('member@example.test')).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: 'Użytkownicy' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('tabpanel', { name: 'Użytkownicy' })).toBeVisible();
-    fireEvent.change(screen.getByLabelText('Adres e-mail'), {
+    expect(screen.getByRole('tab', { name: 'Users' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tabpanel', { name: 'Users' })).toBeVisible();
+    fireEvent.change(screen.getByLabelText('Email address'), {
       target: { value: 'new.user@example.test' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Dodaj dostęp' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Grant access' }));
 
     await waitFor(() => expect(createAccessUser).toHaveBeenCalledWith({
       email: 'new.user@example.test',
@@ -60,7 +60,7 @@ describe('AccessManagementDialog', () => {
 
     const memberRow = screen.getByText('member@example.test').closest('article');
     if (!memberRow) throw new Error('Member access row was not rendered.');
-    fireEvent.click(within(memberRow).getByRole('button', { name: 'Zablokuj' }));
+    fireEvent.click(within(memberRow).getByRole('button', { name: 'Disable' }));
     await waitFor(() => expect(updateAccessUser).toHaveBeenCalledWith(
       'member@example.test',
       { status: 'disabled' }
@@ -71,26 +71,26 @@ describe('AccessManagementDialog', () => {
     renderDialog();
 
     await screen.findByText('member@example.test');
-    fireEvent.click(screen.getByRole('tab', { name: 'Uwierzytelnianie' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Authentication' }));
 
-    expect(screen.getByRole('tab', { name: 'Uwierzytelnianie' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('heading', { name: 'Uwierzytelnianie SAML' })).toBeInTheDocument();
-    expect(screen.getByText('Logowanie aktywne')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Authentication' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('heading', { name: 'SAML authentication' })).toBeInTheDocument();
+    expect(screen.getByText('Sign-in enabled')).toBeInTheDocument();
     expect(screen.getByText('example.test')).toBeInTheDocument();
     expect(screen.getAllByText(samlConfigurationFixture.metadataUrl)).toHaveLength(2);
-    expect(screen.getAllByText('Skonfigurowany · wartość ukryta')).toHaveLength(2);
+    expect(screen.getAllByText('Configured · value hidden')).toHaveLength(2);
   });
 
   it('supports keyboard navigation between settings tabs', async () => {
     renderDialog();
 
     await screen.findByText('member@example.test');
-    const membersTab = screen.getByRole('tab', { name: 'Użytkownicy' });
+    const membersTab = screen.getByRole('tab', { name: 'Users' });
     membersTab.focus();
     fireEvent.keyDown(membersTab, { key: 'ArrowRight' });
 
-    expect(screen.getByRole('tab', { name: 'Uwierzytelnianie' })).toHaveFocus();
-    expect(screen.getByRole('tabpanel', { name: 'Uwierzytelnianie' })).toBeVisible();
+    expect(screen.getByRole('tab', { name: 'Authentication' })).toHaveFocus();
+    expect(screen.getByRole('tabpanel', { name: 'Authentication' })).toBeVisible();
   });
 
   it('keeps self-management controls disabled and closes on Escape', async () => {
@@ -99,8 +99,8 @@ describe('AccessManagementDialog', () => {
 
     const adminRow = (await screen.findByText('admin@example.test')).closest('article');
     if (!adminRow) throw new Error('Admin access row was not rendered.');
-    expect(within(adminRow).getByLabelText('Rola admin@example.test')).toBeDisabled();
-    expect(within(adminRow).getByRole('button', { name: 'Zablokuj' })).toBeDisabled();
+    expect(within(adminRow).getByLabelText('Role admin@example.test')).toBeDisabled();
+    expect(within(adminRow).getByRole('button', { name: 'Disable' })).toBeDisabled();
 
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -109,7 +109,7 @@ describe('AccessManagementDialog', () => {
   it('does not render or load administrator data for a member', () => {
     renderDialog(vi.fn(), 'member');
 
-    expect(screen.queryByRole('dialog', { name: 'Dostęp i logowanie' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: 'Access and sign-in' })).not.toBeInTheDocument();
     expect(loadAccessOverview).not.toHaveBeenCalled();
   });
 });

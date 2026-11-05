@@ -72,7 +72,7 @@ export function getCenteredMonthRangeStartId(
 }
 
 export function formatPeriodRangeLabel(periods: Period[]) {
-  if (!periods.length) return 'Brak zakresu';
+  if (!periods.length) return 'No range';
   if (periods.length === 1) return periods[0].label;
 
   const first = periods[0];

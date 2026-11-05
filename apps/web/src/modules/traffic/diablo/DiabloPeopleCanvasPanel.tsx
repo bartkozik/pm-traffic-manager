@@ -27,7 +27,7 @@ import { getPersonPeriodCostK, getPersonPeriodLayers } from '../utils/personPeri
 type PeopleSortField = 'name' | 'skill';
 type PeopleSortDirection = 'asc' | 'desc';
 
-const PEOPLE_SORT_COLLATOR = new Intl.Collator('pl', {
+const PEOPLE_SORT_COLLATOR = new Intl.Collator('en-GB', {
   numeric: true,
   sensitivity: 'base',
 });
@@ -130,14 +130,14 @@ export function DiabloPeopleCanvasPanel({
     <aside className="diablo-canvas-people-panel">
       <header>
         <div>
-          <strong>Ludzie</strong>
-          <span>{activePeople.length} osób / przeciągnij na ramkę</span>
+          <strong>People</strong>
+          <span>{activePeople.length} people / drag onto a frame</span>
         </div>
         <div className="diablo-people-header-tools">
-          <div className="diablo-people-sort-controls" aria-label="Sortowanie listy osób">
-            <TrafficTooltip label="Sortuj osoby alfabetycznie po nazwie" placement="bottom" delayMs={90}>
+          <div className="diablo-people-sort-controls" aria-label="People list sorting">
+            <TrafficTooltip label="Sort people alphabetically by name" placement="bottom" delayMs={90}>
               <button
-                aria-label="Sortuj osoby po nazwie"
+                aria-label="Sort people by name"
                 aria-pressed={peopleSortField === 'name'}
                 className={peopleSortField === 'name' ? 'is-active' : ''}
                 type="button"
@@ -146,9 +146,9 @@ export function DiabloPeopleCanvasPanel({
                 N
               </button>
             </TrafficTooltip>
-            <TrafficTooltip label="Sortuj osoby alfabetycznie po skillach" placement="bottom" delayMs={90}>
+            <TrafficTooltip label="Sort people alphabetically by skills" placement="bottom" delayMs={90}>
               <button
-                aria-label="Sortuj osoby po skillach"
+                aria-label="Sort people by skills"
                 aria-pressed={peopleSortField === 'skill'}
                 className={peopleSortField === 'skill' ? 'is-active' : ''}
                 type="button"
@@ -157,9 +157,9 @@ export function DiabloPeopleCanvasPanel({
                 Sk
               </button>
             </TrafficTooltip>
-            <TrafficTooltip label={`Odwróć kierunek sortowania (${sortDirectionLabel})`} placement="bottom" delayMs={90}>
+            <TrafficTooltip label={`Reverse sort direction (${sortDirectionLabel})`} placement="bottom" delayMs={90}>
               <button
-                aria-label={`Zmień kierunek sortowania osób: teraz ${sortDirectionLabel}`}
+                aria-label={`Change people sort direction: currently ${sortDirectionLabel}`}
                 className="diablo-people-sort-direction"
                 type="button"
                 onClick={() => setPeopleSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'))}
@@ -169,22 +169,22 @@ export function DiabloPeopleCanvasPanel({
             </TrafficTooltip>
           </div>
           <div className="diablo-panel-actions">
-            <HelpButton label="Wyjaśnij paletę ludzi" topicId="people-palette" onOpenHelp={onOpenHelp} />
-            <button type="button" onClick={onCreatePerson}>+ Osoba</button>
+            <HelpButton label="Explain the people palette" topicId="people-palette" onOpenHelp={onOpenHelp} />
+            <button type="button" onClick={onCreatePerson}>+ Person</button>
           </div>
         </div>
       </header>
       <div
         className={`diablo-bench-alert-summary ${severeRows.length ? 'has-severe-alerts' : ''}`}
-        aria-label={`Alerty ławki: ${severeRows.length} wysokich, koszt bez projektu ${idleCostK}k, target bez projektu ${idleTargetK}k`}
+        aria-label={`Bench alerts: ${severeRows.length} high, cost without project ${idleCostK}k, target without project ${idleTargetK}k`}
       >
         <span>
           <strong>{severeRows.length}</strong>
-          alertów ławki
+          bench alerts
         </span>
         <span>
           <strong>{idleCostK}k</strong>
-          koszt idle
+          idle cost
         </span>
         <span>
           <strong>{idleTargetK}k</strong>
@@ -192,7 +192,7 @@ export function DiabloPeopleCanvasPanel({
         </span>
         <span>
           <strong>{suspiciousAssignmentCount}</strong>
-          niska wartość
+          low value
         </span>
       </div>
       <div
@@ -236,15 +236,15 @@ export function DiabloPeopleCanvasPanel({
                 <small>{person.role}</small>
               </button>
               <div>
-                <span>{costCoverage.coveredCostK}/{periodCostK}k koszt</span>
+                <span>{costCoverage.coveredCostK}/{periodCostK}k cost</span>
                 {alert.severity !== 'none' ? <b className="diablo-bench-alert-badge">{alert.label}</b> : null}
                 {assignments.length ? (
                   <div className="diablo-person-card-actions">
                     <button
-                      aria-label={`Pokaż kafelki ${person.name} na canvasie`}
+                      aria-label={`Show tiles for ${person.name} on canvas`}
                       aria-pressed={highlightedPersonId === person.id}
                       className={`diablo-person-highlight-button ${highlightedPersonId === person.id ? 'is-active' : ''}`}
-                      title={`Podświetl kafelki ${person.name} na canvasie`}
+                      title={`Highlight tiles for ${person.name} on canvas`}
                       type="button"
                       onBlur={() => onHighlightPersonAllocations(null)}
                       onClick={() => onHighlightPersonAllocations(person.id)}
@@ -252,7 +252,7 @@ export function DiabloPeopleCanvasPanel({
                       onMouseEnter={() => onHighlightPersonAllocations(person.id)}
                       onMouseLeave={() => onHighlightPersonAllocations(null)}
                     >
-                      Pokaż
+                      Show
                     </button>
                     {assignedRevenueK ? (
                       <button type="button" onClick={() => onResetPersonAllocations(person.id)}>
@@ -266,36 +266,36 @@ export function DiabloPeopleCanvasPanel({
             <PersonVisualBadge compact person={person} skillsById={skillsById} />
             <details
               className="diablo-person-cost-summary"
-              aria-label={`Pokrycie kosztu ${person.name}: ${costCoverage.coveredCostK} z ${periodCostK}k, ${costCoverage.coveragePercent}%`}
+              aria-label={`Cost coverage ${person.name}: ${costCoverage.coveredCostK} of ${periodCostK}k, ${costCoverage.coveragePercent}%`}
             >
               <summary>
-                <span>Pokrycie kosztu</span>
+                <span>Cost coverage</span>
                 <strong>{costCoverage.coveredCostK}/{periodCostK}k</strong>
                 <em>{costCoverage.coveragePercent}%</em>
               </summary>
               <div className="diablo-person-cost-summary-details">
-                <span>{costCoverage.billableRevenueK}k przychód</span>
-                <span>{costCashflowK >= 0 ? '+' : ''}{costCashflowK}k bilans</span>
+                <span>{costCoverage.billableRevenueK}k revenue</span>
+                <span>{costCashflowK >= 0 ? '+' : ''}{costCashflowK}k balance</span>
                 {costCoverage.nonCoveringRevenueK > 0 ? (
-                  <span className="is-muted">{costCoverage.nonCoveringRevenueK}k poza pokr.</span>
+                  <span className="is-muted">{costCoverage.nonCoveringRevenueK}k uncovered</span>
                 ) : null}
                 {costCoverage.timeOffCostK > 0 ? (
-                  <span className="is-time-off">{costCoverage.timeOffCostK}k urlop</span>
+                  <span className="is-time-off">{costCoverage.timeOffCostK}k leave</span>
                 ) : null}
               </div>
             </details>
             {alert.detail ? <span className="diablo-bench-alert-detail">{alert.detail}</span> : null}
             {assignments.length ? (
-              <div className="diablo-person-assignments" aria-label={`Przypisania osoby ${person.name}`}>
+              <div className="diablo-person-assignments" aria-label={`Person's allocations ${person.name}`}>
                 {assignments.slice(0, 4).map((assignment) => (
                   <span
                     className={assignment.nonCoveringReason === 'time_off' ? 'is-time-off-cost' : assignment.nonCoveringReason ? 'is-non-covering-cost' : 'is-covering-cost'}
                     key={assignment.projectId}
                     title={assignment.nonCoveringReason
-                      ? `${assignment.projectLabel}: ${assignment.revenueK}k poza pokryciem kosztu (${getNonCoveringReasonLabel(assignment.nonCoveringReason)})`
-                      : `${assignment.projectLabel}: ${assignment.revenueK}k przychodu / ${assignment.coveredCostK}k pokrycia kosztu`}
+                      ? `${assignment.projectLabel}: ${assignment.revenueK}k of uncovered cost (${getNonCoveringReasonLabel(assignment.nonCoveringReason)})`
+                      : `${assignment.projectLabel}: ${assignment.revenueK}k revenue / ${assignment.coveredCostK}k cost coverage`}
                   >
-                    {assignment.projectLabel} {assignment.nonCoveringReason === 'time_off' ? 'urlop' : assignment.nonCoveringReason ? 'poza' : `${assignment.revenueK}k`}
+                    {assignment.projectLabel} {assignment.nonCoveringReason === 'time_off' ? 'leave' : assignment.nonCoveringReason ? 'uncovered' : `${assignment.revenueK}k`}
                   </span>
                 ))}
                 {assignments.length > 4 ? <span>+{assignments.length - 4}</span> : null}
@@ -304,11 +304,11 @@ export function DiabloPeopleCanvasPanel({
             {personBench.length ? (
               <div
                 className="diablo-person-bench-grid"
-                aria-label={`Ławka osoby ${person.name}: ${benchRevenueK}k w ${personBench.length} kafelkach`}
+                aria-label={`Person's bench ${person.name}: ${benchRevenueK}k in ${personBench.length} tiles`}
               >
                 {personBench.map((allocation) => (
                   <button
-                    aria-label={`${person.name}: wolny kafelek ${allocation.revenueK}k, ${allocation.hours}h. ${selectedAllocationIds.has(allocation.id) ? 'Zaznaczony do przeniesienia grupowego.' : 'Kliknij żeby edytować alokację. Shift+klik zaznacza do przeniesienia grupowego.'}`}
+                    aria-label={`${person.name}: available tile ${allocation.revenueK}k, ${allocation.hours}h. ${selectedAllocationIds.has(allocation.id) ? 'Selected for a group move.' : 'Click to edit the allocation. Shift+click selects it for a group move.'}`}
                     aria-pressed={selectedAllocationIds.has(allocation.id)}
                     className={`diablo-inventory-person-tile diablo-person-bench-tile ${selectedAllocationIds.has(allocation.id) ? 'is-multi-selected' : ''}`}
                     data-cost-coverage="unassigned"
@@ -316,7 +316,7 @@ export function DiabloPeopleCanvasPanel({
                     draggable
                     key={allocation.id}
                     style={{ '--diablo-person-color': person.color } as CSSProperties}
-                    title={`${person.name}: ${allocation.revenueK}k / ${allocation.hours}h na ławce`}
+                    title={`${person.name}: ${allocation.revenueK}k / ${allocation.hours}h on the bench`}
                     type="button"
                     onClick={(event) => onTileClick(event, allocation.id)}
                     onDragStart={(event) => {
@@ -329,7 +329,7 @@ export function DiabloPeopleCanvasPanel({
                 ))}
               </div>
             ) : (
-              <span className="diablo-person-empty">brak wolnych kafelków</span>
+              <span className="diablo-person-empty">no available tiles</span>
             )}
           </article>
         ))}
@@ -430,15 +430,15 @@ function roundPersonCardMoney(value: number) {
 function getNonCoveringReasonLabel(reason: string | undefined) {
   switch (reason) {
     case 'uncapped_time_materials':
-      return 'T&M bez CAP';
+      return 'Uncapped T&M';
     case 'non_commercial_work':
-      return 'praca niekomercyjna';
+      return 'non-commercial work';
     case 'time_off':
-      return 'urlop / niedostępność';
+      return 'leave / unavailability';
     case 'missing_project':
-      return 'brak projektu';
+      return 'no project';
     default:
-      return 'poza pokryciem';
+      return 'uncovered';
   }
 }
 
@@ -484,13 +484,13 @@ function getBenchAlertState(
     : resolveAutomaticBenchSeverity(person, values, isIdle, isSuspiciousAssignment);
 
   const label = severity === 'critical'
-    ? 'KRYTYK'
+    ? 'CRITICAL'
     : severity === 'warning'
       ? 'ALERT'
       : 'WATCH';
   const detail = isIdle
-    ? `Bez projektu: koszt ${values.periodCostK}k / cel ${values.periodTargetK}k.`
-    : `Pokrycie kosztu: ${values.costCoveredK}k vs koszt ${values.periodCostK}k${values.nonCoveringRevenueK > 0 ? `, ${values.nonCoveringRevenueK}k poza pokryciem` : ''}${values.timeOffCostK > 0 ? `, ${values.timeOffCostK}k urlop` : ''}.`;
+    ? `No project: cost ${values.periodCostK}k / target ${values.periodTargetK}k.`
+    : `Cost coverage: ${values.costCoveredK}k vs cost ${values.periodCostK}k${values.nonCoveringRevenueK > 0 ? `, ${values.nonCoveringRevenueK}k uncovered` : ''}${values.timeOffCostK > 0 ? `, ${values.timeOffCostK}k leave` : ''}.`;
 
   return {
     detail,

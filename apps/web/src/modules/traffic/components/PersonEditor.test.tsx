@@ -21,11 +21,11 @@ describe('PersonEditor', () => {
       />
     );
 
-    expect(screen.getByLabelText('Imię i nazwisko')).toBeInTheDocument();
-    expect(screen.getByLabelText('Koszt miesięczny (k PLN / kafelki)')).toBeInTheDocument();
-    expect(screen.getByText('Więcej szczegółów')).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByText('Rola')).not.toBeInTheDocument();
-    expect(screen.queryByText('Warstwy kosztu / celu')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Full name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Monthly cost (k PLN / tiles)')).toBeInTheDocument();
+    expect(screen.getByText('More details')).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText('Role')).not.toBeInTheDocument();
+    expect(screen.queryByText('Cost / target layers')).not.toBeInTheDocument();
   });
 
   it('does not expose collaboration risk matrix because those conflicts are managed in planning rules', () => {
@@ -45,11 +45,11 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Więcej szczegółów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More details' }));
 
-    expect(screen.queryByText('Ryzyka współpracy')).not.toBeInTheDocument();
-    expect(screen.queryByText('Nie łącz w projektach')).not.toBeInTheDocument();
-    expect(screen.getByText('Warstwy kosztu / celu')).toBeInTheDocument();
+    expect(screen.queryByText('Collaboration risks')).not.toBeInTheDocument();
+    expect(screen.queryByText('Keep apart on projects')).not.toBeInTheDocument();
+    expect(screen.getByText('Cost / target layers')).toBeInTheDocument();
   });
 
   it('saves the base monthly cost used for inventory tile count', () => {
@@ -70,10 +70,10 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Koszt miesięczny (k PLN / kafelki)'), {
+    fireEvent.change(screen.getByLabelText('Monthly cost (k PLN / tiles)'), {
       target: { value: '9' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz osobę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save person' }));
 
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -102,9 +102,9 @@ describe('PersonEditor', () => {
       />
     );
 
-    const dialog = screen.getByRole('dialog', { name: 'Edytor osoby' });
-    const closeButton = screen.getByRole('button', { name: 'Zamknij edytor osoby' });
-    const saveButton = screen.getByRole('button', { name: 'Zapisz osobę' });
+    const dialog = screen.getByRole('dialog', { name: 'Person editor' });
+    const closeButton = screen.getByRole('button', { name: 'Close person editor' });
+    const saveButton = screen.getByRole('button', { name: 'Save person' });
 
     expect(dialog).toHaveAttribute('aria-modal', 'true');
 
@@ -113,7 +113,7 @@ describe('PersonEditor', () => {
 
     expect(document.activeElement).toBe(closeButton);
 
-    fireEvent.change(screen.getByLabelText('Koszt miesięczny (k PLN / kafelki)'), {
+    fireEvent.change(screen.getByLabelText('Monthly cost (k PLN / tiles)'), {
       target: { value: '11' },
     });
     fireEvent.submit(dialog);
@@ -146,12 +146,12 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: `Archiwizuj osobę: ${person.name}` }));
+    fireEvent.click(screen.getByRole('button', { name: `Archive person: ${person.name}` }));
 
     expect(onArchive).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole('button', { name: `Potwierdź archiwizację osoby: ${person.name}` }));
+    fireEvent.click(screen.getByRole('button', { name: `Confirm archiving person: ${person.name}` }));
 
     expect(onArchive).toHaveBeenCalledWith(person.id);
     expect(onClose).toHaveBeenCalled();
@@ -176,8 +176,8 @@ describe('PersonEditor', () => {
       />
     );
 
-    expect(screen.queryByRole('button', { name: `Archiwizuj osobę: ${person.name}` })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Zapisz osobę' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: `Archive person: ${person.name}` })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save person' })).toBeInTheDocument();
   });
 
   it('derives initials from the edited person name by default', () => {
@@ -202,14 +202,14 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.change(screen.getByLabelText('Imię i nazwisko'), {
+    fireEvent.change(screen.getByLabelText('Full name'), {
       target: { value: 'Jan Kowalski' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Więcej szczegółów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More details' }));
 
-    expect(screen.getByLabelText('Inicjały')).toHaveValue('JK');
+    expect(screen.getByLabelText('Initials')).toHaveValue('JK');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz osobę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save person' }));
 
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -240,13 +240,13 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Więcej szczegółów' }));
-    fireEvent.change(screen.getByLabelText('Inicjały'), { target: { value: 'VIP' } });
-    fireEvent.change(screen.getByLabelText('Imię i nazwisko'), {
+    fireEvent.click(screen.getByRole('button', { name: 'More details' }));
+    fireEvent.change(screen.getByLabelText('Initials'), { target: { value: 'VIP' } });
+    fireEvent.change(screen.getByLabelText('Full name'), {
       target: { value: "Avery Nowak" },
     });
 
-    expect(screen.getByLabelText('Inicjały')).toHaveValue('VIP');
+    expect(screen.getByLabelText('Initials')).toHaveValue('VIP');
   });
 
   it('allows saving a person without skills or seniority', () => {
@@ -267,8 +267,8 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Więcej szczegółów' }));
-    fireEvent.change(screen.getByLabelText('Poziom'), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'More details' }));
+    fireEvent.change(screen.getByLabelText('Level'), { target: { value: '' } });
 
     person.skillIds.forEach((skillId) => {
       const skill = snapshot.skills.find((item) => item.id === skillId);
@@ -280,7 +280,7 @@ describe('PersonEditor', () => {
     expect(screen.getByRole('checkbox', { name: 'Backend' })).not.toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'DevOps' })).not.toBeChecked();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz osobę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save person' }));
 
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -308,7 +308,7 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Więcej szczegółów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More details' }));
 
     expect(screen.getByRole('checkbox', { name: 'Backend' })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Frontend' })).not.toBeChecked();
@@ -319,7 +319,7 @@ describe('PersonEditor', () => {
     expect(screen.getByRole('checkbox', { name: 'Backend' })).not.toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Frontend' })).toBeChecked();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz osobę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save person' }));
 
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -350,16 +350,16 @@ describe('PersonEditor', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Więcej szczegółów' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More details' }));
     fireEvent.click(screen.getByRole('checkbox', { name: 'Backend' }));
     fireEvent.click(screen.getByRole('checkbox', { name: 'Frontend' }));
     fireEvent.click(screen.getByRole('checkbox', { name: 'Backend' }));
-    fireEvent.change(screen.getByLabelText('Poziom'), { target: { value: 'senior' } });
+    fireEvent.change(screen.getByLabelText('Level'), { target: { value: 'senior' } });
 
     expect(screen.getByRole('checkbox', { name: 'Backend' })).not.toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Frontend' })).toBeChecked();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zapisz osobę' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save person' }));
 
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({

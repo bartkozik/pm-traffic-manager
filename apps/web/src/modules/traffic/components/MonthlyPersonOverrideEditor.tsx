@@ -18,11 +18,11 @@ function getOptionalNumber(value: string) {
 }
 
 const overrideStatuses: { value: MonthlyOverrideStatus; label: string }[] = [
-  { value: 'holiday', label: 'Urlop' },
-  { value: 'notice_period', label: 'Okres wypowiedzenia' },
-  { value: 'partial_availability', label: 'Częściowa dostępność' },
-  { value: 'unavailable', label: 'Niedostępny' },
-  { value: 'other', label: 'Inne' },
+  { value: 'holiday', label: 'Leave' },
+  { value: 'notice_period', label: 'Notice period' },
+  { value: 'partial_availability', label: 'Partial availability' },
+  { value: 'unavailable', label: 'Unavailable' },
+  { value: 'other', label: 'Other' },
 ];
 
 export function MonthlyPersonOverrideEditor({
@@ -61,20 +61,20 @@ export function MonthlyPersonOverrideEditor({
   return (
     <section className="traffic-editor-section">
       <HelpSectionHeader
-        title="Dostępność i koszt w miesiącu"
+        title="Monthly availability and cost"
         topicId="person-monthly-override"
         onOpenHelp={onOpenHelp}
         actions={(
           <button className="traffic-button" type="button" onClick={clearSelectedOverride}>
-            Wyczyść nadpisanie
+            Clear override
           </button>
         )}
       >
-        <p className="traffic-editor-section-note">Nadpisanie działa tylko dla wybranego miesiąca.</p>
+        <p className="traffic-editor-section-note">This override applies only to the selected month.</p>
       </HelpSectionHeader>
       <div className="traffic-form-grid">
         <label>
-          Miesiąc
+          Month
           <select value={selectedPeriodId} onChange={(event) => onSelectedPeriodChange(event.target.value)}>
             {periods.map((period) => (
               <option key={period.id} value={period.id}>
@@ -84,7 +84,7 @@ export function MonthlyPersonOverrideEditor({
           </select>
         </label>
         <label>
-          Dostępne godziny
+          Available hours
           <input
             min={0}
             type="number"
@@ -98,7 +98,7 @@ export function MonthlyPersonOverrideEditor({
           />
         </label>
         <label>
-          Status HR
+          HR status
           <select
             value={selectedOverride?.status || ''}
             onChange={(event) =>
@@ -107,7 +107,7 @@ export function MonthlyPersonOverrideEditor({
               })
             }
           >
-            <option value="">bez statusu</option>
+            <option value="">no status</option>
             {overrideStatuses.map((status) => (
               <option key={status.value} value={status.value}>
                 {status.label}
@@ -116,12 +116,12 @@ export function MonthlyPersonOverrideEditor({
           </select>
         </label>
         <label>
-          Inny koszt PLN/h
+          Override cost PLN/h
           <input
             min={0}
             type="number"
             value={selectedOverride?.internalHourlyCostPln ?? ''}
-            placeholder={selectedProfile.costModel.internalHourlyCostPln ? `${selectedProfile.costModel.internalHourlyCostPln}` : 'brak'}
+            placeholder={selectedProfile.costModel.internalHourlyCostPln ? `${selectedProfile.costModel.internalHourlyCostPln}` : 'none'}
             onChange={(event) =>
               patchSelectedOverride({
                 internalHourlyCostPln: getOptionalNumber(event.target.value),
@@ -130,7 +130,7 @@ export function MonthlyPersonOverrideEditor({
           />
         </label>
         <label>
-          Inny koszt miesięczny (k)
+          Override monthly cost (k)
           <input
             min={0}
             type="number"
@@ -145,10 +145,10 @@ export function MonthlyPersonOverrideEditor({
         </label>
       </div>
       <label className="traffic-field-block">
-        Notatka statusu
+        Status note
         <textarea
           value={selectedOverride?.note || ''}
-          placeholder="np. urlop 10-14.03, notice period, tylko 3 dni/tydz."
+          placeholder="e.g. leave 10–14 March, notice period, only 3 days/week"
           onChange={(event) =>
             patchSelectedOverride({
               note: event.target.value || undefined,
@@ -158,7 +158,7 @@ export function MonthlyPersonOverrideEditor({
       </label>
       <div className="traffic-form-grid">
         <label>
-          Koszt pracy (k)
+          Labour cost (k)
           <input
             min={0}
             type="number"
@@ -168,7 +168,7 @@ export function MonthlyPersonOverrideEditor({
           />
         </label>
         <label>
-          Koszt z admin/biuro (k)
+          Cost including admin/office (k)
           <input
             min={0}
             type="number"
@@ -178,7 +178,7 @@ export function MonthlyPersonOverrideEditor({
           />
         </label>
         <label>
-          Koszt ze sprzedaż/marketing (k)
+          Cost including sales/marketing (k)
           <input
             min={0}
             type="number"
@@ -188,7 +188,7 @@ export function MonthlyPersonOverrideEditor({
           />
         </label>
         <label>
-          Cel przychodu (k)
+          Revenue target (k)
           <input
             min={0}
             type="number"
@@ -200,8 +200,8 @@ export function MonthlyPersonOverrideEditor({
       </div>
       <p className="traffic-editor-section-note">
         {selectedOverride
-          ? `${selectedPeriod?.label || selectedPeriodId}: zapisane nadpisanie miesięczne.`
-          : `${selectedPeriod?.label || selectedPeriodId}: używane są wartości bazowe osoby.`}
+          ? `${selectedPeriod?.label || selectedPeriodId}: saved monthly override.`
+          : `${selectedPeriod?.label || selectedPeriodId}: using the person's base values.`}
       </p>
     </section>
   );

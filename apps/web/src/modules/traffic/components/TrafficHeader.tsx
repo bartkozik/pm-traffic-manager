@@ -134,19 +134,19 @@ export function TrafficHeader({
             <span className="traffic-brand-code">PTM</span>
             <h1>PM Traffic Management</h1>
             <p>
-              Planowanie dostępności ludzi, projektów, przychodu i obciążenia w jednym widoku.
+              Plan people's capacity, projects, revenue and workload in one view.
             </p>
           </div>
         </div>
         <button
           aria-controls="traffic-header-menu"
           aria-expanded={isHeaderMenuOpen}
-          aria-label={isHeaderMenuOpen ? 'Ukryj opcje tablicy' : 'Pokaż opcje tablicy'}
+          aria-label={isHeaderMenuOpen ? 'Hide board options' : 'Show board options'}
           className={`traffic-header-menu-toggle ${isHeaderMenuOpen ? 'is-open' : ''}`}
           type="button"
           onClick={() => onHeaderMenuOpenChange(!isHeaderMenuOpen)}
         >
-          <strong>Opcje tablicy</strong>
+          <strong>Board options</strong>
         </button>
         <AuthAccount />
       </div>
@@ -156,10 +156,10 @@ export function TrafficHeader({
       >
         <div className="traffic-actions-row traffic-actions-row-primary">
           {!demoEnabled && <div className="traffic-action-section traffic-action-section-board">
-            <span className="traffic-action-section-label">Tablica</span>
-            <div className="traffic-room-controls" aria-label="Wybór tablicy i scenariusza">
+            <span className="traffic-action-section-label">Board</span>
+            <div className="traffic-room-controls" aria-label="Board and scenario selection">
               <select
-                aria-label="Wybierz tablicę"
+                aria-label="Select board"
                 className="traffic-pill"
                 value={roomPresets.some((preset) => preset.id === roomName) ? roomName : 'custom'}
                 onChange={(event) => {
@@ -171,23 +171,23 @@ export function TrafficHeader({
                     {preset.label}
                   </option>
                 ))}
-                <option value="custom">Własna tablica</option>
+                <option value="custom">Custom board</option>
               </select>
               <form className="traffic-room-form" onSubmit={onCustomRoomSubmit}>
                 <input
-                  aria-label="Nazwa własnej tablicy"
-                  placeholder="np. q2-plan"
+                  aria-label="Custom board name"
+                  placeholder="e.g. q2-plan"
                   value={customRoomName}
                   onChange={(event) => onCustomRoomNameChange(event.target.value)}
                 />
                 <button className="traffic-button" type="submit" disabled={!canOpenCustomRoom}>
-                  Otwórz
+                  Open
                 </button>
               </form>
             </div>
           </div>}
           {!demoEnabled && <div className="traffic-action-section traffic-action-section-collaboration">
-            <span className="traffic-action-section-label">Współpraca</span>
+            <span className="traffic-action-section-label">Collaboration</span>
             <TrafficTooltip className="traffic-sync-tooltip" label={syncDetail} placement="bottom">
               <div className={`traffic-sync-status ${isConnected && isSynced ? 'is-ok' : 'is-warning'}`}>
                 <strong>{headerSyncLabel}</strong>
@@ -206,17 +206,17 @@ export function TrafficHeader({
             />
           </div>}
           <div className="traffic-action-section traffic-action-section-view">
-            <span className="traffic-action-section-label">Widok</span>
+            <span className="traffic-action-section-label">View</span>
             <select
-              aria-label="Sposób liczenia przychodu"
+              aria-label="Revenue calculation method"
               className="traffic-pill"
               value={revenueView}
               onChange={(event) => onRevenueViewChange(event.target.value as RevenueView)}
             >
-              <option value="expected">Prognoza</option>
-              <option value="committed">Tylko podpisane</option>
+              <option value="expected">Forecast</option>
+              <option value="committed">Committed only</option>
             </select>
-            <TrafficTooltip label={theme === 'day' ? 'Przełącz na tryb nocny' : 'Przełącz na tryb dzienny'} placement="bottom">
+            <TrafficTooltip label={theme === 'day' ? 'Switch to dark mode' : 'Switch to light mode'} placement="bottom">
               <button
                 aria-pressed={theme === 'day'}
                 className="traffic-theme-switch"
@@ -224,7 +224,7 @@ export function TrafficHeader({
                 onClick={() => onThemeChange(theme === 'day' ? 'night' : 'day')}
               >
                 <span>{theme === 'day' ? 'Day' : 'Night'}</span>
-                <strong>{theme === 'day' ? 'Jasny' : 'Ciemny'}</strong>
+                <strong>{theme === 'day' ? 'Light' : 'Dark'}</strong>
               </button>
             </TrafficTooltip>
             {boardViewLink ? (
@@ -239,34 +239,34 @@ export function TrafficHeader({
         {shouldRenderToolSection ? (
           <div className="traffic-actions-row traffic-actions-row-secondary">
             <div className="traffic-action-section traffic-action-section-tools">
-              <span className="traffic-action-section-label">Narzędzia</span>
+              <span className="traffic-action-section-label">Tools</span>
               <div className="traffic-tool-actions">
                 {shouldRenderDisplayControls ? (
                   <div className="traffic-header-select traffic-tool-metric-control">
                     <span className="traffic-header-select-label">
-                      Tryb kafelków
+                      Tile mode
                       <HelpButton
-                        label="Wyjasnij tryb metryk na kafelkach"
+                        label="Explain tile metrics"
                         topicId="tile-scale"
                         onOpenHelp={onOpenHelp}
                       />
                     </span>
                     <select
-                      aria-label="Tryb metryk na kafelkach"
+                      aria-label="Tile metric mode"
                       className="traffic-pill"
                       value={activeTileMetricMode}
                       onChange={(event) => onSetTileMetricMode?.(event.target.value as TileMetricDisplayMode)}
                     >
-                      <option value="hours">Godziny</option>
-                      <option value="cost">Koszt</option>
+                      <option value="hours">Hours</option>
+                      <option value="cost">Cost</option>
                     </select>
                   </div>
                 ) : null}
                 {showToolActions ? (
                   <>
-                    <TrafficTooltip className="traffic-tool-tooltip" label="Otwiera reguły współpracy i ograniczenia używane przez walidacje oraz asystenta planowania" placement="top">
+                    <TrafficTooltip className="traffic-tool-tooltip" label="Open collaboration rules and constraints used by validation and the AI planning assistant" placement="top">
                       <button className="traffic-button traffic-tool-button" type="button" onClick={onOpenPlanningRules}>
-                        Reguły planowania
+                        Planning rules
                       </button>
                     </TrafficTooltip>
                     {weekViewLink ? (
@@ -283,23 +283,23 @@ export function TrafficHeader({
                         </Link>
                       </TrafficTooltip>
                     ) : null}
-                    {!demoEnabled && <TrafficTooltip className="traffic-tool-tooltip" label="Przywraca dane startowe tej tablicy" placement="top">
+                    {!demoEnabled && <TrafficTooltip className="traffic-tool-tooltip" label="Restore this board's initial data" placement="top">
                       <button
                         className={`traffic-button traffic-tool-button ${resetConfirmationPending ? 'is-danger' : ''}`}
                         type="button"
                         onClick={onResetBoard}
                         onBlur={onResetConfirmationCancel}
                       >
-                        {resetConfirmationPending ? 'Potwierdź reset' : 'Resetuj dane'}
+                        {resetConfirmationPending ? 'Confirm reset' : 'Reset data'}
                       </button>
                     </TrafficTooltip>}
-                    <TrafficTooltip className="traffic-tool-tooltip" label="Kopiuje krótkie podsumowanie boardu do schowka" placement="top">
+                    <TrafficTooltip className="traffic-tool-tooltip" label="Copy a short board summary to the clipboard" placement="top">
                       <button
                         className={`traffic-button traffic-tool-button ${snapshotStatus === 'copied' ? 'is-success' : snapshotStatus === 'failed' ? 'is-danger' : ''}`}
                         type="button"
                         onClick={onCopySnapshot}
                       >
-                        {snapshotStatus === 'copied' ? 'Skopiowano' : snapshotStatus === 'failed' ? 'Nie udało się skopiować' : 'Kopiuj podsumowanie'}
+                        {snapshotStatus === 'copied' ? 'Copied' : snapshotStatus === 'failed' ? 'Could not copy' : 'Copy summary'}
                       </button>
                     </TrafficTooltip>
                   </>

@@ -70,14 +70,14 @@ export function CollaborationPresencePanel({
   return (
     <div
       className={`traffic-presence-panel ${isOffline ? 'is-disabled' : ''}`}
-      aria-label="Aktywni użytkownicy tablicy"
+      aria-label="Active board users"
     >
-      <div className="traffic-presence-self" title="Twoja lokalna tożsamość współpracy">
+      <div className="traffic-presence-self" title="Your local collaboration identity">
         <span className="traffic-presence-avatar" style={{ '--traffic-presence-color': user.color } as PresenceStyle}>
           {getInitials(user.name)}
         </span>
         <input
-          aria-label="Twoja nazwa widoczna dla innych użytkowników"
+          aria-label="Your name shown to other users"
           value={user.name}
           onChange={(event) => onUserNameChange(event.target.value)}
         />
@@ -85,25 +85,25 @@ export function CollaborationPresencePanel({
       <div className="traffic-presence-controls">
         <button
           aria-checked={trackingEnabled}
-          aria-label="Publikuj moją obecność i aktywność innym"
+          aria-label="Share my presence and activity with others"
           className="traffic-presence-toggle"
           role="switch"
-          title="Gdy wyłączone, znikasz z listy aktywnych osób i inni nie mogą śledzić Twojego kursora, widoku ani edycji."
+          title="When disabled, you disappear from the active users list and others cannot follow your cursor, view or edits."
           type="button"
           onClick={() => onTrackingEnabledChange(!trackingEnabled)}
         >
           <span className="traffic-presence-switch" aria-hidden="true" />
-          <span>Publikuj</span>
+          <span>Share</span>
         </button>
         <select
-          aria-label="Kogo śledzić na tablicy"
+          aria-label="Who to follow on the board"
           disabled={!hasVisiblePeers}
           value={followedUserId || 'all'}
           onChange={(event) => onFollowedUserIdChange(event.target.value === 'all' ? null : event.target.value)}
         >
-          <option value="all">Wszyscy</option>
+          <option value="all">Everyone</option>
           {followedUserId && !followedPeer ? (
-            <option value={followedUserId}>Wybrany niedostępny</option>
+            <option value={followedUserId}>Selected user unavailable</option>
           ) : null}
           {peers.map((peer) => (
             <option key={peer.clientId} value={peer.user.id}>
@@ -112,7 +112,7 @@ export function CollaborationPresencePanel({
           ))}
         </select>
       </div>
-      <div className="traffic-presence-peers" title={isOnline ? 'Osoby obecne w tym pokoju' : 'Presence działa po połączeniu online'}>
+      <div className="traffic-presence-peers" title={isOnline ? 'People present in this room' : 'Presence is available when connected'}>
         {visiblePeers.length ? visiblePeers.map((peer) => (
           <span
             className="traffic-presence-avatar"
@@ -123,7 +123,7 @@ export function CollaborationPresencePanel({
             {getInitials(peer.user.name)}
           </span>
         )) : (
-          <span className="traffic-presence-empty">{isOnline ? 'Tylko Ty' : 'Offline'}</span>
+          <span className="traffic-presence-empty">{isOnline ? 'Just you' : 'Offline'}</span>
         )}
         {hiddenPeerCount > 0 ? <span className="traffic-presence-more">+{hiddenPeerCount}</span> : null}
       </div>
@@ -189,7 +189,7 @@ export function CollaborationPresenceLayer({ peers, localEditingTarget }: Collab
         >
           <span>
             {overlay.peer.user.name}
-            {overlay.kind === 'editing' ? ' edytuje' : ' patrzy'}
+            {overlay.kind === 'editing' ? ' editing' : ' viewing'}
           </span>
         </div>
       ))}
@@ -212,9 +212,9 @@ export function CollaborationPresenceLayer({ peers, localEditingTarget }: Collab
       ))}
       {conflictPeers.length ? (
         <div className="traffic-presence-conflict">
-          <strong>Równoczesna edycja</strong>
+          <strong>Simultaneous editing</strong>
           <span>
-            {conflictPeers.map((peer) => peer.user.name).join(', ')} też edytuje {getCollaborationTargetLabel(localEditingTarget!)}.
+            {conflictPeers.map((peer) => peer.user.name).join(', ')} is also editing {getCollaborationTargetLabel(localEditingTarget!)}.
           </span>
         </div>
       ) : null}

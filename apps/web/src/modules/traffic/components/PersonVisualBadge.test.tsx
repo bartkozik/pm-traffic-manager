@@ -34,6 +34,6 @@ describe('PersonVisualBadge', () => {
     expect(screen.getByText('Sr')).toBeInTheDocument();
     expect(screen.getByText('BE')).toBeInTheDocument();
     expect(screen.getByText('QA')).toBeInTheDocument();
-    expect(screen.getByLabelText('seniority Sr, kompetencje: Backend, QA')).toBeInTheDocument();
+    expect(screen.getByLabelText('seniority Sr, skills: Backend, QA')).toBeInTheDocument();
   });
 });

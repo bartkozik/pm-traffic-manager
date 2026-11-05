@@ -49,18 +49,18 @@ export function PeopleSidebar({
     <aside className="traffic-sidebar">
       <div className="traffic-section-title">
         <span>
-          Paleta ludzi
+          People palette
           <HelpButton
-            label="Wyjasnij palete ludzi"
+            label="Explain the people palette"
             topicId="people-palette"
             onOpenHelp={onOpenHelp}
           />
         </span>
         <button className="traffic-pill" type="button" onClick={onCreatePerson}>
-          + Osoba
+          + Person
         </button>
       </div>
-      <div className="traffic-sidebar-hint">Przeciągnij osobę albo pojedynczy kafelek na projekt</div>
+      <div className="traffic-sidebar-hint">Drag a person or an individual tile onto a project</div>
       <div className="traffic-people">
         {people.map((person) => {
           const personBench = benchAllocations.filter((allocation) => allocation.personId === person.id);
@@ -89,12 +89,12 @@ export function PeopleSidebar({
                   <div className="traffic-person-role">{person.role}</div>
                 </div>
                 <div className="traffic-person-actions">
-                  <div className="traffic-person-cost">{person.monthlyCostK}k koszt</div>
+                  <div className="traffic-person-cost">{person.monthlyCostK}k cost</div>
                   {assignedCount ? (
                     <button
-                      aria-label={`Cofnij wszystkie przypisania osoby w aktywnym miesiącu: ${person.name}`}
+                      aria-label={`Undo all allocations for this person in the active month: ${person.name}`}
                       className="traffic-icon-button"
-                      title={`Wróć ${assignedCount}k na ławkę`}
+                      title={`Return ${assignedCount}k to the bench`}
                       type="button"
                       onClick={() => onResetPersonAllocations(person.id)}
                     >
@@ -102,20 +102,20 @@ export function PeopleSidebar({
                     </button>
                   ) : null}
                   <button
-                    aria-label={`Edytuj osobę: ${person.name}`}
+                    aria-label={`Edit person: ${person.name}`}
                     className="traffic-icon-button"
                     type="button"
                     onClick={() => onEditPerson(person.id)}
                   >
-                    Edytuj
+                    Edit
                   </button>
                   <button
-                    aria-label={`${pendingArchivePersonId === person.id ? 'Potwierdź archiwizację osoby' : 'Archiwizuj osobę'}: ${person.name}`}
+                    aria-label={`${pendingArchivePersonId === person.id ? 'Confirm archiving person' : 'Archive person'}: ${person.name}`}
                     className={`traffic-icon-button ${pendingArchivePersonId === person.id ? 'is-danger' : ''}`}
                     type="button"
                     onClick={() => onArchivePerson(person.id)}
                   >
-                    {pendingArchivePersonId === person.id ? 'Potwierdź' : 'Archiwizuj'}
+                    {pendingArchivePersonId === person.id ? 'Confirm' : 'Archive'}
                   </button>
                 </div>
               </div>
@@ -123,7 +123,7 @@ export function PeopleSidebar({
                 <PersonVisualBadge person={person} skillsById={skillsById} />
               </div>
               <ReviewTriggerPulses
-                ariaLabel={`Triggery Traffic Review osoby: ${person.name}`}
+                ariaLabel={`Traffic Review triggers for person: ${person.name}`}
                 className="traffic-person-review-pulse"
                 maxVisible={MAX_VISIBLE_PERSON_REVIEW_TRIGGERS}
                 triggers={reviewTriggers}

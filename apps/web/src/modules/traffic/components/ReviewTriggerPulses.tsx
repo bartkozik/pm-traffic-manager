@@ -43,7 +43,7 @@ export function ReviewTriggerPulses({
           <b>{group.owner}</b>
           <strong>{group.title}</strong>
           {group.triggerCount > 1 ? (
-            <em aria-label={`${group.triggerCount} takie same triggery`}>{group.triggerCount}x</em>
+            <em aria-label={`${group.triggerCount} matching triggers`}>{group.triggerCount}x</em>
           ) : null}
           <small>{group.action}</small>
         </span>
@@ -52,15 +52,15 @@ export function ReviewTriggerPulses({
         <button
           aria-expanded={isExpanded}
           aria-label={isExpanded
-            ? `Zwiń dodatkowe triggery Traffic Review (${hiddenTriggerCount})`
-            : `Pokaż ${hiddenTriggerCount} ukryte triggery Traffic Review`}
+            ? `Collapse additional Traffic Review triggers (${hiddenTriggerCount})`
+            : `Show ${hiddenTriggerCount} hidden Traffic Review triggers`}
           className="traffic-review-pulse-card traffic-review-pulse-toggle is-more"
           type="button"
           onClick={() => setIsExpanded((current) => !current)}
         >
-          <b>{isExpanded ? 'mniej' : `+${hiddenTriggerCount}`}</b>
-          <strong>{isExpanded ? 'zwiń triggery' : 'więcej triggerów'}</strong>
-          <small>{isExpanded ? 'ukryj dodatkowe' : `${hiddenGroups.length} grup ukrytych`}</small>
+          <b>{isExpanded ? 'less' : `+${hiddenTriggerCount}`}</b>
+          <strong>{isExpanded ? 'collapse triggers' : 'more triggers'}</strong>
+          <small>{isExpanded ? 'hide additional' : `${hiddenGroups.length} hidden groups`}</small>
         </button>
       ) : null}
     </div>
@@ -70,13 +70,13 @@ export function ReviewTriggerPulses({
 function getTriggerGroupAriaLabel(group: GroupedTrafficReviewTrigger) {
   const baseLabel = `${group.owner}: ${group.title}. ${group.detail} ${group.action}`;
   return group.triggerCount > 1
-    ? `${baseLabel} ${group.triggerCount} takie same triggery.`
+    ? `${baseLabel} ${group.triggerCount} matching triggers.`
     : baseLabel;
 }
 
 function getTriggerGroupTitle(group: GroupedTrafficReviewTrigger) {
   const baseTitle = `${group.detail} ${group.action}`;
   return group.triggerCount > 1
-    ? `${baseTitle} (${group.triggerCount} takie same triggery)`
+    ? `${baseTitle} (${group.triggerCount} matching triggers)`
     : baseTitle;
 }

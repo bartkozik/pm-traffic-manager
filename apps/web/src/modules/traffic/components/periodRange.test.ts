@@ -10,11 +10,11 @@ import {
 } from './periodRange';
 
 const monthPeriods: Period[] = [
-  month('2026-06', 'Czerwiec 2026', '2026-06-30'),
-  month('2026-07', 'Lipiec 2026', '2026-07-31'),
-  month('2026-08', 'Sierpien 2026', '2026-08-31'),
-  month('2026-09', 'Wrzesien 2026', '2026-09-30'),
-  month('2026-10', 'Pazdziernik 2026', '2026-10-31'),
+  month('2026-06', 'June 2026', '2026-06-30'),
+  month('2026-07', 'July 2026', '2026-07-31'),
+  month('2026-08', 'August 2026', '2026-08-31'),
+  month('2026-09', 'September 2026', '2026-09-30'),
+  month('2026-10', 'October 2026', '2026-10-31'),
 ];
 
 function month(id: string, label: string, endsOn: string): Period {
@@ -66,7 +66,7 @@ describe('period range', () => {
   });
 
   it('formats single month and multi-month range labels', () => {
-    expect(formatPeriodRangeLabel(getVisibleMonthPeriods(monthPeriods, '2026-06', 1))).toBe('Czerwiec 2026');
-    expect(formatPeriodRangeLabel(getVisibleMonthPeriods(monthPeriods, '2026-06', 3))).toBe('Czerwiec - Sierpien 2026');
+    expect(formatPeriodRangeLabel(getVisibleMonthPeriods(monthPeriods, '2026-06', 1))).toBe('June 2026');
+    expect(formatPeriodRangeLabel(getVisibleMonthPeriods(monthPeriods, '2026-06', 3))).toBe('June - August 2026');
   });
 });

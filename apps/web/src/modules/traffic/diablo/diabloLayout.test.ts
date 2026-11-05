@@ -61,7 +61,7 @@ const money5k: TileUnit = {
 
 const period: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -70,14 +70,14 @@ const period: Period = {
 const project: ProjectFrame = {
   id: 'project-a',
   name: 'Build',
-  client: 'Klient',
+  client: 'Client',
   contractType: 'time_materials_capped',
   stage: 'possible',
   planningStatus: 'ghost',
   workType: 'commercial',
   budgetK: 10,
   probability: 0.5,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: '2026-06',
   endPeriodId: '2026-06',
   rateConfig: {

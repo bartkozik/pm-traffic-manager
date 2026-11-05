@@ -4,7 +4,7 @@ import { calculatePeriodRevenueComparison } from './periodRevenueComparison';
 
 const period = {
   id: '2026-03',
-  label: 'Marzec 2026',
+  label: 'March 2026',
   granularity: 'month',
   startsOn: '2026-03-01',
   endsOn: '2026-03-31',
@@ -36,7 +36,7 @@ const project = {
   planningStatus: 'ghost',
   budgetK: 20,
   probability: 0.5,
-  startMonth: 'Marzec 2026',
+  startMonth: 'March 2026',
   startPeriodId: period.id,
   rateConfig: { companyTargetRatePlnH: 250 },
   requirements: [],

@@ -131,7 +131,7 @@ export function DiabloAiPlanningPanel({
       setOpportunityCheck(response);
       setOpportunityCheckStatus('idle');
     } catch (error) {
-      setOpportunityCheckError(error instanceof Error ? error.message : 'Nie udało się uruchomić AI Check.');
+      setOpportunityCheckError(error instanceof Error ? error.message : 'Could not run AI Check.');
       setOpportunityCheckStatus('failed');
     }
   };
@@ -186,12 +186,12 @@ export function DiabloAiPlanningPanel({
     try {
       await onApplyAllocationMoves(targetMoves, period.id);
     } catch (error) {
-      setOpportunityCheckError(error instanceof Error ? error.message : 'Nie udało się zapisać zaaplikowanej alokacji.');
+      setOpportunityCheckError(error instanceof Error ? error.message : 'Could not save the applied allocation.');
       return;
     }
 
     setLastAppliedSuggestionMoves(restoreMoves);
-    setAppliedSuggestionAt(new Date().toLocaleTimeString('pl-PL', {
+    setAppliedSuggestionAt(new Date().toLocaleTimeString('en-GB', {
       hour: '2-digit',
       minute: '2-digit',
     }));
@@ -204,7 +204,7 @@ export function DiabloAiPlanningPanel({
         target: move.previousTarget,
       })), period.id);
     } catch (error) {
-      setOpportunityCheckError(error instanceof Error ? error.message : 'Nie udało się zapisać cofnięcia alokacji.');
+      setOpportunityCheckError(error instanceof Error ? error.message : 'Could not save the allocation reversal.');
       return;
     }
 
@@ -213,36 +213,36 @@ export function DiabloAiPlanningPanel({
   };
 
   return (
-    <details className="diablo-ai-panel" aria-label="AI Assisted Planning" open={defaultOpen}>
+    <details className="diablo-ai-panel" aria-label="AI planning assistant" open={defaultOpen}>
       <summary>
         <span className="diablo-ai-summary-title">
-          <strong>AI Assisted Planning</strong>
+          <strong>AI planning assistant</strong>
           <small>
-            {period.label} · {activeOpportunityCheck ? 'wynik gotowy' : opportunityCheckStatus === 'failed' ? 'błąd AI Check' : 'nieuruchomione'}
+            {period.label} · {activeOpportunityCheck ? 'result ready' : opportunityCheckStatus === 'failed' ? 'AI Check failed' : 'not run'}
           </small>
         </span>
         <span className={`diablo-ai-bench-signal is-${topBenchAlert}`}>
-          Sygnały: {benchSignalLabel}
-          {criticalBenchCount ? ` · ${criticalBenchCount} pilne` : ''}
+          Signals: {benchSignalLabel}
+          {criticalBenchCount ? ` · ${criticalBenchCount} urgent` : ''}
         </span>
       </summary>
 
       <div className="diablo-ai-body">
         {opportunityCheckStatus === 'failed' && !activeOpportunityCheck ? (
           <div className="diablo-ai-empty is-danger">
-            Nie udało się uruchomić AI Check dla {period.label}. {opportunityCheckError || 'Sprawdź API albo spróbuj ponownie.'}
+            Could not run AI Check for {period.label}. {opportunityCheckError || 'Check the API or try again.'}
           </div>
         ) : activeOpportunityCheck ? (
           <div className="diablo-ai-grid">
             <section className={`diablo-ai-card diablo-ai-verdict is-${activeOpportunityCheck.result.verdict}`}>
-              <span>Najważniejsza decyzja</span>
+              <span>Key decision</span>
               <strong>
                 {primaryAiAction
                   ? `${formatOpportunityAction(primaryAiAction.action)}: ${getProjectLabel(primaryAiAction.projectId)}`
                   : formatOpportunityVerdict(activeOpportunityCheck.result.verdict)}
               </strong>
               <small>
-                {formatOpportunityVerdict(activeOpportunityCheck.result.verdict)} · Pewność: {formatOpportunityConfidence(activeOpportunityCheck.result.confidence)} · Źródło: {formatOpportunitySource(activeOpportunityCheck.mode)}
+                {formatOpportunityVerdict(activeOpportunityCheck.result.verdict)} · Confidence: {formatOpportunityConfidence(activeOpportunityCheck.result.confidence)} · Source: {formatOpportunitySource(activeOpportunityCheck.mode)}
               </small>
               {primaryAiAction ? <p>{primaryAiAction.reason}</p> : null}
               {activeOpportunityCheck.result.topReasons.slice(0, 2).map((reason) => (
@@ -252,22 +252,22 @@ export function DiabloAiPlanningPanel({
 
             <section className="diablo-ai-card is-action">
               <div className="diablo-ai-card-header">
-                <strong>Sugerowana alokacja</strong>
+                <strong>Suggested allocation</strong>
                 <button
                   className="traffic-button is-primary"
                   type="button"
                   disabled={!suggestedAllocationPlan.length || Boolean(appliedSuggestionAt)}
                   onClick={handleApplySuggestedAllocation}
                 >
-                  {appliedSuggestionAt ? 'Zaaplikowano' : 'Zaaplikuj'}
+                  {appliedSuggestionAt ? 'Applied' : 'Apply'}
                 </button>
               </div>
 
               {lastAppliedSuggestionMoves.length && appliedSuggestionAt ? (
                 <div className="diablo-ai-applied">
-                  <strong>Zaaplikowano {lastAppliedSuggestionMoves.length} kafelków o {appliedSuggestionAt}</strong>
+                  <strong>Applied {lastAppliedSuggestionMoves.length} tiles at {appliedSuggestionAt}</strong>
                   <button className="traffic-inline-link" type="button" onClick={handleRestoreSuggestedAllocation}>
-                    Cofnij aplikację
+                    Undo application
                   </button>
                 </div>
               ) : suggestedAllocationPlan.length ? (
@@ -280,22 +280,22 @@ export function DiabloAiPlanningPanel({
                       </li>
                     ))}
                   </ul>
-                  <p>{suggestedAllocationPlan.length} kafelków do przesunięcia w {period.label}.</p>
+                  <p>{suggestedAllocationPlan.length} tiles to move in {period.label}.</p>
                   {hiddenSuggestedAllocationGroupsCount > 0 || isSuggestionListExpanded ? (
                     <button className="traffic-inline-link" type="button" onClick={() => setIsSuggestionListExpanded((current) => !current)}>
-                      {isSuggestionListExpanded ? 'Pokaż mniej' : `Pokaż wszystkie (+${hiddenSuggestedAllocationGroupsCount})`}
+                      {isSuggestionListExpanded ? 'Show less' : `Show all (+${hiddenSuggestedAllocationGroupsCount})`}
                     </button>
                   ) : null}
                 </>
               ) : (
-                <p>Brak bezpiecznych automatycznych korekt z aktualnego układu. Sprawdź wymagania, seniority, zapisane warningi albo dostępność ludzi.</p>
+                <p>No safe automatic adjustments are available for the current layout. Check requirements, seniority, saved warnings or people's availability.</p>
               )}
             </section>
 
             <section className="diablo-ai-card is-bench">
               <div className="diablo-ai-card-header">
-                <strong>Ławka i R&D</strong>
-                <span>{benchSuggestions.length} sygnałów</span>
+                <strong>Bench and R&D</strong>
+                <span>{benchSuggestions.length} signals</span>
               </div>
               {inhouseBenchSuggestions.length ? (
                 <ul>
@@ -310,12 +310,12 @@ export function DiabloAiPlanningPanel({
                   ))}
                 </ul>
               ) : (
-                <p>Brak osób, którym analiza sugeruje osobny cel R&D lub sales-support zamiast bezczynnej ławki.</p>
+                <p>The analysis suggests no one for a separate R&D or sales-support allocation instead of an idle bench.</p>
               )}
             </section>
 
             <section className="diablo-ai-card">
-              <strong>Akcje projektowe</strong>
+              <strong>Project actions</strong>
               <ul>
                 {(aiProjectActions.length ? aiProjectActions : activeOpportunityCheck.result.projectActions).slice(0, 3).map((action) => (
                   <li key={`${action.projectId}:${action.action}`}>
@@ -328,7 +328,7 @@ export function DiabloAiPlanningPanel({
           </div>
         ) : (
           <div className="diablo-ai-empty">
-            Uruchom AI Check dla {period.label}, żeby dostać werdykt, sugerowane ruchy kafelków oraz sygnały o kosztownej ławce i możliwym R&D.
+            Run AI Check for {period.label} to get a verdict, suggested tile moves and signals about costly bench time and potential R&D work.
           </div>
         )}
 
@@ -339,7 +339,7 @@ export function DiabloAiPlanningPanel({
             disabled={opportunityCheckStatus === 'loading'}
             onClick={handleRunOpportunityCheck}
           >
-            {opportunityCheckStatus === 'loading' ? 'Analizuję' : activeOpportunityCheck ? 'Odśwież AI Check' : 'AI Check'}
+            {opportunityCheckStatus === 'loading' ? 'Analysing' : activeOpportunityCheck ? 'Refresh AI Check' : 'AI Check'}
           </button>
           <button
             className={`traffic-button ${aiSaveStatus === 'saved' ? 'is-success' : ''}`}
@@ -347,7 +347,7 @@ export function DiabloAiPlanningPanel({
             disabled={!activeOpportunityCheck}
             onClick={handleSaveOpportunityCheck}
           >
-            {aiSaveStatus === 'saved' ? 'Zapisano' : 'Zapisz wynik'}
+            {aiSaveStatus === 'saved' ? 'Saved' : 'Save result'}
           </button>
           <button
             className={`traffic-button ${pendingResetOpportunityCheck ? 'is-danger' : ''}`}
@@ -355,7 +355,7 @@ export function DiabloAiPlanningPanel({
             disabled={!activeOpportunityCheck}
             onClick={handleResetOpportunityCheck}
           >
-            {pendingResetOpportunityCheck ? 'Potwierdź usunięcie' : 'Usuń wynik'}
+            {pendingResetOpportunityCheck ? 'Confirm deletion' : 'Delete result'}
           </button>
           {opportunityCheckError && activeOpportunityCheck ? <span className="diablo-ai-inline-error">{opportunityCheckError}</span> : null}
         </div>
@@ -366,15 +366,15 @@ export function DiabloAiPlanningPanel({
 
 function formatBenchMeta(suggestion: BenchSuggestion) {
   const seniority = suggestion.seniority || 'n/a';
-  const role = suggestion.role || 'rola?';
-  const cost = typeof suggestion.benchInternalCostK === 'number' ? `${suggestion.benchInternalCostK}k kosztu` : 'koszt?';
+  const role = suggestion.role || 'role?';
+  const cost = typeof suggestion.benchInternalCostK === 'number' ? `${suggestion.benchInternalCostK}k cost` : 'cost?';
   return `${role}, ${seniority}, ${suggestion.benchHours}h, ${cost}`;
 }
 
 function formatBenchSkills(skillIds?: readonly string[]) {
-  if (!skillIds?.length) return 'skille: brak';
+  if (!skillIds?.length) return 'skills: none';
   const visibleSkills = skillIds.slice(0, 3).join(', ');
-  return skillIds.length > 3 ? `skille: ${visibleSkills} +${skillIds.length - 3}` : `skille: ${visibleSkills}`;
+  return skillIds.length > 3 ? `skills: ${visibleSkills} +${skillIds.length - 3}` : `skills: ${visibleSkills}`;
 }
 
 function formatPreferredProjects(
@@ -382,6 +382,6 @@ function formatPreferredProjects(
   getProjectLabel: (projectId: string) => string
 ) {
   const projectIds = suggestion.preferredProjectIds || [];
-  if (!projectIds.length) return 'Brak aktywnej ramki R&D: utwórz ją albo oznacz istniejący projekt jako R&D.';
-  return `Proponowany cel: ${projectIds.slice(0, 2).map(getProjectLabel).join(', ')}`;
+  if (!projectIds.length) return 'No active R&D frame: create one or mark an existing project as R&D.';
+  return `Suggested target: ${projectIds.slice(0, 2).map(getProjectLabel).join(', ')}`;
 }

@@ -17,7 +17,7 @@ import { apiBaseUrl, apiFetch } from '@/core/api/apiClient';
 export async function loadAuthSession(): Promise<AuthSessionResponse> {
   const response = await apiFetch(`${apiBaseUrl}/auth/session`);
   if (!response.ok) {
-    throw new Error(`Nie udało się sprawdzić sesji: ${response.status}`);
+    throw new Error(`Could not check the session: ${response.status}`);
   }
   return authSessionResponseSchema.parse(await response.json());
 }
@@ -42,7 +42,7 @@ export async function startSamlWorkspaceLogin(returnTo: string) {
 export async function logoutFromPtm() {
   const response = await apiFetch(`${apiBaseUrl}/auth/logout`, { method: 'POST' });
   if (!response.ok) {
-    throw new Error(`Nie udało się wylogować: ${response.status}`);
+    throw new Error(`Could not sign out: ${response.status}`);
   }
 }
 

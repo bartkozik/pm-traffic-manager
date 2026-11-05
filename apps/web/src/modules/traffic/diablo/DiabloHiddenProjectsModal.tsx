@@ -41,10 +41,10 @@ export function DiabloHiddenProjectsModal({
         <header className="diablo-hidden-projects-header">
           <div>
             <span>{period.label}</span>
-            <h2 id="diablo-hidden-projects-title">Ukryte projekty</h2>
+            <h2 id="diablo-hidden-projects-title">Hidden projects</h2>
           </div>
           <button type="button" onClick={onClose}>
-            Zamknij
+            Close
           </button>
         </header>
 
@@ -61,11 +61,11 @@ export function DiabloHiddenProjectsModal({
                   </div>
                   <dl>
                     <div>
-                      <dt>Typ</dt>
+                      <dt>Type</dt>
                       <dd>{getContractTypeLabel(project.contractType)}</dd>
                     </div>
                     <div>
-                      <dt>Etap</dt>
+                      <dt>Stage</dt>
                       <dd>{getStageLabel(project.stage)}</dd>
                     </div>
                     <div>
@@ -74,14 +74,14 @@ export function DiabloHiddenProjectsModal({
                     </div>
                   </dl>
                   <button type="button" onClick={() => onRestoreProject(project.id)}>
-                    Przywróć
+                    Restore
                   </button>
                 </article>
               );
             })}
           </div>
         ) : (
-          <p className="diablo-hidden-projects-empty">Brak ukrytych projektów w tym miesiącu.</p>
+          <p className="diablo-hidden-projects-empty">No hidden projects this month.</p>
         )}
       </section>
     </div>

@@ -5,7 +5,7 @@ import { DiabloHiddenProjectsModal } from './DiabloHiddenProjectsModal';
 
 const period: Period = {
   id: '2026-06',
-  label: 'Czerwiec 2026',
+  label: 'June 2026',
   granularity: 'month',
   startsOn: '2026-06-01',
   endsOn: '2026-06-30',
@@ -21,7 +21,7 @@ const hiddenProject: ProjectFrame = {
   workType: 'commercial',
   budgetK: 12,
   probability: 1,
-  startMonth: 'Czerwiec 2026',
+  startMonth: 'June 2026',
   startPeriodId: period.id,
   endPeriodId: period.id,
   rateConfig: { companyTargetRatePlnH: 240 },
@@ -48,13 +48,13 @@ describe('DiabloHiddenProjectsModal', () => {
       />
     );
 
-    expect(screen.getByRole('dialog', { name: 'Ukryte projekty' })).toBeInTheDocument();
-    expect(screen.getByText('Czerwiec 2026')).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Hidden projects' })).toBeInTheDocument();
+    expect(screen.getByText('June 2026')).toBeInTheDocument();
     expect(screen.getByText("Client 1")).toBeInTheDocument();
     expect(screen.getByText('Discovery')).toBeInTheDocument();
     expect(screen.getByText('18k')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Przywróć' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Restore' }));
 
     expect(onRestoreProject).toHaveBeenCalledWith(hiddenProject.id);
   });
@@ -71,7 +71,7 @@ describe('DiabloHiddenProjectsModal', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Zamknij' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });

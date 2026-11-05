@@ -210,13 +210,13 @@ export function MonthPlanningCard({
         </button>
         <div className="traffic-month-header-actions">
           <label className="traffic-month-sort">
-            Sortuj
+            Sort
             <select
               value={projectSortMode}
               onChange={(event) => setProjectSortMode(event.target.value as ProjectSortMode)}
             >
-              <option value="type">Typ projektu</option>
-              <option value="profit_potential">Potencjał zysku</option>
+              <option value="type">Project type</option>
+              <option value="profit_potential">Profit potential</option>
             </select>
           </label>
           <button
@@ -225,10 +225,10 @@ export function MonthPlanningCard({
             type="button"
             onClick={() => setIsRelationshipOverlayVisible((current) => !current)}
           >
-            Relacje {relationshipOverlaySignals.length}
+            Relationships {relationshipOverlaySignals.length}
           </button>
           <button className="traffic-button is-primary" type="button" onClick={() => onCreateProject(period.id)}>
-            + Dodaj projekt
+            + Add project
           </button>
         </div>
       </div>
@@ -285,18 +285,18 @@ export function MonthPlanningCard({
           </svg>
         ) : null}
         {isRelationshipOverlayVisible ? (
-          <div className="traffic-month-relationship-overlay" aria-label={`Relacje alokacji w miesiącu: ${period.label}`}>
+          <div className="traffic-month-relationship-overlay" aria-label={`Allocation relationships for the month: ${period.label}`}>
             <div className="traffic-month-relationship-overlay-header">
               <div>
                 <strong>
-                  Relacje i przesunięcia
+                  Relationships and moves
                   <HelpButton
-                    label="Wyjasnij relacje i przesuniecia"
+                    label="Explain relationships and moves"
                     topicId="relationship-overlay"
                     onOpenHelp={onOpenHelp}
                   />
                 </strong>
-                <span>Zmiany, handoffy, backupy, osoby rozcięte między targetami i linie relacji między widocznymi ramkami.</span>
+                <span>Changes, handoffs, backups, people split across targets, and relationship lines between visible frames.</span>
               </div>
               <em>{relationshipOverlaySignals.length} / {relationshipConnectorSignals.length}</em>
             </div>
@@ -321,7 +321,7 @@ export function MonthPlanningCard({
               </div>
             ) : (
               <p className="traffic-editor-section-note">
-                Brak zapisanych markerów relacji w tym miesiącu.
+                No saved relationship markers this month.
               </p>
             )}
           </div>
@@ -358,18 +358,18 @@ export function MonthPlanningCard({
         {archivedProjects.length ? (
           <div className="traffic-archived-projects">
             <div className="traffic-section-title">
-              <span>Zarchiwizowane w tym miesiącu</span>
+              <span>Archived this month</span>
               <span>{archivedProjects.length}</span>
             </div>
             <p className="traffic-editor-section-note">
-              Przywrócenie pokazuje projekt z powrotem w tym miesiącu. Alokacje przeniesione na ławkę zostają do ponownego ułożenia.
+              Restoring shows the project again this month. Allocations moved to the bench still need to be reassigned.
             </p>
-            <div className="traffic-archived-table" role="table" aria-label={`Zarchiwizowane projekty: ${period.label}`}>
+            <div className="traffic-archived-table" role="table" aria-label={`Archived projects: ${period.label}`}>
               <div className="traffic-archived-row is-header" role="row">
-                <span role="columnheader">Projekt</span>
-                <span role="columnheader">Typ / etap</span>
+                <span role="columnheader">Project</span>
+                <span role="columnheader">Type / stage</span>
                 <span role="columnheader">Plan</span>
-                <span role="columnheader">Akcja</span>
+                <span role="columnheader">Action</span>
               </div>
               {archivedProjects.map((project) => {
                 const plan = project.revenuePlan.find((entry) => entry.periodId === period.id);
@@ -388,20 +388,20 @@ export function MonthPlanningCard({
                     <span role="cell">
                       <div className="traffic-archived-actions">
                         <button
-                          aria-label={`Przywróć projekt w miesiącu: ${project.client} - ${project.name}`}
+                          aria-label={`Restore project for the month: ${project.client} - ${project.name}`}
                           className="traffic-button"
                           type="button"
                           onClick={() => onRestoreProject(project.id, period.id)}
                         >
-                          Przywróć
+                          Restore
                         </button>
                         <button
-                          aria-label={`${pendingDeleteArchivedProjectId === `${period.id}:${project.id}` ? 'Potwierdź usunięcie projektu' : 'Usuń projekt'}: ${project.client} - ${project.name}`}
+                          aria-label={`${pendingDeleteArchivedProjectId === `${period.id}:${project.id}` ? 'Confirm project deletion' : 'Delete project'}: ${project.client} - ${project.name}`}
                           className={`traffic-button is-danger ${pendingDeleteArchivedProjectId === `${period.id}:${project.id}` ? 'is-confirming' : ''}`}
                           type="button"
                           onClick={() => onDeleteArchivedProject(project.id, period.id)}
                         >
-                          {pendingDeleteArchivedProjectId === `${period.id}:${project.id}` ? 'Potwierdź' : 'Usuń'}
+                          {pendingDeleteArchivedProjectId === `${period.id}:${project.id}` ? 'Confirm' : 'Delete'}
                         </button>
                       </div>
                     </span>
@@ -421,12 +421,12 @@ export function MonthPlanningCard({
                 type="button"
                 onClick={() => setIsBenchCollapsed((current) => !current)}
               >
-                <span>Ławka / nieprzypisany cel</span>
+                <span>Bench / unassigned target</span>
                 <em>{benchAllocations.length}k</em>
-                <strong>{isBenchCollapsed ? 'Rozwiń' : 'Zwiń'}</strong>
+                <strong>{isBenchCollapsed ? 'Expand' : 'Collapse'}</strong>
               </button>
               <HelpButton
-                label="Wyjasnij lawke i nieprzypisane kafelki"
+                label="Explain the bench and unassigned tiles"
                 topicId="bench"
                 onOpenHelp={onOpenHelp}
               />
@@ -460,12 +460,12 @@ export function MonthPlanningCard({
               type="button"
               onClick={() => setIsPeopleCollapsed((current) => !current)}
             >
-              <span>Dostępność ludzi</span>
-              <em>{people.length} osób</em>
-              <strong>{isPeopleCollapsed ? 'Rozwiń' : 'Zwiń'}</strong>
+              <span>People's capacity</span>
+              <em>{people.length} people</em>
+              <strong>{isPeopleCollapsed ? 'Expand' : 'Collapse'}</strong>
             </button>
             <HelpButton
-              label="Wyjasnij dostepnosc ludzi w miesiacu"
+              label="Explain people's monthly capacity"
               topicId="people-availability"
               onOpenHelp={onOpenHelp}
             />
@@ -485,12 +485,12 @@ export function MonthPlanningCard({
                   >
                     <span className="traffic-person-dot" style={{ background: person.color }} />
                     <strong>{person.name}</strong>
-                    <span>{utilization.costK}k koszt</span>
-                    <small>{utilization.allocatedRevenueK}/{utilization.targetK}k cel · {utilization.allocatedHours}/{utilization.availableHours}h</small>
-                    <div className="traffic-utilization-meter" aria-label={`${utilization.utilizationPercent}% wykorzystania`}>
+                    <span>{utilization.costK}k cost</span>
+                    <small>{utilization.allocatedRevenueK}/{utilization.targetK}k target · {utilization.allocatedHours}/{utilization.availableHours}h</small>
+                    <div className="traffic-utilization-meter" aria-label={`${utilization.utilizationPercent}% utilisation`}>
                       <span style={{ width: `${Math.min(100, utilization.utilizationPercent)}%` }} />
                     </div>
-                    <small>{utilization.utilizationPercent}% zajętości · {utilization.targetCoveragePercent}% celu</small>
+                    <small>{utilization.utilizationPercent}% allocated · {utilization.targetCoveragePercent}% of target</small>
                     {status ? <em>{status}</em> : null}
                   </button>
                 );
@@ -508,12 +508,12 @@ export function MonthPlanningCard({
                 type="button"
                 onClick={() => setIsWeeklyCollapsed((current) => !current)}
               >
-                <span>Podział tygodniowy</span>
+                <span>Weekly breakdown</span>
                 <em>{period.label}</em>
-                <strong>{isWeeklyCollapsed ? 'Rozwiń' : 'Zwiń'}</strong>
+                <strong>{isWeeklyCollapsed ? 'Expand' : 'Collapse'}</strong>
               </button>
               <HelpButton
-                label="Wyjasnij podzial tygodniowy"
+                label="Explain the weekly breakdown"
                 topicId="weekly-drilldown"
                 onOpenHelp={onOpenHelp}
               />

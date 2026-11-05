@@ -29,7 +29,7 @@ export function VisualPatternPanel({
   onToggleCollapsed,
 }: VisualPatternPanelProps) {
   return (
-    <aside className={`traffic-pattern-panel ${isCollapsed ? 'is-collapsed' : ''}`} aria-label="Inwentarz patternów wizualnych">
+    <aside className={`traffic-pattern-panel ${isCollapsed ? 'is-collapsed' : ''}`} aria-label="Visual pattern inventory">
       <div className="traffic-collapsible-row is-pattern-panel">
         <button
           aria-expanded={!isCollapsed}
@@ -37,12 +37,12 @@ export function VisualPatternPanel({
           type="button"
           onClick={onToggleCollapsed}
         >
-          <span>Inwentarz patternów</span>
+          <span>Pattern inventory</span>
           <em>{visualPatterns.length}</em>
-          <strong>{isCollapsed ? 'Rozwiń' : 'Zwiń'}</strong>
+          <strong>{isCollapsed ? 'Expand' : 'Collapse'}</strong>
         </button>
         <HelpButton
-          label="Wyjasnij inwentarz patternow"
+          label="Explain the pattern inventory"
           topicId="visual-inventory"
           onOpenHelp={onOpenHelp}
         />
@@ -56,13 +56,13 @@ export function VisualPatternPanel({
                 <div>
                   <strong>{pattern.label}</strong>
                   <span>{pattern.detail}</span>
-                  <em>{patternCounts[pattern.tone]} teraz</em>
+                  <em>{patternCounts[pattern.tone]} now</em>
                 </div>
               </div>
             ))}
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Skille i seniority</strong>
+            <strong>Skills and seniority</strong>
             <div className="traffic-pattern-glyph-list">
               {visualSkillLegend.map((item) => (
                 <span className="traffic-pattern-glyph-item" key={item.id} title={item.label}>
@@ -73,14 +73,14 @@ export function VisualPatternPanel({
             </div>
             <div className="traffic-pattern-glyph-list">
               {visualSeniorityLegend.map((item) => (
-                <span className="traffic-pattern-glyph-item" key={item} title={`Poziom ${item}`}>
+                <span className="traffic-pattern-glyph-item" key={item} title={`Level ${item}`}>
                   <span className="traffic-seniority-glyph">{item}</span>
                 </span>
               ))}
             </div>
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Markery spotkania</strong>
+            <strong>Meeting markers</strong>
             <div className="traffic-pattern-marker-list">
               {meetingMarkerLegend.map((item) => (
                 <span className="traffic-pattern-marker-item" key={item.id} title={item.detail}>
@@ -91,7 +91,7 @@ export function VisualPatternPanel({
             </div>
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Geometria ramki</strong>
+            <strong>Frame geometry</strong>
             <div className="traffic-pattern-frame-list">
               {frameGeometryLegend.map((item) => (
                 <span className="traffic-pattern-frame-item" key={item.id} title={item.detail}>
@@ -105,7 +105,7 @@ export function VisualPatternPanel({
             </div>
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Tygodnie osoby</strong>
+            <strong>Person's weekly breakdown</strong>
             <div className="traffic-pattern-week-list">
               {weeklySlotLegend.map((item) => (
                 <span className="traffic-pattern-week-item" key={item.id} title={item.detail}>
@@ -122,7 +122,7 @@ export function VisualPatternPanel({
             </div>
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Relacje</strong>
+            <strong>Relationships</strong>
             <div className="traffic-pattern-relationship-list">
               {relationshipLegend.map((item) => (
                 <span className={`traffic-pattern-relationship-item ${item.className}`} key={item.id} title={item.detail}>
@@ -136,7 +136,7 @@ export function VisualPatternPanel({
             </div>
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Stan karty osoby</strong>
+            <strong>Person card status</strong>
             <div className="traffic-pattern-person-state-list">
               {personCardStateLegend.map((item) => (
                 <span className={`traffic-pattern-person-state-item ${item.className}`} key={item.id} title={item.detail}>
@@ -150,7 +150,7 @@ export function VisualPatternPanel({
             </div>
           </div>
           <div className="traffic-pattern-subsection">
-            <strong>Stan projektu</strong>
+            <strong>Project status</strong>
             <div className="traffic-pattern-project-state-list">
               {projectInventoryStateLegend.map((item) => (
                 <span className={`traffic-pattern-project-state-item ${item.className}`} key={item.id} title={item.detail}>
