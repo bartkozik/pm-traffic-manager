@@ -1,5 +1,6 @@
+import { appAccessUsersResponseSchema, samlAuthenticationRequestSchema } from '@ptm/contracts';
 import formbody from '@fastify/formbody';
-import Fastify from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { registerAccessManagementRoutes } from './access.router.js';
 import { AccessManagementService } from './access.service.js';
@@ -15,7 +16,7 @@ import {
 } from './saml.testSupport.js';
 
 describe('access management routes', () => {
-  const apps = new Set<ReturnType<typeof Fastify>>();
+  const apps = new Set<FastifyInstance>();
 
   afterEach(async () => {
     await Promise.all([...apps].map((app) => app.close()));
@@ -88,8 +89,8 @@ describe('access management routes', () => {
       url: '/api/access/users',
     });
     expect(listResponse.statusCode).toBe(200);
-    expect(listResponse.json().users).toHaveLength(2);
-    expect(listResponse.json().samlConfiguration).toMatchObject({
+    expect(appAccessUsersResponseSchema.parse(listResponse.json<unknown>()).users).toHaveLength(2);
+    expect(appAccessUsersResponseSchema.parse(listResponse.json<unknown>()).samlConfiguration).toMatchObject({
       acsUrl: 'http://localhost:4000/api/auth/saml/acs',
       authEnabled: true,
       configured: true,
@@ -176,9 +177,9 @@ describe('access management routes', () => {
   });
 });
 
-async function login(app: ReturnType<typeof Fastify>) {
+async function login(app: FastifyInstance) {
   const requestResponse = await app.inject({ method: 'GET', url: '/api/auth/saml/authn' });
-  const authenticationRequest = requestResponse.json();
+  const authenticationRequest = samlAuthenticationRequestSchema.parse(requestResponse.json<unknown>());
   const callbackResponse = await app.inject({
     headers: { 'content-type': 'application/x-www-form-urlencoded' },
     method: 'POST',

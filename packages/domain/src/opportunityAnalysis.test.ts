@@ -214,7 +214,7 @@ describe('generateMonthOpportunityAnalysis', () => {
     const backendBottleneck = analysis.skillBottlenecks.find((skill) => skill.skillId === 'backend');
 
     expect(cheapProject?.allocatedHoursBySkill).toContainEqual({ skillId: 'backend', hours: 120 });
-    expect(cheapProject?.missingRequiredHoursBySkill).not.toContainEqual({ skillId: 'backend', hours: expect.any(Number) });
+    expect(cheapProject?.missingRequiredHoursBySkill).not.toContainEqual({ skillId: 'backend', hours: (expect.any(Number) as unknown) });
     expect(backendBottleneck?.allocatedHours).toBe(120);
   });
 

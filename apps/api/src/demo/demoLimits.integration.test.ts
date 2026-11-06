@@ -31,7 +31,7 @@ describe.skipIf(!databaseUrl)('demo storage and session bounds', () => {
     await expect(repository.create(`${prefix}-new`)).rejects.toMatchObject({ code: 'DEMO_CAPACITY' });
     await pool.query("UPDATE demo_sessions SET expires_at=NOW()-INTERVAL '1 second' WHERE token_hash LIKE $1", [`${prefix}%`]);
     await repository.cleanup();
-    expect((await pool.query('SELECT count(*)::int AS count FROM demo_sessions WHERE token_hash LIKE $1', [`${prefix}%`])).rows[0].count).toBe(0);
+    expect((await pool.query<{ count: number }>('SELECT count(*)::int AS count FROM demo_sessions WHERE token_hash LIKE $1', [`${prefix}%`])).rows[0].count).toBe(0);
   });
 
   it('rejects oversized snapshots without changing the original board', async () => {

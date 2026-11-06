@@ -392,9 +392,6 @@ export default function DiabloTrafficBoard() {
   const benchAllocations = allocationsByTarget.get('bench') || emptyBenchAllocations;
   const activeProjects = visibleProjects;
 
-  // Week perspective: month-clipped Mon–Fri business weeks for the active month.
-  // A week that straddles a month boundary shows as a short stub here (its days in
-  // the neighbouring month live under that month's own strip — the week is split).
   const businessWeeks = useMemo(
     () => (isWeekPerspective && activePeriod ? getBusinessWeeksForMonth(activePeriod) : []),
     [activePeriod, isWeekPerspective]
@@ -1187,9 +1184,6 @@ export default function DiabloTrafficBoard() {
       setSnapshotStatus(nextSnapshot ? 'idle' : 'failed');
       return;
     }
-    // Resizing a project frame no longer changes its revenue — the money value
-    // is owned by the project editor. (Auto-sized R&D / T&M-no-CAP frames track
-    // their allocations; fixed / capped frames keep the size you set.)
   };
 
   const handleArchiveProject = (projectId: string, periodId: string) => {

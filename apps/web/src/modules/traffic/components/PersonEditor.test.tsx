@@ -78,7 +78,7 @@ describe('PersonEditor', () => {
     expect(onSave).toHaveBeenCalledWith(
       expect.objectContaining({
         monthlyCostK: 9,
-        costModel: expect.objectContaining({ fixedMonthlyCostK: 9 }),
+        costModel: (expect.objectContaining({ fixedMonthlyCostK: 9 }) as unknown),
       })
     );
   });

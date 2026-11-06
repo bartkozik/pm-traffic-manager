@@ -1,5 +1,4 @@
-// Public snapshot: identity labels and financial amounts below are synthetic fixture values.
-// Existing schema, relationships, planning scenarios and implementation are retained.
+// Identity labels and financial amounts are synthetic demo fixtures.
 import { Period, Person, PersonTileAllocation, PlanningRule, ProjectFrame, Skill, TileUnit, TrafficSnapshot } from './traffic.model.js';
 import { createPersonPeriodAllocations } from './periods.js';
 import { createPersonPairPlanningRule } from './planningRules.js';

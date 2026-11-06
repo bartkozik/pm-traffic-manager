@@ -1,5 +1,3 @@
-# pnpm workspaces are configured via pnpm-workspace.yaml (YAML is the supported format).
-# This enables recursive commands like: pnpm -r --parallel dev
 packages:
   - 'apps/*'
   - 'packages/*'

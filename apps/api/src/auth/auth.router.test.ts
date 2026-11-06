@@ -1,5 +1,5 @@
 import formbody from '@fastify/formbody';
-import Fastify from 'fastify';
+import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, describe, expect, it } from 'vitest';
 import { registerAuthRoutes } from './auth.router.js';
 import { AuthService } from './auth.service.js';
@@ -7,7 +7,7 @@ import { createAllowedAccessRepository } from './inMemoryAccess.repository.testS
 import { FakeSamlIdentityProvider, createTestAuthConfig } from './saml.testSupport.js';
 
 describe('auth routes', () => {
-  const apps = new Set<ReturnType<typeof Fastify>>();
+  const apps = new Set<FastifyInstance>();
 
   afterEach(async () => {
     await Promise.all([...apps].map((app) => app.close()));

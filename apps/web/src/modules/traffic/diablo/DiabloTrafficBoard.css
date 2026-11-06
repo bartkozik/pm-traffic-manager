@@ -100,7 +100,6 @@
   padding: 5px 7px;
 }
 
-/* Week-perspective selector strip (between the month nav and the canvas). */
 .diablo-week-strip {
   display: flex;
   flex: 0 0 auto;
@@ -233,7 +232,6 @@
   overflow: hidden;
 }
 
-/* Standalone AI Assisted Planning route (off the main board). */
 .diablo-ai-view {
   display: flex;
   flex-direction: column;
@@ -286,7 +284,6 @@
   font-size: 13px;
 }
 
-/* Weekly planning route. */
 .diablo-week-view {
   display: flex;
   flex-direction: column;

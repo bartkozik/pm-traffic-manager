@@ -11,7 +11,7 @@ export class HttpApiServer {
     this.backupScheduler = backupScheduler;
     this.authorityManager = authorityManager;
     this.nodeExtractor = new NodeExtractor(versionManager);
-    this.getYDoc = null; // Set via setDocResolver after construction
+    this.getYDoc = null;
     this.server = null;
   }
 
@@ -19,12 +19,11 @@ export class HttpApiServer {
     this.getYDoc = getYDoc;
   }
 
-  // Utility function to sanitize roomnames for safe URL usage
   sanitizeRoomname(roomname) {
     return roomname
-      .replace(/[^a-zA-Z0-9]/g, '-')  // Replace non-alphanumeric with dashes
-      .replace(/-+/g, '-')            // Replace multiple consecutive dashes with single dash
-      .replace(/^-|-$/g, '');         // Remove leading/trailing dashes
+      .replace(/[^a-zA-Z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
   }
 
   start() {
@@ -49,12 +48,11 @@ export class HttpApiServer {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
     const query = parsedUrl.query;
-    
-    // CORS headers
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
+
     if (req.method === 'OPTIONS') {
       res.writeHead(200);
       res.end();
@@ -62,7 +60,6 @@ export class HttpApiServer {
     }
 
     try {
-      // Health check endpoint
       if (pathname === '/health' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
@@ -73,63 +70,61 @@ export class HttpApiServer {
         return;
       }
 
-      // Route handling
       if (pathname === '/api/documents' && req.method === 'GET') {
         await this.handleDocumentsList(req, res, query);
-      
+
       } else if (pathname.match(/^\/api\/documents\/([^\/]+)$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         await this.handleDocumentInfo(req, res, roomname, query);
-      
+
       } else if (pathname.match(/^\/api\/documents\/([^\/]+)\/versions$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         await this.handleVersionHistory(req, res, roomname, query);
-      
+
       } else if (pathname.match(/^\/api\/documents\/([^\/]+)\/versions\/([^\/]+)$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         const timestamp = decodeURIComponent(pathname.split('/')[5]);
         await this.handleVersionRetrieval(req, res, roomname, timestamp, query);
-      
+
       } else if (pathname.match(/^\/api\/documents\/([^\/]+)\/versions\/([^\/]+)\/metadata$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         const timestamp = decodeURIComponent(pathname.split('/')[5]);
         await this.handleVersionMetadata(req, res, roomname, timestamp);
-      
+
       } else if (pathname === '/api/system/status' && req.method === 'GET') {
         await this.handleSystemStatus(req, res, query);
-      
+
       } else if (pathname === '/api/system/cleanup' && req.method === 'POST') {
         await this.handleManualCleanup(req, res);
-      
+
       } else if (pathname === '/api/system/cleanup/simulate' && req.method === 'GET') {
         await this.handleCleanupSimulation(req, res);
-      
+
       } else if (pathname.match(/^\/api\/documents\/([^\/]+)\/nodes$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         await this.handleDocumentNodes(req, res, roomname);
-      
+
       } else if (pathname.match(/^\/api\/documents\/([^\/]+)\/nodes\/([^\/]+)\/content$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         const nodeId = decodeURIComponent(pathname.split('/')[5]);
         await this.handleNodeContent(req, res, roomname, nodeId);
-      
+
       } else if (pathname === '/api/backup/status' && req.method === 'GET') {
         await this.handleBackupStatus(req, res);
-      
+
       } else if (pathname === '/api/backup/sources' && req.method === 'GET') {
         await this.handleBackupSources(req, res);
-      
+
       } else if (pathname.match(/^\/api\/backup\/execute\/(.+)$/) && req.method === 'POST') {
         const sourceUrl = decodeURIComponent(pathname.split('/')[4]);
         await this.handleBackupExecute(req, res, sourceUrl);
-      
+
       } else if (pathname === '/api/authority/keypair' && req.method === 'GET') {
         await this.handleAuthorityKeypair(req, res);
-      
+
       } else if (pathname === '/api/authority/verify' && req.method === 'POST') {
         await this.handleAuthorityVerify(req, res);
 
-      // ── Live graph API (reads/writes the live Y.js document) ──
       } else if (pathname.match(/^\/api\/live\/([^\/]+)\/graph$/) && req.method === 'GET') {
         const roomname = decodeURIComponent(pathname.split('/')[3]);
         await this.handleLiveGraph(req, res, roomname);
@@ -172,13 +167,11 @@ export class HttpApiServer {
     }
   }
 
-  // List all documents
   async handleDocumentsList(req, res, query) {
     const result = await this.versionManager.listDocuments();
     this.sendJson(res, result);
   }
 
-  // Get specific document info
   async handleDocumentInfo(req, res, roomname, query) {
     try {
       const result = await this.versionManager.getDocumentInfo(roomname);
@@ -192,7 +185,6 @@ export class HttpApiServer {
     }
   }
 
-  // Get version history for a document
   async handleVersionHistory(req, res, roomname, query) {
     const options = {
       from: query.from,
@@ -213,15 +205,14 @@ export class HttpApiServer {
     }
   }
 
-  // Get specific version data
   async handleVersionRetrieval(req, res, roomname, timestamp, query) {
     try {
       const versionData = await this.versionManager.getVersionData(roomname, timestamp);
-      
+
       res.setHeader('Content-Type', 'application/octet-stream');
       res.setHeader('Content-Disposition', `attachment; filename="${roomname}-${timestamp.replace(/[:.]/g, '')}.yjs"`);
       res.setHeader('Content-Length', versionData.length);
-      
+
       res.writeHead(200);
       res.end(versionData);
     } catch (error) {
@@ -233,7 +224,6 @@ export class HttpApiServer {
     }
   }
 
-  // Get version metadata
   async handleVersionMetadata(req, res, roomname, timestamp) {
     try {
       const metadata = await this.versionManager.getVersionMetadata(roomname, timestamp);
@@ -247,12 +237,10 @@ export class HttpApiServer {
     }
   }
 
-  // Get system status
   async handleSystemStatus(req, res, query) {
     const documents = await this.versionManager.listDocuments();
     const cleanupStats = await this.retentionEngine.getCleanupStats();
-    
-    // Calculate total versions across all documents
+
     let totalVersions = 0;
     for (const doc of documents.documents) {
       totalVersions += doc.totalVersions;
@@ -277,12 +265,11 @@ export class HttpApiServer {
     this.sendJson(res, status);
   }
 
-  // Manual cleanup trigger
   async handleManualCleanup(req, res) {
     try {
       console.log('Manual cleanup triggered via API');
       const result = await this.retentionEngine.runCleanup();
-      
+
       this.sendJson(res, {
         success: true,
         message: 'Cleanup completed successfully',
@@ -298,11 +285,10 @@ export class HttpApiServer {
     }
   }
 
-  // Simulate cleanup (dry run)
   async handleCleanupSimulation(req, res) {
     try {
       const simulation = await this.retentionEngine.simulateCleanup();
-      
+
       this.sendJson(res, {
         simulation: true,
         ...simulation,
@@ -317,12 +303,11 @@ export class HttpApiServer {
     }
   }
 
-  // Get nodes list for a document (efficient - no full Y.js transfer)
   async handleDocumentNodes(req, res, roomname) {
     try {
       console.log(`📋 Extracting nodes from document: ${roomname}`);
       const nodes = await this.nodeExtractor.extractNodes(roomname);
-      
+
       this.sendJson(res, {
         roomname,
         totalNodes: nodes.length,
@@ -338,12 +323,11 @@ export class HttpApiServer {
     }
   }
 
-  // Get content from a specific node (efficient - targeted extraction)
   async handleNodeContent(req, res, roomname, nodeId) {
     try {
       console.log(`📄 Extracting content from node ${nodeId} in document: ${roomname}`);
       const result = await this.nodeExtractor.extractNodeContent(roomname, nodeId);
-      
+
       this.sendJson(res, {
         roomname,
         nodeId,
@@ -362,7 +346,6 @@ export class HttpApiServer {
     }
   }
 
-  // Get backup status for all sources
   async handleBackupStatus(req, res) {
     if (!this.backupScheduler) {
       this.sendError(res, 404, 'Backup functionality not enabled');
@@ -377,7 +360,6 @@ export class HttpApiServer {
     }
   }
 
-  // List configured backup sources
   async handleBackupSources(req, res) {
     if (!this.backupScheduler) {
       this.sendError(res, 404, 'Backup functionality not enabled');
@@ -391,7 +373,7 @@ export class HttpApiServer {
         documents: source.documents,
         retentionPolicy: source.retentionPolicy ? 'custom' : 'default'
       }));
-      
+
       this.sendJson(res, {
         sources,
         total: sources.length
@@ -401,7 +383,6 @@ export class HttpApiServer {
     }
   }
 
-  // Manually trigger backup for specific source
   async handleBackupExecute(req, res, sourceUrl) {
     if (!this.backupScheduler) {
       this.sendError(res, 404, 'Backup functionality not enabled');
@@ -411,7 +392,7 @@ export class HttpApiServer {
     try {
       console.log(`Manual backup triggered for: ${sourceUrl}`);
       await this.backupScheduler.triggerManualBackup(sourceUrl);
-      
+
       this.sendJson(res, {
         success: true,
         message: `Backup completed for ${sourceUrl}`,
@@ -423,7 +404,6 @@ export class HttpApiServer {
     }
   }
 
-  // Get server's public key information
   async handleAuthorityKeypair(req, res) {
     if (!this.authorityManager) {
       this.sendError(res, 404, 'Authority management not enabled');
@@ -438,7 +418,6 @@ export class HttpApiServer {
     }
   }
 
-  // Verify document signature
   async handleAuthorityVerify(req, res) {
     if (!this.authorityManager) {
       this.sendError(res, 404, 'Authority management not enabled');
@@ -446,7 +425,6 @@ export class HttpApiServer {
     }
 
     try {
-      // Parse request body
       let body = '';
       req.on('data', chunk => {
         body += chunk.toString();
@@ -455,7 +433,7 @@ export class HttpApiServer {
       req.on('end', async () => {
         try {
           const { roomname, metadata, documentState, authority } = JSON.parse(body);
-          
+
           if (!roomname || !metadata || !authority) {
             this.sendError(res, 400, 'Missing required fields: roomname, metadata, authority');
             return;
@@ -483,9 +461,7 @@ export class HttpApiServer {
     }
   }
 
-  // ── Live graph handlers ──
 
-  // Read the full graph: all nodes + all edges from the live Y.js document
   async handleLiveGraph(req, res, roomname) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -522,7 +498,6 @@ export class HttpApiServer {
     }
   }
 
-  // Get a single node's full config from the live document
   async handleLiveNodeGet(req, res, roomname, nodeId) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -543,7 +518,6 @@ export class HttpApiServer {
     }
   }
 
-  // Update a node in the live document (merges data)
   async handleLiveNodeUpdate(req, res, roomname, nodeId) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -561,7 +535,6 @@ export class HttpApiServer {
         return this.sendError(res, 404, `Node "${nodeId}" not found`);
       }
 
-      // Deep merge: if updates has a 'data' key, merge into existing.data
       const merged = { ...existing };
       if (updates.data) {
         merged.data = { ...existing.data, ...updates.data };
@@ -578,7 +551,6 @@ export class HttpApiServer {
     }
   }
 
-  // Create a new node in the live document
   async handleLiveNodeCreate(req, res, roomname) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -612,7 +584,6 @@ export class HttpApiServer {
     }
   }
 
-  // Delete a node and its edges from the live document
   async handleLiveNodeDelete(req, res, roomname, nodeId) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -627,10 +598,8 @@ export class HttpApiServer {
         return this.sendError(res, 404, `Node "${nodeId}" not found`);
       }
 
-      // Delete node
       yNodes.delete(nodeId);
 
-      // Delete connected edges
       const deletedEdges = [];
       yEdges.forEach((edge, edgeId) => {
         if (edge && (edge.source === nodeId || edge.target === nodeId)) {
@@ -645,7 +614,6 @@ export class HttpApiServer {
     }
   }
 
-  // Create an edge in the live document
   async handleLiveEdgeCreate(req, res, roomname) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -674,7 +642,6 @@ export class HttpApiServer {
     }
   }
 
-  // Delete an edge from the live document
   async handleLiveEdgeDelete(req, res, roomname, edgeId) {
     if (!this.getYDoc) {
       return this.sendError(res, 503, 'Live document access not available');
@@ -695,7 +662,6 @@ export class HttpApiServer {
     }
   }
 
-  // Helper: read request body
   readBody(req) {
     return new Promise((resolve, reject) => {
       let body = '';
@@ -705,7 +671,6 @@ export class HttpApiServer {
     });
   }
 
-  // Helper methods
   sendJson(res, data) {
     res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);

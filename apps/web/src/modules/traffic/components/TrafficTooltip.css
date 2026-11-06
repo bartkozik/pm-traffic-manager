@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-tooltip {
   position: relative;
@@ -66,5 +65,3 @@
 .traffic-tooltip-bubble.is-right {
   transform-origin: left center;
 }
-
-/* End traffic UI styles. */

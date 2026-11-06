@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-month {
   border: 1px solid var(--traffic-border);
@@ -678,5 +677,3 @@
 .traffic-app.is-day .traffic-collapsible-header:hover strong {
   color: #1d4ed8;
 }
-
-/* End traffic UI styles. */

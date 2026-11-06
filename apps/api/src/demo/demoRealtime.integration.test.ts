@@ -1,3 +1,4 @@
+import { demoSessionResponseSchema, trafficBoardRealtimeEventSchema } from '@ptm/contracts';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Pool } from 'pg';
 import { WebSocket } from 'ws';
@@ -60,11 +61,11 @@ describe.skipIf(!databaseUrl)('demo realtime authorization', () => {
     const socket = connect(first.session.board_id, first.token);
     await once(socket, 'message');
     const before = await repository.find(first.session.board_id);
-    const next = once(socket, 'message');
+    const next = nextMessage(socket);
     socket.send(JSON.stringify({ type: 'command', commandId: crypto.randomUUID(), command: { type: 'board.reset' } }));
-    const response = JSON.parse((await next)[0].toString());
+    const response = await next;
     expect(response.type).toBe('command.error');
-    expect(response.message).toContain('Reset demo');
+    expect(response).toMatchObject({ message: expect.stringContaining('Reset demo') as unknown });
     expect(await repository.find(first.session.board_id)).toEqual(before);
     const closed = once(socket, 'close');
     socket.close();
@@ -73,26 +74,26 @@ describe.skipIf(!databaseUrl)('demo realtime authorization', () => {
 
   it('delivers only the owned snapshot and closes existing connections on reset', async () => {
     const socket = connect(first.session.board_id, first.token);
-    const [message] = await once(socket, 'message');
-    expect(JSON.parse(message.toString()).boardId).toBe(first.session.board_id);
+    const message = await nextMessage(socket);
+    expect(message).toMatchObject({ boardId: first.session.board_id });
     const closed = once(socket, 'close');
     const reset = await app.inject({ method: 'POST', url: '/api/demo/reset', headers: { origin, cookie: `__Host-ptm-demo=${first.token}` } });
     expect(reset.statusCode).toBe(200);
     expect((await closed)[0]).toBe(1008);
     expect(await rejection(connect(first.session.board_id, first.token))).toBe(403);
-    first.session.board_id = reset.json().boardId;
+    first.session.board_id = demoSessionResponseSchema.parse(reset.json<unknown>()).boardId;
   });
 
   it('checks session expiry on every websocket command', async () => {
     const socket = connect(second.session.board_id, second.token);
     await once(socket, 'message');
     await pool.query("UPDATE demo_sessions SET expires_at=NOW()-INTERVAL '1 second' WHERE token_hash=$1", [second.session.token_hash]);
-    const message = once(socket, 'message');
+    const message = nextMessage(socket);
     socket.send(JSON.stringify({ type: 'command', commandId: crypto.randomUUID(), command: { type: 'settings.setActiveTileUnit', tileUnitId: 'money-5k' } }));
-    const error = JSON.parse((await message)[0].toString());
+    const error = await message;
     expect(error.type).toBe('command.error');
-    expect(error.message).toContain('Start a new demo session');
-    const stored = await pool.query('SELECT version FROM demo_sessions WHERE token_hash=$1', [second.session.token_hash]);
+    expect(error).toMatchObject({ message: expect.stringContaining('Start a new demo session') as unknown });
+    const stored = await pool.query<{ version: number }>('SELECT version FROM demo_sessions WHERE token_hash=$1', [second.session.token_hash]);
     expect(stored.rows[0].version).toBe(1);
     socket.close();
   });
@@ -125,3 +126,9 @@ describe.skipIf(!databaseUrl)('demo realtime authorization', () => {
   });
 
 });
+
+async function nextMessage(socket: WebSocket) {
+  const event: unknown[] = await once(socket, 'message');
+  if (!Buffer.isBuffer(event[0])) throw new Error('Expected a WebSocket buffer.');
+  return trafficBoardRealtimeEventSchema.parse(JSON.parse(event[0].toString('utf8')));
+}

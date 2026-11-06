@@ -272,7 +272,7 @@ describe('trafficStore durable persistence', () => {
     useTrafficStore.getState().setCollaborationTrackingEnabled(true);
     expect(provider.awareness.getLocalState()).toMatchObject({
       trackingEnabled: true,
-      user: expect.objectContaining({ name: 'Ukryty PM' }),
+      user: (expect.objectContaining({ name: 'Ukryty PM' }) as unknown),
     });
   });
 
@@ -341,7 +341,7 @@ describe('trafficStore durable persistence', () => {
       'ptm-room',
       expect.objectContaining({
         type: 'person.create',
-        person: expect.objectContaining({ id: draft.id, name: 'Kasia Tester' }),
+        person: (expect.objectContaining({ id: draft.id, name: 'Kasia Tester' }) as unknown),
         periodId: '2026-07',
       })
     );

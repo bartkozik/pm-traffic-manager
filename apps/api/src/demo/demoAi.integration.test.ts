@@ -1,3 +1,4 @@
+import { demoSessionResponseSchema } from '@ptm/contracts';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Pool } from 'pg';
 import { DemoRepository } from './demo.repository.js';
@@ -42,20 +43,20 @@ describe.skipIf(!databaseUrl)('demo AI spending limits', () => {
 
   it('reserves the monthly budget before a provider request and reconciles verified usage', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation(async (_url, init) => {
-      const ledger = await pool.query('SELECT reserved_nano FROM demo_ai_months');
+      const ledger = await pool.query<{ reserved_nano: string }>('SELECT reserved_nano FROM demo_ai_months');
       expect(Number(ledger.rows[0].reserved_nano)).toBeGreaterThan(1000000);
-      const body = JSON.parse(String(init?.body));
-      expect(body.max_completion_tokens).toBe(4096);
-      expect(body.service_tier).toBe('default');
-      expect(body.reasoning_effort).toBe('none');
+      const body: unknown = JSON.parse(String(init?.body));
+      expect(body).toMatchObject({ max_completion_tokens: 4096 });
+      expect(body).toMatchObject({ service_tier: 'default' });
+      expect(body).toMatchObject({ reasoning_effort: 'none' });
       return new Response(JSON.stringify({ model: 'gpt-5.4-mini-2026-03-17', choices: [{ message: { content: JSON.stringify(result) } }], usage: { prompt_tokens: 100, completion_tokens: 100, total_tokens: 200 } }));
     });
     const response = await request();
     expect(response.statusCode).toBe(200);
-    expect(response.json().mode).toBe('model');
-    const ledger = await pool.query('SELECT reserved_nano FROM demo_ai_months');
+    expect(response.json<unknown>()).toMatchObject({ mode: 'model' });
+    const ledger = await pool.query<{ reserved_nano: string }>('SELECT reserved_nano FROM demo_ai_months');
     expect(Number(ledger.rows[0].reserved_nano)).toBe(525000);
-    expect((await app.inject({ url: '/api/demo/session', headers: { cookie } })).json().aiRemaining).toBe(2);
+    expect((await app.inject({ url: '/api/demo/session', headers: { cookie } })).json<unknown>()).toMatchObject({ aiRemaining: 2 });
     expect((await request()).statusCode).toBe(200);
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
   });
@@ -65,11 +66,11 @@ describe.skipIf(!databaseUrl)('demo AI spending limits', () => {
     const response = await request();
     expect(response.statusCode).toBe(503);
     expect(response.body).not.toContain('test-demo-key');
-    const before = await pool.query('SELECT reserved_nano FROM demo_ai_months');
+    const before = await pool.query<{ reserved_nano: string }>('SELECT reserved_nano FROM demo_ai_months');
     expect(Number(before.rows[0].reserved_nano)).toBeGreaterThan(1000000);
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     const reset = await app.inject({ method: 'POST', url: '/api/demo/reset', headers: { origin, cookie } });
-    expect(reset.json().aiRemaining).toBe(2);
+    expect(reset.json<unknown>()).toMatchObject({ aiRemaining: 2 });
   });
 
   it('prevents concurrent requests from exceeding the final monthly reservation', async () => {
@@ -79,7 +80,7 @@ describe.skipIf(!databaseUrl)('demo AI spending limits', () => {
     const responses = await Promise.all([request(), request(), request()]);
     expect(responses.map((response) => response.statusCode)).toEqual([429, 429, 429]);
     expect(globalThis.fetch).not.toHaveBeenCalled();
-    const ledger = await pool.query('SELECT reserved_nano FROM demo_ai_months');
+    const ledger = await pool.query<{ reserved_nano: string }>('SELECT reserved_nano FROM demo_ai_months');
     expect(Number(ledger.rows[0].reserved_nano)).toBe(4999999999);
   });
 
@@ -91,19 +92,19 @@ describe.skipIf(!databaseUrl)('demo AI spending limits', () => {
     const responses = await Promise.all([request(), request(), request()]);
     expect(responses.map((response) => response.statusCode).sort()).toEqual([429, 429, 503]);
     expect(globalThis.fetch).toHaveBeenCalledTimes(1);
-    expect(Number((await pool.query('SELECT reserved_nano FROM demo_ai_months')).rows[0].reserved_nano)).toBe(5000000000);
+    expect(Number((await pool.query<{ reserved_nano: string }>('SELECT reserved_nano FROM demo_ai_months')).rows[0].reserved_nano)).toBe(5000000000);
   });
 
   it('allows at most three provider attempts even after reset', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response('{}', { status: 500 }));
     expect((await request()).statusCode).toBe(503);
     const reset = await app.inject({ method: 'POST', url: '/api/demo/reset', headers: { origin, cookie } });
-    boardId = reset.json().boardId;
+    boardId = demoSessionResponseSchema.parse(reset.json<unknown>()).boardId;
     expect((await request()).statusCode).toBe(503);
     expect((await request()).statusCode).toBe(503);
     const response = await request();
     expect(response.statusCode).toBe(429);
-    expect(response.json().code).toBe('DEMO_AI_LIMIT');
+    expect(response.json<unknown>()).toMatchObject({ code: 'DEMO_AI_LIMIT' });
     expect(globalThis.fetch).toHaveBeenCalledTimes(3);
   });
 
@@ -117,7 +118,7 @@ describe.skipIf(!databaseUrl)('demo AI spending limits', () => {
     sessionHashes.push(other.session.token_hash);
     const response = await app.inject({ method: 'POST', url: `/api/boards/${other.session.board_id}/periods/${periodId}/ai-opportunity-check`, headers: { origin, cookie: `__Host-ptm-demo=${other.token}` } });
     expect(response.statusCode).toBe(429);
-    expect(response.json().code).toBe('DEMO_AI_BUSY');
+    expect(response.json<unknown>()).toMatchObject({ code: 'DEMO_AI_BUSY' });
     release();
     await Promise.all(pending);
   });

@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-person-visual-badge {
   display: flex;
@@ -105,5 +104,3 @@
   color: #78350f;
   background: #fef3c7;
 }
-
-/* End traffic UI styles. */

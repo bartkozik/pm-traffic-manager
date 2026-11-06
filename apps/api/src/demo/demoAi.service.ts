@@ -57,7 +57,7 @@ export class DemoOpportunityCheckService {
       const session = await client.query<{ token_hash: string; ai_attempts: number }>('SELECT token_hash,ai_attempts FROM demo_sessions WHERE board_id=$1 AND expires_at>NOW() FOR UPDATE', [boardId]);
       if (!session.rows[0]) throw new DemoError(401, 'DEMO_SESSION_REQUIRED', 'Start a new demo session to continue.');
       const tokenHash = session.rows[0].token_hash;
-      const cache = await client.query('SELECT result_json FROM demo_ai_reservations WHERE token_hash=$1 AND cache_key=$2 AND result_json IS NOT NULL ORDER BY created_at DESC LIMIT 1', [tokenHash, cacheKey]);
+      const cache = await client.query<{ result_json: unknown }>('SELECT result_json FROM demo_ai_reservations WHERE token_hash=$1 AND cache_key=$2 AND result_json IS NOT NULL ORDER BY created_at DESC LIMIT 1', [tokenHash, cacheKey]);
       if (cache.rows[0]) return { cached: cache.rows[0].result_json };
       if (session.rows[0].ai_attempts >= 3) throw new DemoError(429, 'DEMO_AI_LIMIT', 'This demo session has used all 3 AI analyses.');
       const active = await client.query<{ count: number }>("SELECT COUNT(*)::int AS count FROM demo_ai_reservations WHERE NOT finished AND created_at>NOW()-INTERVAL '2 minutes'");
@@ -93,8 +93,10 @@ async function readBoundedJson(response: Response): Promise<unknown> {
   let bytes = 0;
   try {
     for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      const value: unknown = chunk.value;
+      if (!(value instanceof Uint8Array)) throw unavailable();
       bytes += value.byteLength;
       if (bytes > 100000) throw unavailable();
       chunks.push(value);

@@ -18,10 +18,7 @@ export class CleanupScheduler {
     this.isRunning = true;
     this.updateNextRunTime();
 
-    // Run cleanup immediately on start (optional)
-    // setTimeout(() => this.runCleanup(), 5000);
 
-    // Schedule recurring cleanup
     this.intervalId = setInterval(() => {
       this.runCleanup();
     }, this.intervalMinutes * 60 * 1000);
@@ -35,7 +32,7 @@ export class CleanupScheduler {
 
     console.log('Stopping cleanup scheduler');
     this.isRunning = false;
-    
+
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -50,13 +47,13 @@ export class CleanupScheduler {
     try {
       console.log('Running scheduled cleanup...');
       this.lastRun = new Date();
-      
+
       const result = await this.retentionEngine.runCleanup();
-      
+
       console.log(`Scheduled cleanup completed: ${result.totalVersionsRemoved} versions removed, ${this.formatSize(result.totalStorageFreed)} freed`);
-      
+
       this.updateNextRunTime();
-      
+
     } catch (error) {
       console.error('Scheduled cleanup failed:', error);
       this.updateNextRunTime();
@@ -79,20 +76,18 @@ export class CleanupScheduler {
     };
   }
 
-  // Trigger manual cleanup
   async triggerManualCleanup() {
     console.log('Manual cleanup triggered');
     return await this.runCleanup();
   }
 
-  // Helper method to format size
   formatSize(bytes) {
     if (bytes === 0) return '0B';
-    
+
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
   }
 }

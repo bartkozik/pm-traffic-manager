@@ -1,4 +1,3 @@
-# Dockerfile for PTM Sync Server
 FROM node:24-bookworm-slim@sha256:c86ecead9e55a5210ac1727de38a4ca840bf03dcaf34dc9749addbf383b1920c
 
 WORKDIR /app
@@ -19,10 +18,7 @@ RUN useradd -m -u 1001 ptm \
 
 USER ptm
 
-# Expose ports
-# Default Y.js WebSocket port
 EXPOSE 1234
-# HTTP API port
 EXPOSE 3001
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

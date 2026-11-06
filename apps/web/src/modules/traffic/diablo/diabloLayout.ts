@@ -94,7 +94,6 @@ export interface DiabloLayoutProjectInput {
   revenueK: number;
   contractType?: ContractType;
   workType?: ProjectFrame['workType'];
-  // Allocated content in the active period, used for contract-type auto-sizing.
   allocatedTileCount?: number;
   allocatedPeopleCount?: number;
 }
@@ -213,8 +212,6 @@ export function getFrameDimensionsForRevenue(revenueK: number, tileUnit?: TileUn
   return { width: best.width, height: best.height };
 }
 
-// Roughly-square dimensions that hold at least `cellCount` cells — used for
-// contract-type auto-sizing so big content-driven frames don't become strips.
 export function getFrameDimensionsForCellCount(cellCount: number) {
   const cells = Math.max(1, Math.ceil(Math.max(0, cellCount)));
   const width = clamp(Math.round(Math.sqrt(cells)), DIABLO_MIN_FRAME_WIDTH, DIABLO_MAX_FRAME_WIDTH);
@@ -1117,7 +1114,7 @@ export function resolveDiabloLayoutSyncBase(
 
 export function parseDiabloLayout(value: unknown, roomName: string, periodId: string): DiabloBoardLayout | null {
   try {
-    const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+    const parsed: unknown = typeof value === 'string' ? JSON.parse(value) : value;
     if (!isRecord(parsed)) return null;
     if (
       (parsed.version !== DIABLO_LAYOUT_VERSION && parsed.version !== 2) ||
@@ -1248,11 +1245,7 @@ export function ensureDiabloProjectLayouts(
         const project = projects.find((item) => item.id === projectId);
         if (!project) return [projectId, snappedLayout];
 
-        // Contract-type auto-sizing: grow (never shrink) to fit allocated content.
-        //  • R&D                     → fit the people inside the project.
-        //  • T&M without CAP (hourly) → fit the allocated tiles.
-        //  • fixed / capped contracts → keep the user's manual frame size
-        //    (the money value must not resize the frame; see editor flow).
+        // Auto-size R&D and uncapped T&M to fit content; fixed and capped contracts retain their manual frame.
         const autoContentCells = project.workType === 'research_development'
           ? project.allocatedPeopleCount
           : project.contractType === 'hourly'

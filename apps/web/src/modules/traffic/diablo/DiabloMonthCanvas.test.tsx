@@ -2135,13 +2135,13 @@ describe('DiabloMonthCanvas', () => {
 
     expect(onLayoutChange).toHaveBeenCalledWith(
       expect.objectContaining({
-        panels: expect.objectContaining({
-          legend: expect.objectContaining({
+        panels: (expect.objectContaining({
+          legend: (expect.objectContaining({
             x: 20,
             y: 2,
             collapsed: true,
-          }),
-        }),
+          }) as unknown),
+        }) as unknown),
       }),
       'local'
     );
@@ -2183,12 +2183,12 @@ describe('DiabloMonthCanvas', () => {
     await waitFor(() => {
       expect(onLayoutChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          panels: expect.objectContaining({
-            legend: expect.objectContaining({
-              x: expect.any(Number),
-              y: expect.any(Number),
-            }),
-          }),
+          panels: (expect.objectContaining({
+            legend: (expect.objectContaining({
+              x: (expect.any(Number) as unknown),
+              y: (expect.any(Number) as unknown),
+            }) as unknown),
+          }) as unknown),
         }),
         'local'
       );
@@ -2229,12 +2229,12 @@ describe('DiabloMonthCanvas', () => {
 
     expect(onLayoutChange).toHaveBeenCalledWith(
       expect.objectContaining({
-        panels: expect.objectContaining({
-          legend: expect.objectContaining({
+        panels: (expect.objectContaining({
+          legend: (expect.objectContaining({
             x: layout.panels.legend.x + 5,
             y: layout.panels.legend.y + 2,
-          }),
-        }),
+          }) as unknown),
+        }) as unknown),
         projects: layout.projects,
       }),
       'local'
@@ -2287,9 +2287,9 @@ describe('DiabloMonthCanvas', () => {
     fireEvent.pointerMove(window, { clientX: -900, clientY: 300 });
 
     expect(onLayoutChange).toHaveBeenCalledWith(expect.objectContaining({
-      canvasSize: expect.objectContaining({
-        columns: expect.any(Number),
-      }),
+      canvasSize: (expect.objectContaining({
+        columns: (expect.any(Number) as unknown),
+      }) as unknown),
     }));
     const nextLayout = onLayoutChange.mock.calls[0][0] as DiabloBoardLayout;
     expect(nextLayout.canvasSize?.columns).toBeGreaterThan(getDiabloCanvasSize(layout, 0).columns);

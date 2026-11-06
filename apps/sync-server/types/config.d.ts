@@ -1,7 +1,3 @@
-/**
- * TypeScript type definitions for sync-server configuration structures
- * These types ensure well-formed configs and interfaces that cross file boundaries
- */
 
 export interface ServerKeypair {
   publicKey: string;

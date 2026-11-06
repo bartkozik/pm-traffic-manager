@@ -15,9 +15,9 @@ describe('demo proxy trust', () => {
     app.get('/', async (request) => ({ ip: request.ip }));
     try {
       const direct = await app.inject({ url: '/', remoteAddress: '203.0.113.3', headers: { 'x-forwarded-for': '198.51.100.4' } });
-      expect(direct.json().ip).toBe('203.0.113.3');
+      expect(direct.json<unknown>()).toMatchObject({ ip: '203.0.113.3' });
       const proxied = await app.inject({ url: '/', remoteAddress: '172.18.0.2', headers: { 'x-forwarded-for': '198.51.100.5, 198.51.100.4' } });
-      expect(proxied.json().ip).toBe('198.51.100.4');
+      expect(proxied.json<unknown>()).toMatchObject({ ip: '198.51.100.4' });
     } finally { await app.close(); }
   });
 });

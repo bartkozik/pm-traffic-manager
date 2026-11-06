@@ -575,7 +575,6 @@
     rgba(168, 85, 247, 0.12);
 }
 
-/* Traffic UI styles scoped to this stylesheet. */
 
 @media (max-width: 900px) {
   .traffic-pattern-panel {
@@ -805,5 +804,3 @@
     repeating-linear-gradient(135deg, rgba(180, 83, 9, 0.16) 0 5px, transparent 5px 10px),
     #fffbeb;
 }
-
-/* End traffic UI styles. */

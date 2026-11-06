@@ -500,7 +500,6 @@
   color: #fbbf24;
 }
 
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-range-tabs {
   display: flex;
@@ -722,5 +721,3 @@
 .traffic-app.is-day .traffic-sync-status.is-ok strong {
   color: #065f46;
 }
-
-/* End traffic UI styles. */

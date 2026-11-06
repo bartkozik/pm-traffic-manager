@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-inline-select {
   display: inline-flex;
@@ -713,5 +712,3 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0), #fff 22px),
     #fff;
 }
-
-/* End traffic UI styles. */

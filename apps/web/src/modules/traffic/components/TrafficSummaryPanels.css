@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-kpis {
   display: grid;
@@ -908,5 +907,3 @@
   border-color: #d97706;
   color: #92400e;
 }
-
-/* End traffic UI styles. */
