@@ -5,6 +5,7 @@ import { apiBaseUrl, AUTH_REQUIRED_EVENT } from '@/core/api/apiClient';
 import { useTrafficStore } from '@/modules/traffic/stores/trafficStore';
 import { DEMO_REFRESH_EVENT, DEMO_RESET_EVENT } from './demoRuntime';
 import { DemoGuide } from './DemoGuide';
+import { DemoToolbar } from './DemoToolbar';
 import './demo.css';
 
 
@@ -117,19 +118,24 @@ export function DemoLayout() {
   const match = location.pathname.match(/^\/(board|diablo-board)\/([^/]+)(\/ai-planning)?$/);
   const target = `/${match?.[1] || 'diablo-board'}/${session.boardId}${match?.[3] || ''}`;
   return <>
-    <aside className="demo-banner" aria-label="Demo session">
-      <div><strong>DEMO · Fictional data</strong><span>Private board · up to 24 hours · AI analyses remaining: {session.aiRemaining}</span>
-        {session.aiAvailable === false && <span>AI is currently unavailable. Planning and calculations remain available.</span>}</div>
-      <a href="https://kozikowski.it/projects/pm-traffic-manager">Portfolio ↗</a>
-      <button ref={guideButton} disabled={busy} onClick={() => setGuideOpen(true)}>Quick guide</button>
-      <button disabled={busy} onClick={() => setConfirmReset((value) => !value)}>Reset demo</button>
-      {confirmReset && <div className="demo-reset" role="group" aria-label="Confirm reset">
-        <span>Discard your changes and restore the sample data? Your AI limit will not reset.</span>
-        <button onClick={() => void changeSession('reset')}>Restore sample data</button>
-        <button onClick={() => setConfirmReset(false)}>Cancel</button>
-      </div>}
-      {error && <p role="alert">{error}</p>}
-    </aside>
+    <DemoToolbar
+      projectName="PM Traffic Manager"
+      portfolioUrl="https://kozikowski.it/projects/pm-traffic-manager"
+      busy={busy}
+      guideButtonRef={guideButton}
+      onOpenGuide={() => setGuideOpen(true)}
+      onReset={() => setConfirmReset((value) => !value)}
+      details={<>
+        <span>AI analyses remaining: {session.aiRemaining}</span>
+        {session.aiAvailable === false && <span>AI is currently unavailable. Planning and calculations remain available.</span>}
+      </>}
+    />
+    {confirmReset && <div className="demo-reset" role="group" aria-label="Confirm reset">
+      <span>Discard your changes and restore the sample data? Your AI limit will not reset.</span>
+      <button onClick={() => void changeSession('reset')}>Restore sample data</button>
+      <button onClick={() => setConfirmReset(false)}>Cancel</button>
+    </div>}
+    {error && <p className="demo-notice" role="alert">{error}</p>}
     {guideOpen && !busy && location.pathname === target && <DemoGuide onClose={closeGuide} />}
     {busy ? <p role="status">Preparing your board…</p> : location.pathname !== target
       ? <Navigate to={target} replace />

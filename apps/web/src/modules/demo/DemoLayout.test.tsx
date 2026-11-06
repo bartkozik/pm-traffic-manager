@@ -62,6 +62,7 @@ describe('guest demo', () => {
     await screen.findByRole('dialog', { name: 'Demo guide' });
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Quick guide' })).toHaveFocus());
   });
 
   it('waits for explicit start and opens only the server-issued board', async () => {
