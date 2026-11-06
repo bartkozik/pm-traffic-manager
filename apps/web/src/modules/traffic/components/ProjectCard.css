@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-project-meta {
   display: flex;
@@ -1750,5 +1749,3 @@
 .traffic-app.is-day .traffic-project-risk-more:hover {
   color: #78350f;
 }
-
-/* End traffic UI styles. */

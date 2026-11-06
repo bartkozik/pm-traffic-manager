@@ -55,17 +55,14 @@ const BUSINESS_WEEK_SHORT_MONTHS_PL = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
-// Mon–Fri working weeks within a month, clipped at the month edges (so the first
-// and last week may be short). Labeled by the real date range, e.g. "1–5 cze".
 export function getBusinessWeeksForMonth(monthPeriod: Period): DiabloBusinessWeek[] {
   const monthStart = new Date(`${monthPeriod.startsOn}T00:00:00.000Z`);
   const monthEnd = new Date(`${monthPeriod.endsOn}T00:00:00.000Z`);
   const weeks: DiabloBusinessWeek[] = [];
   let index = 1;
 
-  // Walk from the Monday on/before the first of the month, week by week.
   const cursor = new Date(monthStart);
-  const weekday = cursor.getUTCDay(); // 0=Sun … 6=Sat
+  const weekday = cursor.getUTCDay();
   cursor.setUTCDate(cursor.getUTCDate() - (weekday === 0 ? 6 : weekday - 1));
 
   while (cursor <= monthEnd) {
@@ -123,10 +120,7 @@ export interface PlanningWeekLoad {
   projectWorkloads: WeeklyProjectWorkload[];
 }
 
-// Whole Mon–Fri business weeks across the full planning horizon. A week that
-// straddles a month boundary (e.g. 29 cze – 3 lip) stays a SINGLE week, but its
-// `spans` record how it splits across the months it touches, so downstream code
-// can pull each month's slice of the work.
+// Keep cross-month weeks intact; spans map each month to its own share of working days.
 export function getPlanningBusinessWeeks(monthPeriods: Period[]): DiabloPlanningWeek[] {
   if (!monthPeriods.length) return [];
   const sorted = [...monthPeriods].sort((a, b) => a.startsOn.localeCompare(b.startsOn));
@@ -135,7 +129,7 @@ export function getPlanningBusinessWeeks(monthPeriods: Period[]): DiabloPlanning
   const weeks: DiabloPlanningWeek[] = [];
 
   const cursor = new Date(rangeStart);
-  const weekday = cursor.getUTCDay(); // 0=Sun … 6=Sat
+  const weekday = cursor.getUTCDay();
   cursor.setUTCDate(cursor.getUTCDate() - (weekday === 0 ? 6 : weekday - 1));
 
   while (cursor <= rangeEnd) {
@@ -187,9 +181,7 @@ export function getPlanningBusinessWeeks(monthPeriods: Period[]): DiabloPlanning
   return weeks;
 }
 
-// People + project workload for one (possibly cross-month) business week. Each
-// month's slice is taken proportionally by working days: a week's share of a
-// month = (week working days in that month) / (that month's working days).
+// Allocate each month proportionally to the working days of this week that fall in that month.
 export function buildPlanningWeekLoad({
   week,
   monthPeriods,

@@ -10,27 +10,23 @@ export class WebSocketClient {
     this.doc = null;
     this.isConnected = false;
     this.isSynced = false;
-    this.connectTimeout = 30000; // 30 seconds
-    this.syncTimeout = 60000; // 60 seconds
+    this.connectTimeout = 30000;
+    this.syncTimeout = 60000;
   }
 
-  // Connect to remote server and sync document
   async connectAndSync(serverUrl, roomname) {
     return new Promise((resolve, reject) => {
       const wsUrl = `${serverUrl}/${roomname}`;
       console.log(`Connecting to ${wsUrl} for backup sync...`);
 
-      // Create new Y.Doc for this sync operation
       this.doc = new Y.Doc();
       this.isSynced = false;
 
-      // Setup connection timeout
       const connectTimer = setTimeout(() => {
         this.cleanup();
         reject(new Error(`Connection timeout after ${this.connectTimeout}ms`));
       }, this.connectTimeout);
 
-      // Setup sync timeout
       let syncTimer = null;
 
       try {
@@ -41,13 +37,11 @@ export class WebSocketClient {
           this.isConnected = true;
           clearTimeout(connectTimer);
 
-          // Start sync timeout
           syncTimer = setTimeout(() => {
             this.cleanup();
             reject(new Error(`Sync timeout after ${this.syncTimeout}ms`));
           }, this.syncTimeout);
 
-          // Send sync step 1 (request current state)
           this.sendSyncStep1();
         });
 
@@ -55,12 +49,10 @@ export class WebSocketClient {
           try {
             this.handleMessage(data);
 
-            // Check if sync is complete
             if (this.isSyncComplete()) {
               this.isSynced = true;
               clearTimeout(syncTimer);
-              
-              // Wait a bit for any final updates
+
               setTimeout(() => {
                 const syncedDoc = this.doc;
                 this.cleanup();
@@ -101,52 +93,45 @@ export class WebSocketClient {
     });
   }
 
-  // Send sync step 1 to request current document state
   sendSyncStep1() {
     if (!this.ws || !this.doc) return;
 
     const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, 0); // messageSync
+    encoding.writeVarUint(encoder, 0);
     syncProtocol.writeSyncStep1(encoder, this.doc);
     this.ws.send(encoding.toUint8Array(encoder));
   }
 
-  // Handle incoming WebSocket messages
   handleMessage(data) {
     const uint8Array = new Uint8Array(data);
     const decoder = decoding.createDecoder(uint8Array);
     const messageType = decoding.readVarUint(decoder);
 
-    if (messageType === 0) { // messageSync
+    if (messageType === 0) {
       const encoder = encoding.createEncoder();
-      encoding.writeVarUint(encoder, 0); // messageSync
-      
+      encoding.writeVarUint(encoder, 0);
+
       const syncMessageType = syncProtocol.readSyncMessage(decoder, encoder, this.doc, this.ws);
 
-      // Send response if needed
       if (encoding.length(encoder) > 1) {
         this.ws.send(encoding.toUint8Array(encoder));
       }
 
-      // Mark initial sync as complete after first sync step 2
       if (syncMessageType === syncProtocol.messageYjsSyncStep2) {
         console.log('Received sync step 2, document synchronized');
       }
     }
   }
 
-  // Check if sync is complete (simplified heuristic)
   isSyncComplete() {
     if (!this.doc) return false;
 
-    // Basic heuristic: document has some content and we've received initial sync
     const hasContent = this.doc.store.clients.size > 0;
     const hasState = Y.encodeStateAsUpdate(this.doc).length > 0;
-    
+
     return hasContent || hasState;
   }
 
-  // Cleanup connection and resources
   cleanup() {
     if (this.ws) {
       try {
@@ -156,20 +141,18 @@ export class WebSocketClient {
       }
       this.ws = null;
     }
-    
+
     this.isConnected = false;
     this.isSynced = false;
     // Note: Don't destroy this.doc here, caller might still need it
   }
 
-  // Static method to fetch document list from remote server
   static async fetchDocumentList(httpUrl) {
     try {
       const apiUrl = `${httpUrl}/api/documents`;
-      
+
       console.log(`Fetching document list from ${apiUrl}`);
-      
-      // Use dynamic import to avoid issues with fetch in Node.js
+
       const fetch = (await import('node-fetch')).default;
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -193,11 +176,10 @@ export class WebSocketClient {
     }
   }
 
-  // Static method to check if server is reachable
   static async checkServerHealth(httpUrl) {
     try {
       const healthUrl = `${httpUrl}/health`;
-      
+
       const fetch = (await import('node-fetch')).default;
       const response = await fetch(healthUrl, {
         method: 'GET',

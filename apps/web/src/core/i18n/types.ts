@@ -1,4 +1,3 @@
-// Common/global translations interface
 export interface CommonTranslations {
   common: {
     loading: string;

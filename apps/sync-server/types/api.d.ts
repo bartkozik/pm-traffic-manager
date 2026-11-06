@@ -1,9 +1,4 @@
-/**
- * TypeScript type definitions for sync-server API interfaces
- * These types ensure consistency across HTTP and WebSocket APIs
- */
 
-// Document and Version Management Types
 export interface DocumentInfo {
   roomname: string;
   status: 'exists' | 'not_found';
@@ -56,7 +51,6 @@ export interface ExtractedNodes {
   extractedAt: string;
 }
 
-// Collaboration Types
 export interface CursorState {
   type: 'cursor';
   userId: string;
@@ -102,7 +96,6 @@ export interface InitialCollaborationState {
   presence: PresenceState[];
 }
 
-// Backup Types
 export interface BackupStatus {
   isRunning: boolean;
   sources: number;
@@ -122,7 +115,6 @@ export interface BackupSourceStats {
   errors?: string[];
 }
 
-// Authority Management Types
 export interface AuthorityKeypair {
   publicKey: string;
   algorithm: string;
@@ -143,7 +135,6 @@ export interface SignatureVerificationResult {
   error?: string;
 }
 
-// Health Check Response
 export interface HealthResponse {
   status: 'healthy' | 'degraded' | 'unhealthy';
   timestamp: string;
@@ -163,7 +154,6 @@ export interface HealthResponse {
   };
 }
 
-// API Error Response
 export interface ApiErrorResponse {
   error: string;
   code?: string;
@@ -171,7 +161,6 @@ export interface ApiErrorResponse {
   timestamp: string;
 }
 
-// Generic API Response
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

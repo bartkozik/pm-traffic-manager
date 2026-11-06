@@ -71,9 +71,7 @@ const DIABLO_DEFAULT_ZOOM = 1;
 const DIABLO_OVERVIEW_GUTTER = 12;
 const DIABLO_PROJECT_OVERVIEW_MIN_VISIBLE_WIDTH = 160;
 const DIABLO_PROJECT_OVERVIEW_MIN_VISIBLE_HEIGHT = 80;
-// Wheel/pinch zoom step buttons multiply the scale by this factor.
 const DIABLO_ZOOM_BUTTON_FACTOR = 1.2;
-// Pinch (ctrl/⌘ + wheel) sensitivity; higher = faster zoom per wheel delta.
 const DIABLO_PINCH_SENSITIVITY = 0.0125;
 const DIABLO_PERSON_FRAME_POINTER_EXCLUDED_SELECTOR = [
   'button',
@@ -351,9 +349,7 @@ export function DiabloMonthCanvas({
   const toolIslandRef = useRef<HTMLDivElement | null>(null);
   // Source-of-truth viewport transform, mutated synchronously by gesture handlers.
   const viewRef = useRef<ViewportTransform>({ scale: DIABLO_DEFAULT_ZOOM, panX: 0, panY: 0 });
-  // Mirror used for render-time reads (zoom %, grid metrics, panel placement).
-  // Committed only once a gesture settles so the heavy frame tree isn't
-  // reconciled on every pan/zoom frame.
+  // Commit the render snapshot after gestures settle to avoid reconciling the frame tree on every frame.
   const [view, setView] = useState<ViewportTransform>(viewRef.current);
   const viewCommitTimerRef = useRef<number | null>(null);
   const spaceHeldRef = useRef(false);
@@ -713,7 +709,6 @@ export function DiabloMonthCanvas({
     }
     const viewport = viewportRef.current;
     if (viewport) {
-      // Infinite grid background tiled to match the world transform.
       const pitch = (DIABLO_CELL_SIZE + DIABLO_CELL_GAP) * scale;
       viewport.style.setProperty('--diablo-bg-pitch', `${pitch}px`);
       viewport.style.setProperty('--diablo-bg-major', `${pitch * 4}px`);
@@ -744,8 +739,6 @@ export function DiabloMonthCanvas({
       if (island) {
         island.style.setProperty('--diablo-tool-island-center-x', `${Math.round(viewportRect.left + viewportRect.width / 2)}px`);
       }
-      // Re-anchor both screen-fixed control panels imperatively so they track
-      // the canvas during pan/zoom without waiting for a React render.
       const canvas = canvasRef.current;
       if (canvas) {
         const canvasRect = canvas.getBoundingClientRect();
@@ -767,14 +760,12 @@ export function DiabloMonthCanvas({
         }
       }
     }
-    // Let cursor-presence overlays reproject against the new transform.
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('diablo-viewport-change'));
     }
   }, [canvasBasePixelWidth, peopleZoneColumns]);
 
   const commitViewport = useCallback(() => {
-    // Re-render the (heavy) frame tree only once the gesture settles.
     if (viewCommitTimerRef.current != null) {
       window.clearTimeout(viewCommitTimerRef.current);
     }
@@ -802,8 +793,6 @@ export function DiabloMonthCanvas({
     hasUserPositionedViewportRef.current = true;
   }, []);
 
-  // Untransformed screen origin of the world layer, so pointer coords can be
-  // mapped into world space regardless of padding/border/scroll.
   const getWorldOrigin = useCallback(() => {
     const world = worldRef.current;
     const { panX, panY } = viewRef.current;
@@ -928,8 +917,7 @@ export function DiabloMonthCanvas({
     const top = growth.top || 0;
     if (!left && !top) return;
 
-    // Growing the grid at the left/top shifts all content; counter-pan so the
-    // view stays visually fixed (screen shift = grownCells * basePitch * scale).
+    // Counter-pan when the grid grows left/up so content stays visually fixed.
     window.requestAnimationFrame(() => {
       const basePitch = DIABLO_CELL_SIZE + DIABLO_CELL_GAP;
       const { scale, panX, panY } = viewRef.current;
@@ -1244,7 +1232,6 @@ export function DiabloMonthCanvas({
         zoomViewportAtClientPoint(viewRef.current.scale * factor, event.clientX, event.clientY);
         return;
       }
-      // Two-finger trackpad scroll / shift+wheel pans the canvas 1:1.
       const { scale, panX, panY } = viewRef.current;
       markViewportUserPositioned();
       setViewport({ scale, panX: panX - event.deltaX, panY: panY - event.deltaY });
@@ -1277,9 +1264,7 @@ export function DiabloMonthCanvas({
   }, [reframeCanvasForReadableOverview]);
 
   useLayoutEffect(() => {
-    // Re-assert the live transform + overlay anchoring after committed viewport
-    // changes and layout metric changes. Gesture handlers still apply transforms
-    // imperatively, so this should not run on unrelated frame-tree renders.
+    // Reapply the live transform only for viewport or layout changes, not unrelated frame renders.
     applyViewportTransform();
   }, [applyViewportTransform, view.panX, view.panY, view.scale]);
 
@@ -1344,7 +1329,6 @@ export function DiabloMonthCanvas({
       setViewport({ scale: DIABLO_DEFAULT_ZOOM, panX: 0, panY: 0 });
       return;
     }
-    // Continuous fit: keep content readable and ensure project context is visible when the full layout is too wide.
     const { width, height } = getViewportSize(viewport);
     setViewport(getReadableOverviewViewport({
       bounds,
@@ -1625,7 +1609,6 @@ export function DiabloMonthCanvas({
       return;
     }
 
-    // Pan the canvas with middle-mouse (any tool), space-held + left drag, or the move tool.
     const wantsPan =
       event.button === 1 ||
       (event.button === 0 && (spaceHeldRef.current || canvasTool === 'move'));

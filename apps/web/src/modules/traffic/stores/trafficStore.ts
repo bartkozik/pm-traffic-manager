@@ -1,5 +1,4 @@
-// Public snapshot: identity labels and financial amounts below are synthetic fixture values.
-// Existing schema, relationships, planning scenarios and implementation are retained.
+// Identity labels and financial amounts are synthetic demo fixtures.
 import { create } from 'zustand';
 import { demoEnabled, DEMO_RESET_EVENT } from '@/modules/demo/demoRuntime';
 import * as Y from 'yjs';
@@ -973,8 +972,7 @@ export const useTrafficStore = create<TrafficState>()((set, get) => ({
     );
 
     const scheduleDurableSave = () => {
-      // Legacy full-snapshot autosave is intentionally disabled.
-      // Business changes must go through API commands so Postgres remains the source of truth.
+      // Full-snapshot autosave stays disabled: business changes must use API commands backed by Postgres.
     };
 
     const withSystemSnapshot = (callback: () => void) => {

@@ -1,4 +1,3 @@
-/* Traffic UI styles scoped to this stylesheet. */
 
 .traffic-help-button {
   display: inline-flex;
@@ -39,5 +38,3 @@
   background: #dbeafe;
   color: #1e3a8a;
 }
-
-/* End traffic UI styles. */

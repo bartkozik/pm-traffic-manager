@@ -7,7 +7,6 @@ import * as awarenessProtocol from 'y-protocols/awareness.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Import new version management components
 import { VersionManager } from './lib/VersionManager.js';
 import { RetentionEngine } from './lib/RetentionEngine.js';
 import { HttpApiServer } from './lib/HttpApiServer.js';
@@ -15,7 +14,6 @@ import { CleanupScheduler } from './lib/CleanupScheduler.js';
 import { AuthorityManager } from './lib/AuthorityManager.js';
 import { BackupScheduler } from './lib/BackupScheduler.js';
 
-// Load server configuration
 const configPath = path.join(process.cwd(), 'config', 'sync-server-config.json');
 let config;
 try {
@@ -26,16 +24,14 @@ try {
   process.exit(1);
 }
 
-// Extract configuration values from environment variables
 const port = parseInt(process.env.WS_PORT || '3000', 10);
 const httpPort = process.env.HTTP_PORT || 3001;
 const INTERFACE = process.env.INTERFACE || '0.0.0.0';
 const DATA_DIR = process.env.YJS_DATA_DIR || path.join(process.cwd(), 'data-docs');
 const PERSIST_DOCUMENTS = process.env.YJS_PERSIST_DOCUMENTS === 'true';
 const ALLOW_DOCUMENT_SYNC = process.env.YJS_ALLOW_DOCUMENT_SYNC === 'true';
-const SAVE_DEBOUNCE_MS = 10000; // 10 seconds
+const SAVE_DEBOUNCE_MS = 10000;
 
-// Create retention config structure for compatibility
 const retentionConfig = {
   retentionPolicies: {
     default: config.defaultRetentionPolicy
@@ -43,22 +39,16 @@ const retentionConfig = {
   cleanup: config.cleanup
 };
 
-// Initialize authority manager
 const authorityManager = new AuthorityManager(config, path.join(DATA_DIR, 'system'));
 
-// Initialize version management system with authority manager
 const versionManager = new VersionManager(DATA_DIR, retentionConfig, authorityManager);
 const retentionEngine = new RetentionEngine(versionManager, retentionConfig);
 
-// Initialize backup scheduler
 const backupScheduler = new BackupScheduler(config, authorityManager);
 
-// Initialize HTTP API server with backup and authority components
-// Note: getYDoc is passed later via setDocResolver after it's defined
 const httpApiServer = new HttpApiServer(httpPort, INTERFACE, versionManager, retentionEngine, backupScheduler, authorityManager);
 const cleanupScheduler = new CleanupScheduler(retentionEngine, retentionConfig.cleanup.intervalMinutes);
 
-// Initialize WebSocket server with proper error handling
 let wss;
 try {
   wss = new WebSocketServer({
@@ -70,23 +60,17 @@ try {
   process.exit(1);
 }
 
-// Store documents by room name
 const docs = new Map();
 
-// Store awareness state by room name
 const awarenessStates = new Map();
 
-// Store ephemeral state by room name
 const ephemeralState = new Map();
 
-// Track WebSocket metadata (roomname, collaboration status)
-const wsMetadata = new Map(); // WebSocket -> { roomname: string, isCollaboration: boolean }
+const wsMetadata = new Map();
 
-// Track pending saves and timers for debouncing
 const pendingSaves = new Map();
 const saveTimers = new Map();
 
-// Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   console.log(`Created data directory: ${DATA_DIR}`);
@@ -97,7 +81,6 @@ console.log(`Data directory: ${DATA_DIR}`);
 console.log(`Document persistence: ${PERSIST_DOCUMENTS ? 'enabled' : 'disabled'}`);
 console.log(`Document sync rooms: ${ALLOW_DOCUMENT_SYNC ? 'all rooms enabled' : 'presence rooms only'}`);
 
-// Start HTTP API server with error handling
 try {
   httpApiServer.start();
 } catch (error) {
@@ -105,10 +88,8 @@ try {
   process.exit(1);
 }
 
-// Start cleanup scheduler
 cleanupScheduler.start();
 
-// Start backup scheduler if sources are configured
 if (config.backupSources && config.backupSources.length > 0) {
   backupScheduler.start();
   console.log(`Backup scheduler started with ${config.backupSources.length} source(s)`);
@@ -122,18 +103,17 @@ console.log(`HTTP API available at: http://${INTERFACE}:${httpPort}`);
 console.log(`Cleanup running every ${retentionConfig.cleanup.intervalMinutes} minutes`);
 console.log(`Authority management: ${authorityManager ? 'enabled' : 'disabled'}`);
 
-// File persistence functions
 function getLatestFilePath(roomname) {
   return path.join(DATA_DIR, 'documents', roomname, 'latest.yjs');
 }
 
 function loadDocumentFromFile(roomname) {
   const latestFilePath = getLatestFilePath(roomname);
-  
+
   console.log(`[DEBUG] Attempting to load document for room: ${roomname}`);
   console.log(`[DEBUG] Latest file path: ${latestFilePath}`);
   console.log(`[DEBUG] File exists: ${fs.existsSync(latestFilePath)}`);
-  
+
   try {
     if (fs.existsSync(latestFilePath)) {
       const data = fs.readFileSync(latestFilePath);
@@ -143,7 +123,6 @@ function loadDocumentFromFile(roomname) {
       console.log(`[SUCCESS] Loaded document for room: ${roomname} from latest file (${data.length} bytes)`);
       return doc;
     } else {
-      // Fallback: try old file location for migration
       const oldFilePath = path.join(DATA_DIR, `${roomname}.yjs`);
       console.log(`[DEBUG] Trying old file path: ${oldFilePath}`);
       if (fs.existsSync(oldFilePath)) {
@@ -166,7 +145,6 @@ async function saveDocumentToFile(roomname, doc) {
   if (!PERSIST_DOCUMENTS) return;
 
   try {
-    // Create version using the new version manager
     await versionManager.createVersion(roomname, doc, 'websocket-sync');
     console.log(`Created version for room: ${roomname}`);
   } catch (error) {
@@ -175,15 +153,12 @@ async function saveDocumentToFile(roomname, doc) {
 }
 
 function scheduleSave(roomname, doc) {
-  // Clear existing timer if any
   if (saveTimers.has(roomname)) {
     clearTimeout(saveTimers.get(roomname));
   }
 
-  // Mark as pending save
   pendingSaves.set(roomname, true);
 
-  // Schedule new save
   const timer = setTimeout(async () => {
     if (pendingSaves.get(roomname)) {
       await saveDocumentToFile(roomname, doc);
@@ -198,20 +173,18 @@ function scheduleSave(roomname, doc) {
 function getYDoc(roomname) {
   if (!docs.has(roomname)) {
     let doc = PERSIST_DOCUMENTS ? loadDocumentFromFile(roomname) : null;
-    
+
     if (!doc) {
-      // Create new document if no file exists
       doc = new Y.Doc();
       console.log(`Created new document for room: ${roomname}`);
     }
-    
+
     if (PERSIST_DOCUMENTS) {
-      // Set up auto-save on document changes
       doc.on('update', () => {
         scheduleSave(roomname, doc);
       });
     }
-    
+
     docs.set(roomname, doc);
   }
   return docs.get(roomname);
@@ -269,7 +242,6 @@ function encodeAwarenessMessage(awareness, clientIds) {
   return encoding.toUint8Array(encoder);
 }
 
-// Give the HTTP API access to live Y.js documents
 httpApiServer.setDocResolver(getYDoc);
 
 function getEphemeralState(roomname) {
@@ -295,30 +267,26 @@ function broadcastToRoom(roomname, data, excludeWs = null) {
   });
 }
 
-// Message types for y-websocket protocol
 const messageSync = 0;
 const messageAwareness = 1;
 
 wss.on('connection', (ws, req) => {
   const url = new URL(req.url, `http://localhost:${port}`);
-  const pathname = url.pathname.slice(1); // Remove leading slash
-  
-  // Check if this is a collaboration connection
+  const pathname = url.pathname.slice(1);
+
   if (pathname.startsWith('collaboration/')) {
     const roomname = pathname.replace('collaboration/', '');
     wsMetadata.set(ws, { roomname, isCollaboration: true });
-        
+
     const state = getEphemeralState(roomname);
-    
-    // Send current ephemeral state to new client
+
     ws.send(JSON.stringify({
       type: 'initial-state',
       cursors: Array.from(state.cursors.values()),
       locks: Array.from(state.locks.values()),
       presence: Array.from(state.presence.values())
     }));
-    
-    // Handle collaboration messages
+
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message.toString());
@@ -327,13 +295,12 @@ wss.on('connection', (ws, req) => {
             state.cursors.set(data.userId, data);
             broadcastToRoom(roomname, data, ws);
             break;
-            
+
           case 'lock':
             if (data.action === 'acquire') {
               state.locks.set(data.nodeId, data);
               broadcastToRoom(roomname, data, ws);
-              
-              // Auto-expire lock
+
               setTimeout(() => {
                 if (state.locks.has(data.nodeId)) {
                   const lock = state.locks.get(data.nodeId);
@@ -354,12 +321,12 @@ wss.on('connection', (ws, req) => {
               }, ws);
             }
             break;
-            
+
           case 'presence':
             state.presence.set(data.userId, data);
             broadcastToRoom(roomname, data, ws);
             break;
-            
+
           case 'selection':
             state.selections.set(data.userId, data);
             broadcastToRoom(roomname, data, ws);
@@ -369,17 +336,14 @@ wss.on('connection', (ws, req) => {
         console.error('Error processing collaboration message:', error);
       }
     });
-    
-    // Handle collaboration connection close
+
     ws.on('close', () => {
       console.log(`Collaboration connection closed for room: ${roomname}`);
-      
+
       const state = getEphemeralState(roomname);
-      
-      // Clean up user's ephemeral data
+
       let userId = null;
-      
-      // Find and remove user's cursor
+
       for (const [id, cursor] of state.cursors) {
         if (cursor.userId) {
           userId = cursor.userId;
@@ -387,30 +351,25 @@ wss.on('connection', (ws, req) => {
           break;
         }
       }
-      
+
       if (userId) {
-        // Remove user's presence
         state.presence.delete(userId);
-        
-        // Remove any locks held by this user
+
         for (const [nodeId, lock] of state.locks) {
           if (lock.userId === userId) {
             state.locks.delete(nodeId);
           }
         }
-        
-        // Remove user's selections
+
         state.selections.delete(userId);
-        
-        // Broadcast user left
+
         broadcastToRoom(roomname, { type: 'user-left', userId });
       }
     });
-    
+
     return;
   }
-  
-  // Regular Y.js CRDT sync connection
+
   const roomname = pathname;
   if (!ALLOW_DOCUMENT_SYNC && !roomname.endsWith(':presence')) {
     console.warn(`Rejected legacy Yjs document room: ${roomname}`);
@@ -419,18 +378,17 @@ wss.on('connection', (ws, req) => {
   }
 
   wsMetadata.set(ws, { roomname, isCollaboration: false });
-  
+
   console.log(`New Y.js sync connection to room: ${roomname}`);
-  
+
   const doc = getYDoc(roomname);
   const awareness = getAwareness(roomname, doc);
   const awarenessClientIds = new Set();
-  
+
   console.log(`[DEBUG] Preparing sync step 1 for room: ${roomname}`);
   console.log(`[DEBUG] Document state vector length: ${Y.encodeStateVector(doc).length}`);
   console.log(`[DEBUG] Document update size: ${Y.encodeStateAsUpdate(doc).length}`);
-  
-  // Send sync step 1
+
   const encoder = encoding.createEncoder();
   encoding.writeVarUint(encoder, messageSync);
   syncProtocol.writeSyncStep1(encoder, doc);
@@ -441,8 +399,7 @@ wss.on('connection', (ws, req) => {
   if (awareness.getStates().size > 0) {
     ws.send(encodeAwarenessMessage(awareness, Array.from(awareness.getStates().keys())));
   }
-  
-  // Handle incoming messages
+
   ws.on('message', (message) => {
     try {
       // @ts-ignore - RawData handling for WebSocket message
@@ -451,7 +408,7 @@ wss.on('connection', (ws, req) => {
       const decoder = decoding.createDecoder(uint8Array);
       const messageType = decoding.readVarUint(decoder);
       console.log(`[DEBUG] Message type: ${messageType}`);
-      
+
       switch (messageType) {
         case messageSync:
           console.log(`[DEBUG] Processing sync message for room: ${roomname}`);
@@ -460,14 +417,13 @@ wss.on('connection', (ws, req) => {
           encoding.writeVarUint(encoder, messageSync);
           const syncMessageType = syncProtocol.readSyncMessage(decoder, encoder, doc, ws);
           console.log(`[DEBUG] Sync message type: ${syncMessageType}`);
-          
+
           if (encoding.length(encoder) > 1) {
             const responseData = encoding.toUint8Array(encoder);
             console.log(`[DEBUG] Sending sync response: ${responseData.length} bytes`);
             ws.send(responseData);
           }
-          
-          // Broadcast sync updates to other clients
+
           if (syncMessageType === syncProtocol.messageYjsUpdate && update) {
             const broadcastEncoder = encoding.createEncoder();
             encoding.writeVarUint(broadcastEncoder, messageSync);
@@ -475,9 +431,8 @@ wss.on('connection', (ws, req) => {
             broadcastYjsRoomMessage(roomname, encoding.toUint8Array(broadcastEncoder), ws);
           }
           break;
-          
+
         case messageAwareness:
-          // Handle awareness protocol (for cursor positions, etc.)
           const awarenessUpdate = decoding.readVarUint8Array(decoder);
           readAwarenessClientIds(awarenessUpdate).forEach((clientId) => awarenessClientIds.add(clientId));
           awarenessProtocol.applyAwarenessUpdate(awareness, awarenessUpdate, ws);
@@ -488,7 +443,7 @@ wss.on('connection', (ws, req) => {
       console.error('Error processing Y.js message:', error);
     }
   });
-  
+
   ws.on('close', () => {
     console.log(`Y.js sync connection closed for room: ${roomname}`);
     if (awarenessClientIds.size > 0) {
@@ -497,7 +452,7 @@ wss.on('connection', (ws, req) => {
       broadcastYjsRoomMessage(roomname, encodeAwarenessMessage(awareness, clientIds), ws);
     }
   });
-  
+
   ws.on('error', (error) => {
     console.error(`WebSocket error in room ${roomname}:`, error);
   });
@@ -508,25 +463,20 @@ wss.on('error', (error) => {
   process.exit(1);
 });
 
-// Graceful shutdown handlers
 async function gracefulShutdown(signal) {
   console.log(`\nReceived ${signal}, shutting down Y.js Sync Server...`);
-  
-  // Stop backup scheduler
+
   if (backupScheduler && backupScheduler.isRunning) {
     backupScheduler.stop();
     console.log('Backup scheduler stopped.');
   }
-  
-  // Stop cleanup scheduler
+
   cleanupScheduler.stop();
   console.log('Cleanup scheduler stopped.');
-  
-  // Stop HTTP API server
+
   httpApiServer.stop();
   console.log('HTTP API server stopped.');
-  
-  // Clear pending save timers before closing.
+
   for (const [roomname, timer] of saveTimers) {
     clearTimeout(timer);
   }
@@ -541,20 +491,18 @@ async function gracefulShutdown(signal) {
   } else {
     console.log('Document persistence disabled; skipping Yjs document save.');
   }
-  
-  // Close WebSocket connections
+
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.close();
     }
   });
-  
+
   wss.close(() => {
     console.log('Y.js Sync Server closed. Goodbye!');
     process.exit(0);
   });
-  
-  // Fallback timeout
+
   setTimeout(() => {
     console.log('\nShutdown timeout reached, exiting...');
     process.exit(0);
