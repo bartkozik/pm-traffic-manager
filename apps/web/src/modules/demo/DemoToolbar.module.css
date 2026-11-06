@@ -1,0 +1,190 @@
+@font-face {
+  font-family: 'Portfolio Demo';
+  src: url('./fonts/montserrat-400-latin-pl.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Portfolio Demo';
+  src: url('./fonts/montserrat-500-latin-pl.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+.toolbar {
+  box-sizing: border-box;
+  padding: 12px 24px 10px;
+  border-top: 3px solid #ea3323;
+  border-bottom: 1px solid #c4c0c0;
+  background: #fff;
+  color: #0d0d0d;
+  color-scheme: light;
+  font:
+    400 13px / 1.5 'Portfolio Demo',
+    sans-serif;
+}
+
+.row,
+.identity,
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.row {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+
+.identity {
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 6px 12px;
+}
+
+.portfolio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: #c52719;
+  font:
+    500 14px / 1.4 'Portfolio Demo',
+    sans-serif;
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.portfolio:hover {
+  color: #c52719;
+  text-decoration: underline;
+}
+
+.project {
+  padding-left: 12px;
+  border-left: 1px solid #c4c0c0;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  padding: 3px 6px;
+  background: #f4f3f0;
+  color: #444;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #c4c0c0;
+  border-radius: 2px;
+  background: #fff;
+  color: #0d0d0d;
+  font:
+    500 13px / 1.4 'Portfolio Demo',
+    sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+  cursor: pointer;
+}
+
+.actions button:hover:not(:disabled) {
+  border-color: #c52719;
+  background: #f4f3f0;
+  color: #c52719;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.toolbar svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toolbar :focus-visible {
+  outline: 2px solid #c52719;
+  outline-offset: 3px;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  margin-top: 4px;
+  color: #444;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 699px) {
+  .toolbar {
+    padding: 8px 16px 10px;
+  }
+
+  .row {
+    align-items: stretch;
+  }
+
+  .identity,
+  .actions {
+    width: 100%;
+  }
+
+  .identity {
+    gap: 4px 10px;
+  }
+
+  .portfolio {
+    margin-right: auto;
+  }
+
+  .project {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .badge {
+    display: none;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .actions button {
+    padding-inline: 8px;
+  }
+
+  .details {
+    margin-top: 8px;
+  }
+}
+
+@media print {
+  .toolbar {
+    display: none;
+  }
+}
