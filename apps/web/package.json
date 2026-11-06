@@ -13,7 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@mantine/core": "^7.17.8",
+    "@mantine/core": "^9.7.4",
     "@mantine/hooks": "^7.17.8",
     "@ptm/contracts": "workspace:*",
     "@ptm/domain": "workspace:*",
