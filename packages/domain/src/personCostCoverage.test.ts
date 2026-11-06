@@ -262,7 +262,7 @@ describe('person cost coverage', () => {
     expect(coverage.coveredCostK).toBe(18);
     expect(coverage.projectSegments).toEqual([
       expect.objectContaining({
-        allocationIds: expect.arrayContaining(['allocation-0', 'allocation-17']),
+        allocationIds: (expect.arrayContaining(['allocation-0', 'allocation-17']) as unknown),
         costTileCount: 18,
         coveredCostK: 18,
         projectId: cappedProject.id,

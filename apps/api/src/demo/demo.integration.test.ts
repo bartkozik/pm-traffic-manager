@@ -1,3 +1,4 @@
+import { demoSessionResponseSchema, trafficBoardResponseSchema } from '@ptm/contracts';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Pool } from 'pg';
 import { TrafficBoardService } from '../traffic/services/trafficBoard.service.js';
@@ -29,23 +30,23 @@ describe.skipIf(!databaseUrl)('guest demo isolation', () => {
   it('creates isolated 24 hour sessions using secure opaque cookies', async () => {
     const a = await app.inject({ method: 'POST', url: '/api/demo/session', headers: { origin } });
     expect(a.statusCode).toBe(200);
-    first = a.json();
+    first = demoSessionResponseSchema.parse(a.json<unknown>());
     firstCookie = String(a.headers['set-cookie']).split(';')[0];
     expect(a.headers['set-cookie']).toContain('HttpOnly');
     expect(a.headers['set-cookie']).toContain('Secure');
     expect(a.headers['set-cookie']).toContain('SameSite=Strict');
     expect(a.headers['set-cookie']).not.toContain('Domain=');
     expect(first.aiRemaining).toBe(3);
-    const seeded = (await app.inject({ url: `/api/boards/${first.boardId}`, headers: { cookie: firstCookie } })).json();
+    const seeded = trafficBoardResponseSchema.parse((await app.inject({ url: `/api/boards/${first.boardId}`, headers: { cookie: firstCookie } })).json<unknown>());
     expect(seeded.snapshot.activePeriodId).toBe(new Date().toISOString().slice(0, 7));
     expect(Date.parse(first.expiresAt) - Date.now()).toBeGreaterThan(23 * 3600_000);
     const b = await app.inject({ method: 'POST', url: '/api/demo/session', headers: { origin } });
     secondCookie = String(b.headers['set-cookie']).split(';')[0];
-    expect(b.json().boardId).not.toBe(first.boardId);
+    expect(demoSessionResponseSchema.parse(b.json<unknown>()).boardId).not.toBe(first.boardId);
     expect((await app.inject({ url: `/api/boards/${first.boardId}`, headers: { cookie: firstCookie } })).statusCode).toBe(200);
     expect((await app.inject({ url: `/api/boards/${first.boardId}`, headers: { cookie: secondCookie } })).statusCode).toBe(403);
     expect((await app.inject({ url: '/api/boards/default' })).statusCode).toBe(401);
-    const stored = await pool.query('SELECT token_hash FROM demo_sessions WHERE board_id=$1', [first.boardId]);
+    const stored = await pool.query<{ token_hash: string }>('SELECT token_hash FROM demo_sessions WHERE board_id=$1', [first.boardId]);
     expect(stored.rows[0].token_hash).not.toContain(firstCookie.split('=')[1]);
   });
 
@@ -62,7 +63,7 @@ describe.skipIf(!databaseUrl)('guest demo isolation', () => {
     const before = await new DemoRepository(pool).find(first.boardId);
     const response = await app.inject({ method: 'POST', url: `/api/boards/${first.boardId}/commands`, headers: { origin, cookie: firstCookie }, payload: { commandId: crypto.randomUUID(), command: { type: 'board.reset' } } });
     expect(response.statusCode).toBe(400);
-    expect(response.json().code).toBe('DEMO_RESET_REQUIRED');
+    expect(response.json<unknown>()).toMatchObject({ code: 'DEMO_RESET_REQUIRED' });
     expect(await new DemoRepository(pool).find(first.boardId)).toEqual(before);
   });
 
@@ -71,7 +72,7 @@ describe.skipIf(!databaseUrl)('guest demo isolation', () => {
     const person = { ...before.snapshot.people[0], id: 'bounded-test-person', monthlyCostK: 101 };
     const command = await app.inject({ method: 'POST', url: `/api/boards/${first.boardId}/commands`, headers: { origin, cookie: firstCookie }, payload: { commandId: crypto.randomUUID(), command: { type: 'person.create', person, periodId: before.snapshot.activePeriodId } } });
     expect(command.statusCode).toBe(400);
-    expect(command.json().code).toBe('DEMO_BOARD_LIMIT');
+    expect(command.json<unknown>()).toMatchObject({ code: 'DEMO_BOARD_LIMIT' });
     const snapshot = { ...before.snapshot, people: [person, ...before.snapshot.people] };
     const save = await app.inject({ method: 'PUT', url: `/api/boards/${first.boardId}`, headers: { origin, cookie: firstCookie }, payload: { snapshot, baseUpdatedAt: before.updatedAt } });
     expect(save.statusCode).toBe(400);
@@ -81,18 +82,18 @@ describe.skipIf(!databaseUrl)('guest demo isolation', () => {
   it('rotates boards on reset and rejects requests carrying the stale board', async () => {
     const reset = await app.inject({ method: 'POST', url: '/api/demo/reset', headers: { origin, cookie: firstCookie } });
     expect(reset.statusCode).toBe(200);
-    expect(reset.json().boardId).not.toBe(first.boardId);
-    expect(reset.json().aiRemaining).toBe(3);
+    expect(demoSessionResponseSchema.parse(reset.json<unknown>()).boardId).not.toBe(first.boardId);
+    expect(demoSessionResponseSchema.parse(reset.json<unknown>()).aiRemaining).toBe(3);
     expect((await app.inject({ method: 'GET', url: `/api/boards/${first.boardId}`, headers: { cookie: firstCookie } })).statusCode).toBe(403);
-    first = reset.json();
+    first = demoSessionResponseSchema.parse(reset.json<unknown>());
   });
 
   it('keeps the app usable without a dedicated demo AI key', async () => {
-    const board = (await app.inject({ url: `/api/boards/${first.boardId}`, headers: { cookie: firstCookie } })).json();
+    const board = trafficBoardResponseSchema.parse((await app.inject({ url: `/api/boards/${first.boardId}`, headers: { cookie: firstCookie } })).json<unknown>());
     const response = await app.inject({ method: 'POST', url: `/api/boards/${first.boardId}/periods/${board.snapshot.activePeriodId}/ai-opportunity-check`, headers: { origin, cookie: firstCookie } });
     expect(response.statusCode).toBe(503);
-    expect(response.json().code).toBe('DEMO_AI_UNAVAILABLE');
-    expect((await app.inject({ url: '/api/demo/session', headers: { cookie: firstCookie } })).json().aiRemaining).toBe(3);
+    expect(response.json<unknown>()).toMatchObject({ code: 'DEMO_AI_UNAVAILABLE' });
+    expect((await app.inject({ url: '/api/demo/session', headers: { cookie: firstCookie } })).json<unknown>()).toMatchObject({ aiRemaining: 3 });
   });
 
   it('does not recreate deleted boards from a request authorized before reset', async () => {
@@ -136,7 +137,7 @@ describe.skipIf(!databaseUrl)('guest demo isolation', () => {
     try {
       const response = await app.inject('/api/health');
       expect(response.statusCode).toBe(503);
-      expect(response.json().ok).toBe(false);
+      expect(response.json<unknown>()).toMatchObject({ ok: false });
       expect(response.body).not.toContain('internal database detail');
     } finally { query.mockRestore(); }
   });

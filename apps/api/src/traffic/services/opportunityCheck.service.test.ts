@@ -84,10 +84,10 @@ describe('OpportunityCheckService', () => {
     expect(response.result.verdict).toBe('renegotiate');
     expect(fetchMock).toHaveBeenCalledWith('https://api.anthropic.com/v1/messages', expect.objectContaining({
       method: 'POST',
-      headers: expect.objectContaining({
+      headers: (expect.objectContaining({
         'anthropic-version': '2023-06-01',
         'x-api-key': 'test-key',
-      }),
+      }) as unknown),
     }));
   });
 

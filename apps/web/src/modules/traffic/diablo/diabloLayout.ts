@@ -1114,7 +1114,7 @@ export function resolveDiabloLayoutSyncBase(
 
 export function parseDiabloLayout(value: unknown, roomName: string, periodId: string): DiabloBoardLayout | null {
   try {
-    const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+    const parsed: unknown = typeof value === 'string' ? JSON.parse(value) : value;
     if (!isRecord(parsed)) return null;
     if (
       (parsed.version !== DIABLO_LAYOUT_VERSION && parsed.version !== 2) ||
