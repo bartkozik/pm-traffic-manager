@@ -38,13 +38,30 @@ export default tseslint.config(
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['apps/api/src/**/*.ts', 'packages/**/*.ts'],
+    files: ['apps/api/src/**/*.ts', 'apps/mcp-server/src/**/*.ts', 'packages/**/*.ts'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: {
         ...globals.node,
         ...globals.vitest,
       },
+    },
+  },
+  {
+    files: ['apps/*/src/**/*.{ts,tsx}', 'packages/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: ['apps/web/tsconfig.json', 'apps/api/tsconfig.json', 'apps/mcp-server/tsconfig.json', 'packages/*/tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'error',
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
     },
   },
 )
